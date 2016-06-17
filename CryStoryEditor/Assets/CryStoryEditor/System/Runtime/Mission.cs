@@ -39,5 +39,9 @@ namespace CryStory.Runtime
         {
 
         }
+
+
+        //===For Editor=============
+        public Vector2 graphCenter;
     }
 }

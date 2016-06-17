@@ -11,7 +11,7 @@ namespace CryStory.Runtime
 {
     public class Story : ScriptableObject
     {
-        public Mission _mission;
+        public Mission _mission = new Mission();
         public int ID;
     }
 }
