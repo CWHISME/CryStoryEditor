@@ -1,17 +1,14 @@
 ﻿/**********************************************************
 *Author: wangjiaying
-*Date: 2016.6.16
+*Date: 2016.6.23
 *Func:
 **********************************************************/
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CryStory.Runtime
 {
-    public class Story : DragModifier
+    public class MissionObject : ScriptableObject
     {
-        public List<Mission> _missionList = new List<Mission>();
-        public int ID;
+        public Mission _mission;
     }
 }

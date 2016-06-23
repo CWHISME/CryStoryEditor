@@ -1,17 +1,15 @@
 ﻿/**********************************************************
 *Author: wangjiaying
-*Date: 2016.6.16
+*Date: 2016.6.20
 *Func:
 **********************************************************/
-using System;
-using System.Collections.Generic;
 using UnityEngine;
-
+using System.Collections;
 namespace CryStory.Runtime
 {
-    public class Story : DragModifier
+    public class DragModifier : NodeBase
     {
-        public List<Mission> _missionList = new List<Mission>();
-        public int ID;
+        //===For Editor=============
+        public Vector2 graphCenter;
     }
 }

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace CryStory.Runtime
 {
-    public class Mission : NodeBase
+    public class Mission : DragModifier
     {
 
         [HideInInspector]
@@ -40,8 +40,5 @@ namespace CryStory.Runtime
 
         }
 
-
-        //===For Editor=============
-        public Vector2 graphCenter;
     }
 }

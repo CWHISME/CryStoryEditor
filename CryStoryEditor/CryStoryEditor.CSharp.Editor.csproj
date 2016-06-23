@@ -101,7 +101,9 @@
     <Compile Include="Assets\CryStoryEditor\System\Editor\MissionEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditorWindow.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Editor\StoryInspector.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\StoryObjectInspector.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\Tools.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\Version.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

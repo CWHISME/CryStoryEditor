@@ -14,16 +14,15 @@ namespace CryStory.Editor
     {
         public bool OnGUI(StoryEditorWindow window)
         {
-            if (!Selection.activeObject) { ShowTips(window._windowRect.center); return true; }
+            //if (!Selection.activeObject) { ShowTips(window._windowRect.center); return true; }
 
-            Story story = Selection.activeObject as Story;
+            StoryObject story = Selection.activeObject as StoryObject;
+            window._storyObject = story;
             if (story == null)
             {
                 ShowTips(window._windowRect.center);
                 return true;
             }
-            story.ID++;
-            window._story = story;
 
             return false;
         }
@@ -44,6 +43,8 @@ namespace CryStory.Editor
             {
                 if (Event.current.button == 1)
                 {
+                    if (StoryEditorWindow.StoryWindow != null)
+                        if (Event.current.mousePosition.y < StoryEditorWindow.StoryWindow._contentRect.y) return;
                     GenericMenu menu = new GenericMenu();
                     menu.AddItem(new GUIContent("Create/New Story"), false, () =>
                     {
@@ -59,7 +60,11 @@ namespace CryStory.Editor
         {
             string path = EditorUtility.SaveFilePanelInProject("Create Story", "New Story", "asset", "Create new story");
             if (!string.IsNullOrEmpty(path))
-                AssetDatabase.CreateAsset(new CryStory.Runtime.Story(), path);
+            {
+                StoryObject o = ScriptableObject.CreateInstance<StoryObject>();//  new CryStory.Runtime.StoryObject();
+                AssetDatabase.CreateAsset(o, path);
+                Selection.activeObject = o;
+            }
         }
     }
 }
