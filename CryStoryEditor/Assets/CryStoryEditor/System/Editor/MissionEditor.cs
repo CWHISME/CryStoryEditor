@@ -46,7 +46,7 @@ namespace CryStory.Editor
         {
             GUI.Label(new Rect(_contentRect.x, _contentRect.y, 120, 20), _window._storyObject.StoryCenter.ToString());
 
-            if (GUI.Button(new Rect(_contentRect.x, _contentRect.y + 20, 50, 20), "Reset"))
+            if (GUI.Button(new Rect(_contentRect.x+3, _contentRect.y + 20, 50, 22), "Reset", _window.skin.button))
             {
                 _window._storyObject.StoryCenter = Vector2.zero;
             }
@@ -143,7 +143,7 @@ namespace CryStory.Editor
         private void ShowLeftSliderArea()
         {
             Rect background = new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height);
-            GUI.Box(background, "", _window.skin.GetStyle("Background"));
+            GUI.Box(background, "", _window.StyleBackground);
 
             _leftScrollPosition = GUI.BeginScrollView(new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height - _window._topHeight), _leftScrollPosition, new Rect(0, _window._topHeight, _window._leftWidth - 30, _window._windowRect.height - _window._topHeight), false, true, _window.skin.horizontalScrollbar, _window.skin.verticalScrollbar);
             //_leftScrollPosition = GUILayout.BeginScrollView(_leftScrollPosition, false, true, _window.skin.horizontalScrollbar, _window.skin.verticalScrollbar, _window.skin.GetStyle("Background"), GUILayout.Width(_window._leftWidth));
@@ -211,69 +211,6 @@ namespace CryStory.Editor
 
             return center + pos - _window._storyObject.StoryCenter;
         }
-
-        //static void DrawConnectionLines()
-        //{
-        //    int ncnt = modifier.nodes.Count;
-
-        //    // Draw bezier lines
-        //    for (int n = 0; n <= ncnt; ++n)
-        //    {
-        //        Node node = null;
-        //        if (n < ncnt)
-        //            node = modifier.nodes[n];
-        //        else
-        //            node = modifier.output;
-        //        if (node == null)
-        //            continue;
-
-        //        for (int i = 0; i < node.slots.Length; ++i)
-        //        {
-        //            if (node.slots[i].input != null)
-        //            {
-        //                for (int k = 0; k < ncnt; ++k)
-        //                {
-        //                    if (modifier.nodes[k] == node.slots[i].input)
-        //                    {
-        //                        nodeOutputs[k] = true;
-        //                        Vector2 thispos = Node2Content(node.editorPos);
-        //                        thispos.y += (30 + i * 18);
-        //                        thispos.x += 8;
-        //                        Vector2 targetpos = new Vector2(nodeRects[k].xMax - 1, nodeRects[k].yMin + 8);
-
-        //                        float tgl = Vector2.Distance(targetpos, thispos) * 0.5f;
-        //                        tgl = Mathf.Min(100, tgl);
-
-        //                        Vector2 thistg = thispos - Vector2.right * tgl;
-        //                        Vector2 targettg = targetpos + Vector2.right * tgl;
-
-        //                        Handles.DrawBezier(thispos, targetpos, thistg, targettg, new Color(1, 1, 1, 0.2f), null, 3f);
-
-        //                        float t = ((float)((cfwindow.frame + k * 45) % 400)) / 400f;
-
-        //                        if (CameraForgeWindow.showDirection)
-        //                        {
-        //                            t -= 0.025f;
-        //                            Vector3 p1 = Vector3.Lerp(Vector3.Lerp(Vector3.Lerp(targetpos, targettg, t), Vector3.Lerp(targettg, thistg, t), t),
-        //                                                      Vector3.Lerp(Vector3.Lerp(targettg, thistg, t), Vector3.Lerp(thistg, thispos, t), t), t);
-        //                            t += 0.05f;
-        //                            Vector3 p2 = Vector3.Lerp(Vector3.Lerp(Vector3.Lerp(targetpos, targettg, t), Vector3.Lerp(targettg, thistg, t), t),
-        //                                                      Vector3.Lerp(Vector3.Lerp(targettg, thistg, t), Vector3.Lerp(thistg, thispos, t), t), t);
-
-        //                            Color c = NodeColor(k);
-        //                            c = Color.Lerp(c, Color.white, 0.5f);
-        //                            //c.a = 0.5f;
-        //                            Handles.color = c;
-        //                            Handles.DrawLine(p1, p2);
-        //                            Handles.color = Color.white;
-        //                        }
-        //                        break;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }  
-        //}
 
     }
 }

@@ -12,6 +12,8 @@ namespace CryStory.Editor
 {
     public class StoryEditor : Singleton<StoryEditor>
     {
+
+        private StoryEditorWindow _window;
         public bool OnGUI(StoryEditorWindow window)
         {
             //if (!Selection.activeObject) { ShowTips(window._windowRect.center); return true; }
@@ -20,6 +22,7 @@ namespace CryStory.Editor
             window._storyObject = story;
             if (story == null)
             {
+                _window = window;
                 ShowTips(window._windowRect.center);
                 return true;
             }
@@ -30,11 +33,16 @@ namespace CryStory.Editor
         private void ShowTips(Vector2 center)
         {
             ShowRightClickPopupMenu();
+            //GUIStyle title = new GUIStyle();
+            EditorGUI.LabelField(new Rect(center.x - 100, center.y - 100, 500, 20), "Cry Story Editor",_window.skin.GetStyle("Title"));
+            EditorGUI.LabelField(new Rect(center.x - 38, center.y - 50, 500, 20), "—By CWHISME");
             EditorGUI.LabelField(new Rect(center.x - 150, center.y - 20, 500, 20), "You are not select any story file,but you can create a new story.");
-            if (GUI.Button(new Rect(center.x - 20, center.y + 30, 60, 40), "Create"))
+            if (GUI.Button(new Rect(center.x - 20, center.y + 30, 60, 40), "Create", _window.skin.button))
             {
                 CreateNewStory();
             }
+
+            EditorGUI.LabelField(new Rect(center.x - 20, center.y + 100, 500, 20), Version.FullVersion);
         }
 
         private void ShowRightClickPopupMenu()
