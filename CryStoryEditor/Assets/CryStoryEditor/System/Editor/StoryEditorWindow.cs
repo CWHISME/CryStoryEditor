@@ -49,7 +49,7 @@ namespace CryStory.Editor
 
         void OnGUI()
         {
-            LoadTextures();
+            //LoadTextures();
 
             //Update cache window size
             _windowRect = new Rect(0, 0, position.width, position.height);
@@ -81,7 +81,7 @@ namespace CryStory.Editor
             //style.normal.textColor = Color.white;
             //style.fontStyle = FontStyle.Bold;
 
-            EditorGUI.LabelField(new Rect(0, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + _storyObject.name : "")), skin.GetStyle("Title"));
+            EditorGUI.LabelField(new Rect(0, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + _storyObject.name : "")), ResourcesManager.GetInstance.skin.GetStyle("Title"));
             //GUILayout.Space(5);
         }
 
@@ -93,8 +93,8 @@ namespace CryStory.Editor
             //selectStyle.normal.background = texGrid;//Texture2D.blackTexture;
             //selectStyle.onNormal.background = texTargetArea;//Texture2D.whiteTexture;
             Rect rect = new Rect(0, _titleHeight, _windowRect.xMax, _topHeight - _titleHeight);
-            GUI.Box(rect, "", StyleBackground);
-            s = GUI.SelectionGrid(new Rect(0, _selectionGridHeight, _windowRect.xMax, _topHeight - _titleHeight - 5), s, new GUIContent[5] { new GUIContent("1"), new GUIContent("1"), new GUIContent("1"), new GUIContent(""), new GUIContent("") }, 5, skin.button);
+            GUI.Box(rect, "", ResourcesManager.GetInstance.StyleBackground);
+            s = GUI.SelectionGrid(new Rect(0, _selectionGridHeight, _windowRect.xMax, _topHeight - _titleHeight - 5), s, new GUIContent[5] { new GUIContent("1"), new GUIContent("1"), new GUIContent("1"), new GUIContent(""), new GUIContent("") }, 5, ResourcesManager.GetInstance.skin.button);
 
             // s = GUILayout.SelectionGrid(s, new GUIContent[5] { new GUIContent("1"), new GUIContent("1"), new GUIContent("1"), new GUIContent(""), new GUIContent("") }, 5, skin.button, GUILayout.Height(20),);
         }
@@ -109,39 +109,27 @@ namespace CryStory.Editor
             return pos;// + modifier.graphCenter - center;
         }
 
-        //Resources
-        public Texture2D texLogo;
-        public Texture2D texInputSlot;
-        public Texture2D texInputSlotActive;
-        public Texture2D texOutputSlot;
-        public Texture2D texOutputSlotActive;
-        public Texture2D texTargetArea;
-        public Texture2D texSave;
-        public Texture2D texGrid;
-
-        public GUISkin skin;
-
-        public GUIStyle StyleBackground { get { return skin.GetStyle("Background"); } }
-
-        public void LoadTextures()
-        {
-            if (texLogo == null)
-                texLogo = Resources.Load("cf_logo") as Texture2D;
-            if (texInputSlot == null)
-                texInputSlot = Resources.Load("cf_input_slot") as Texture2D;
-            if (texInputSlotActive == null)
-                texInputSlotActive = Resources.Load("cf_input_slot_active") as Texture2D;
-            if (texOutputSlot == null)
-                texOutputSlot = Resources.Load("cf_output_slot") as Texture2D;
-            if (texOutputSlotActive == null)
-                texOutputSlotActive = Resources.Load("cf_output_slot_active") as Texture2D;
-            if (texTargetArea == null)
-                texTargetArea = Resources.Load("cf_target_area") as Texture2D;
-            if (texSave == null)
-                texSave = Resources.Load("cf_save") as Texture2D;
-            if (texGrid == null)
-                texGrid = Resources.Load("cf_grid") as Texture2D;
-            if (skin == null) skin = Resources.Load<GUISkin>("Skin");
-        }
+        //public void LoadTextures()
+        //{
+        //    if (texLogo == null)
+        //        texLogo = Resources.Load("cf_logo") as Texture2D;
+        //    if (texInputSlot == null)
+        //        texInputSlot = Resources.Load("cf_input_slot") as Texture2D;
+        //    if (texInputSlotActive == null)
+        //        texInputSlotActive = Resources.Load("cf_input_slot_active") as Texture2D;
+        //    if (texOutputSlot == null)
+        //        texOutputSlot = Resources.Load("cf_output_slot") as Texture2D;
+        //    if (texOutputSlotActive == null)
+        //        texOutputSlotActive = Resources.Load("cf_output_slot_active") as Texture2D;
+        //    if (texTargetArea == null)
+        //        texTargetArea = Resources.Load("cf_target_area") as Texture2D;
+        //    if (texSave == null)
+        //        texSave = Resources.Load("cf_save") as Texture2D;
+        //    if (texGrid == null)
+        //        texGrid = Resources.Load("cf_grid") as Texture2D;
+        //    if (texWhiteBorder == null)
+        //        texWhiteBorder = Resources.Load("WhiteBorder") as Texture2D;
+        //    if (skin == null) skin = Resources.Load<GUISkin>("Skin");
+        //}
     }
 }

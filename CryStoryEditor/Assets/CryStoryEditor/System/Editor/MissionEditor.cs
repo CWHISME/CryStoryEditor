@@ -23,8 +23,9 @@ namespace CryStory.Editor
         private bool _mouseIsDown = false;
         private Vector2 _mouseDownCenter = Vector2.zero;
 
-
-        public Mission _currentMission;
+        private Mission _currentMission;
+        private Mission _currentHover;
+        private bool _isConnecting = false;
         public void OnGUI(StoryEditorWindow window)
         {
             _contentRect = window._contentRect;
@@ -35,6 +36,7 @@ namespace CryStory.Editor
             //========Right Area===============
             DrawRightGrid();
             ShowMissionNodes();
+            ShowConnectLine();
             //========Left Slider Area===========
             ShowLeftSliderArea();
             CreateMissionNode();
@@ -42,11 +44,25 @@ namespace CryStory.Editor
             DragGraph();
         }
 
+        private void ShowConnectLine()
+        {
+            //if (_isConnecting && _currentMission != null)
+            //{
+            //    Vector2 pos1 = CalcRealPosition(new Vector2(_currentMission._position.x, _currentMission._position.y + Tools._nodeHeight));
+            //    Tools.DrawBazier(pos1, Event.current.mousePosition);
+
+            //    if (Tools.IsValidMouseAABB(Tools.GetNodeRect(CalcRealPosition(_currentHover._position))))
+            //    {
+
+            //    }
+            //}
+        }
+
         private void ShowGraphCenterInfo()
         {
             GUI.Label(new Rect(_contentRect.x, _contentRect.y, 120, 20), _window._storyObject.StoryCenter.ToString());
 
-            if (GUI.Button(new Rect(_contentRect.x+3, _contentRect.y + 20, 50, 22), "Reset", _window.skin.button))
+            if (GUI.Button(new Rect(_contentRect.x + 3, _contentRect.y + 20, 50, 22), "Reset", ResourcesManager.GetInstance.skin.button))
             {
                 _window._storyObject.StoryCenter = Vector2.zero;
             }
@@ -59,25 +75,43 @@ namespace CryStory.Editor
             {
                 Mission m = missionList[i];
 
-                Vector2 pos = Node2Content(m._position);
-                Rect missionRect = new Rect(pos.x, pos.y, 200, 50);
-                //GUIStyle style = new GUIStyle();
-                //style.normal.background = Texture2D.whiteTexture;
-                GUI.Box(missionRect, m._name, _window.skin.box);
+                Vector2 pos = CalcRealPosition(m._position);
+                Rect missionRect = Tools.GetNodeRect(pos);
+
+                GUI.Box(missionRect, m._name, _currentMission == m ? ResourcesManager.GetInstance.MissionNodeOn : ResourcesManager.GetInstance.MissionNode);
+
+                if (Event.current != null)
+                {
+                    if (Tools.IsValidMouseAABB(missionRect))
+                    {
+                        _currentHover = m;
+
+                        Rect leftRect = Tools.CalcLeftLinkRect(missionRect);
+                        Rect rightRect = Tools.CalcRightLinkRect(missionRect);
+                        GUIStyle inStyle = new GUIStyle();
+                        GUIStyle outStyle = new GUIStyle();
+                        inStyle.alignment = TextAnchor.MiddleLeft;
+                        outStyle.alignment = TextAnchor.MiddleRight;
+                        GUI.Box(leftRect, ResourcesManager.GetInstance.texInputSlot, inStyle);
+                        GUI.Box(rightRect, ResourcesManager.GetInstance.texOutputSlot, outStyle);
+
+                        if (Event.current.type == EventType.MouseDown && Tools.IsValidMouseAABB(rightRect))
+                        {
+                            _isConnecting = true;
+                        }
+                    }
+                }
 
                 //Test for bezier
                 if (i + 1 < missionList.Count)
                 {
                     Mission m2 = missionList[i + 1];
-                    Vector2 pos1 = new Vector2(missionRect.max.x, missionRect.max.y - 25);//Node2Content(missionRect.max);
-                    Vector2 pos2 = Node2Content(new Vector2(m2._position.x, m2._position.y + 25));
-                    float tgl = Vector2.Distance(pos1, pos2) * 0.4f;
-                    Vector3 startTangent = pos1 + Vector2.right * tgl;
-                    Vector3 endTangent = pos2 - Vector2.right * tgl;
-                    Handles.DrawBezier(pos1, pos2, startTangent, endTangent, new Color(1, 1, 1, 0.4f), null, 2f);
-                    Handles.DrawBezier(pos1, pos2, startTangent, endTangent, new Color(1, 1, 1, 0.3f), null, 5f);
+                    Vector2 pos1 = new Vector2(missionRect.max.x, missionRect.max.y - Tools._nodeHalfHeight);
+                    Vector2 pos2 = CalcRealPosition(new Vector2(m2._position.x, m2._position.y + Tools._nodeHalfHeight));
+                    Tools.DrawBazier(pos1, pos2);
                 }
 
+                #region Drag Event
                 if (Event.current != null)
                 {
                     if (Event.current.button == 0)
@@ -111,6 +145,7 @@ namespace CryStory.Editor
                         }
                     }
                 }
+                #endregion
 
             }
         }
@@ -131,7 +166,7 @@ namespace CryStory.Editor
                         menu.AddItem(new GUIContent("Create/New Mission"), false, () =>
                         {
                             _currentMission = _window._storyObject.AddNewMission();
-                            _currentMission._position = Content2Node(mousePos);
+                            _currentMission._position = CalcVirtualPosition(mousePos);
                             _currentMission._name = "New Mission";
                         });
                         menu.ShowAsContext();
@@ -143,15 +178,37 @@ namespace CryStory.Editor
         private void ShowLeftSliderArea()
         {
             Rect background = new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height);
-            GUI.Box(background, "", _window.StyleBackground);
+            GUI.Box(background, "", ResourcesManager.GetInstance.StyleBackground);
 
-            _leftScrollPosition = GUI.BeginScrollView(new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height - _window._topHeight), _leftScrollPosition, new Rect(0, _window._topHeight, _window._leftWidth - 30, _window._windowRect.height - _window._topHeight), false, true, _window.skin.horizontalScrollbar, _window.skin.verticalScrollbar);
+            _leftScrollPosition = GUI.BeginScrollView(new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height - _window._topHeight), _leftScrollPosition, new Rect(0, _window._topHeight, _window._leftWidth - 30, _window._windowRect.height - _window._topHeight), false, true, ResourcesManager.GetInstance.skin.horizontalScrollbar, ResourcesManager.GetInstance.skin.verticalScrollbar);
             //_leftScrollPosition = GUILayout.BeginScrollView(_leftScrollPosition, false, true, _window.skin.horizontalScrollbar, _window.skin.verticalScrollbar, _window.skin.GetStyle("Background"), GUILayout.Width(_window._leftWidth));
-            GUILayout.Space(5);
-            for (int i = 0; i < 12; i++)
+
+            float height = _window._topHeight + 5;
+            GUILayout.Space(height);
+            //for (int i = 0; i < 12; i++)
+            //{
+            //    GUILayout.Label("Name: ");
+            //}
+            if (_currentMission != null)
             {
-                GUILayout.Label("Test===================");
-                GUILayout.Button("Test Button");
+                GUILayout.BeginHorizontal();
+                EditorGUI.LabelField(new Rect(0, height, 50, 18), "Name: ");
+                Rect editNameRect = new Rect(50, height, 150, 18);
+                _currentMission._name = EditorGUI.TextField(editNameRect, _currentMission._name);
+                GUILayout.EndHorizontal();
+
+                if (Event.current != null)
+                {
+                    if (Event.current.button == 0)
+                    {
+                        //Debug.Log(Event.current.type);
+                        if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.Ignore)
+                        {
+                            //Debug.Log(Event.current.type);
+                            GUI.FocusControl("Name: ");
+                        }
+                    }
+                }
             }
             GUI.EndScrollView();
             //GUILayout.EndScrollView();
@@ -160,13 +217,13 @@ namespace CryStory.Editor
         private void DrawRightGrid()
         {
             Rect coord = new Rect();
-            Vector2 nodepos = Content2Node(Vector2.zero);
+            Vector2 nodepos = CalcVirtualPosition(Vector2.zero);
             coord.x = nodepos.x / 128.0f;
             coord.y = nodepos.y / 128.0f;
             coord.width = _contentRect.width / 128.0f;
             coord.height = -_contentRect.height / 128.0f;
             GUI.color = new Color(1f, 1f, 1f, 0.1f);
-            GUI.DrawTextureWithTexCoords(_contentRect, _window.texGrid, coord);
+            GUI.DrawTextureWithTexCoords(_contentRect, ResourcesManager.GetInstance.texGrid, coord);
             GUI.color = Color.white;
         }
 
@@ -194,7 +251,7 @@ namespace CryStory.Editor
         }
 
         //Tool===========
-        Vector2 Content2Node(Vector2 pos)
+        Vector2 CalcVirtualPosition(Vector2 pos)
         {
             Vector2 center = _contentRect.size * 0.5f;
             center.x = (int)(center.x);
@@ -203,7 +260,7 @@ namespace CryStory.Editor
             return pos + _window._storyObject.StoryCenter - center;
         }
 
-        Vector2 Node2Content(Vector2 pos)
+        Vector2 CalcRealPosition(Vector2 pos)
         {
             Vector2 center = _contentRect.size * 0.5f;
             center.x = (int)(center.x);

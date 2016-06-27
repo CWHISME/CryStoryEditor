@@ -77,6 +77,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryManager.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryObject.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\Singleton.cs" />
+    <Compile Include="Assets\Test.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

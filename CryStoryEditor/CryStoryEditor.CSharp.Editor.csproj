@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\CryStoryEditor\System\Editor\MissionEditor.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\ResourcesManager.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditorWindow.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryObjectInspector.cs" />
