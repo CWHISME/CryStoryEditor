@@ -60,6 +60,8 @@ namespace CryStory.Editor
             //========Story Editor ==============
             if (StoryEditor.GetInstance.OnGUI(this)) return;
 
+            EditorGUI.DrawTextureTransparent(_contentRect, ResourcesManager.GetInstance.texBackground);
+
             MissionEditor.GetInstance.OnGUI(this);
 
             //========Top Button ==============
@@ -80,6 +82,7 @@ namespace CryStory.Editor
             //style.fontSize = 25;
             //style.normal.textColor = Color.white;
             //style.fontStyle = FontStyle.Bold;
+            EditorGUI.DrawTextureTransparent(new Rect(0, 0, position.width, _topHeight), ResourcesManager.GetInstance.texBackground);
 
             EditorGUI.LabelField(new Rect(0, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + _storyObject.name : "")), ResourcesManager.GetInstance.skin.GetStyle("Title"));
             //GUILayout.Space(5);

@@ -32,7 +32,7 @@ namespace CryStory.Editor
         {
             ShowRightClickPopupMenu();
             //GUIStyle title = new GUIStyle();
-            EditorGUI.LabelField(new Rect(center.x - 100, center.y - 100, 500, 20), "Cry Story Editor", ResourcesManager.GetInstance.skin.GetStyle("Title"));
+            EditorGUI.LabelField(new Rect(center.x - 100, center.y - 100, 300, 20), "Cry Story Editor", ResourcesManager.GetInstance.skin.GetStyle("Title"));
             EditorGUI.LabelField(new Rect(center.x - 38, center.y - 50, 500, 20), "—By CWHISME");
             EditorGUI.LabelField(new Rect(center.x - 150, center.y - 20, 500, 20), "You are not select any story file,but you can create a new story.");
             if (GUI.Button(new Rect(center.x - 20, center.y + 30, 60, 40), "Create", ResourcesManager.GetInstance.skin.button))

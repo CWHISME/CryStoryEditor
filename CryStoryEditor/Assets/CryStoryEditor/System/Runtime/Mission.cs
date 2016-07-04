@@ -27,7 +27,10 @@ namespace CryStory.Runtime
                 {
                     NodeBase node = _nodeList[i];
                     _nodeList.RemoveAt(i);
-                    if (node._next != null) _nodeList.Add(node._next);
+                    for (int j = 0; j < node._nextNodeList.Count; j++)
+                    {
+                        _nodeList.Add(node._nextNodeList[j]);
+                    }
                 }
             }
 

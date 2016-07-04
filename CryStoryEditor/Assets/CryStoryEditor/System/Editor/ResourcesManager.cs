@@ -21,6 +21,7 @@ namespace CryStory.Editor
         public Texture2D texSave;
         public Texture2D texGrid;
         public Texture2D texWhiteBorder;
+        public Texture2D texBackground;
 
         public GUISkin skin;
 
@@ -48,6 +49,8 @@ namespace CryStory.Editor
                 texGrid = Resources.Load("cf_grid") as Texture2D;
             if (texWhiteBorder == null)
                 texWhiteBorder = Resources.Load("WhiteBorder") as Texture2D;
+            if (texBackground == null)
+                texBackground = Resources.Load("Background") as Texture2D;
             if (skin == null) skin = Resources.Load<GUISkin>("Skin");
         }
 

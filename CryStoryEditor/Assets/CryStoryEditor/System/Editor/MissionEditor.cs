@@ -24,6 +24,7 @@ namespace CryStory.Editor
         private Vector2 _mouseDownCenter = Vector2.zero;
 
         private Mission _currentMission;
+        private Rect _currentNodeRect;
         private Mission _currentHover;
         private bool _isConnecting = false;
         public void OnGUI(StoryEditorWindow window)
@@ -46,16 +47,22 @@ namespace CryStory.Editor
 
         private void ShowConnectLine()
         {
-            //if (_isConnecting && _currentMission != null)
-            //{
-            //    Vector2 pos1 = CalcRealPosition(new Vector2(_currentMission._position.x, _currentMission._position.y + Tools._nodeHeight));
-            //    Tools.DrawBazier(pos1, Event.current.mousePosition);
-
-            //    if (Tools.IsValidMouseAABB(Tools.GetNodeRect(CalcRealPosition(_currentHover._position))))
-            //    {
-
-            //    }
-            //}
+            if (_isConnecting && _currentMission != null)
+            {
+                Vector2 pos1 = new Vector2(_currentNodeRect.max.x, _currentNodeRect.max.y - Tools._nodeHalfHeight);
+                Tools.DrawBazier(pos1, Event.current.mousePosition);
+                if (Tools.MouseUp)
+                {
+                    _isConnecting = false;
+                    if (_currentMission == _currentHover) return;
+                    if (Tools.IsValidMouseAABB(Tools.GetNodeRect(CalcRealPosition(_currentHover._position))))
+                    {
+                        _currentHover.RemoveFromLastNode();
+                        _currentHover._lastNode = _currentMission;
+                        _currentMission.AddNextNode(_currentHover);
+                    }
+                }
+            }
         }
 
         private void ShowGraphCenterInfo()
@@ -73,18 +80,19 @@ namespace CryStory.Editor
             List<Mission> missionList = _window._storyObject._story._missionList;
             for (int i = 0; i < missionList.Count; i++)
             {
-                Mission m = missionList[i];
+                Mission node = missionList[i];
 
-                Vector2 pos = CalcRealPosition(m._position);
+                Vector2 pos = CalcRealPosition(node._position);
                 Rect missionRect = Tools.GetNodeRect(pos);
 
-                GUI.Box(missionRect, m._name, _currentMission == m ? ResourcesManager.GetInstance.MissionNodeOn : ResourcesManager.GetInstance.MissionNode);
+                GUI.Box(missionRect, node._name, _currentMission == node ? ResourcesManager.GetInstance.MissionNodeOn : ResourcesManager.GetInstance.MissionNode);
 
+                #region Event drag connection line
                 if (Event.current != null)
                 {
                     if (Tools.IsValidMouseAABB(missionRect))
                     {
-                        _currentHover = m;
+                        _currentHover = node;
 
                         Rect leftRect = Tools.CalcLeftLinkRect(missionRect);
                         Rect rightRect = Tools.CalcRightLinkRect(missionRect);
@@ -92,24 +100,33 @@ namespace CryStory.Editor
                         GUIStyle outStyle = new GUIStyle();
                         inStyle.alignment = TextAnchor.MiddleLeft;
                         outStyle.alignment = TextAnchor.MiddleRight;
-                        GUI.Box(leftRect, ResourcesManager.GetInstance.texInputSlot, inStyle);
-                        GUI.Box(rightRect, ResourcesManager.GetInstance.texOutputSlot, outStyle);
+
+                        GUI.Box(leftRect, node._lastNode == null ? ResourcesManager.GetInstance.texInputSlot : ResourcesManager.GetInstance.texInputSlotActive, inStyle);
+                        GUI.Box(rightRect, node._nextNodeList.Count < 1 ? ResourcesManager.GetInstance.texOutputSlot : ResourcesManager.GetInstance.texOutputSlotActive, outStyle);
 
                         if (Event.current.type == EventType.MouseDown && Tools.IsValidMouseAABB(rightRect))
                         {
                             _isConnecting = true;
+                            _currentMission = node;
+                            _currentNodeRect = missionRect;
                         }
                     }
                 }
+                #endregion
 
                 //Test for bezier
-                if (i + 1 < missionList.Count)
-                {
-                    Mission m2 = missionList[i + 1];
-                    Vector2 pos1 = new Vector2(missionRect.max.x, missionRect.max.y - Tools._nodeHalfHeight);
-                    Vector2 pos2 = CalcRealPosition(new Vector2(m2._position.x, m2._position.y + Tools._nodeHalfHeight));
-                    Tools.DrawBazier(pos1, pos2);
-                }
+                //if (i + 1 < missionList.Count)
+                //{
+                //    Mission m2 = missionList[i + 1];
+                //    Vector2 pos1 = new Vector2(missionRect.max.x, missionRect.max.y - Tools._nodeHalfHeight);
+                //    Vector2 pos2 = CalcRealPosition(new Vector2(m2._position.x, m2._position.y + Tools._nodeHalfHeight));
+                //    Tools.DrawBazier(pos1, pos2);
+                //}
+                //Draw conection bazier line
+
+                DrawBazierLine(node);
+
+                if (_isConnecting) continue;
 
                 #region Drag Event
                 if (Event.current != null)
@@ -120,8 +137,9 @@ namespace CryStory.Editor
                         {
                             _mouseIsDown = true;
                             _mouseDownPos = Event.current.mousePosition;
-                            _mouseDownCenter = m._position;
-                            _currentMission = m;
+                            _mouseDownCenter = node._position;
+                            _currentMission = node;
+                            _currentNodeRect = missionRect;
                         }
 
                         if (Event.current.type == EventType.MouseUp)
@@ -147,6 +165,20 @@ namespace CryStory.Editor
                 }
                 #endregion
 
+            }
+        }
+
+        private void DrawBazierLine(NodeBase node)
+        {
+            for (int j = 0; j < node._nextNodeList.Count; j++)
+            {
+                NodeBase node2 = node._nextNodeList[j];
+                Rect nodeRect1 = Tools.GetNodeRect(CalcRealPosition(node._position));
+                Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools._nodeHalfHeight);
+                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y + Tools._nodeHalfHeight));
+                Tools.DrawBazier(pos1, pos2);
+
+                DrawBazierLine(node2);
             }
         }
 

@@ -33,6 +33,11 @@ namespace CryStory.Editor
         }
 
 
+        public static bool MouseDown { get { if (Event.current != null) return Event.current.type == EventType.MouseDown; return false; } }
+        public static bool MouseUp { get { if (Event.current != null) return Event.current.type == EventType.MouseUp; return false; } }
+        public static bool MouseDrag { get { if (Event.current != null) return Event.current.type == EventType.MouseDrag; return false; } }
+
+
         public static Rect CalcLeftLinkRect(Rect missionRect)
         {
             return new Rect(new Vector2(missionRect.min.x, missionRect.min.y + 12), new Vector2(25, 25));

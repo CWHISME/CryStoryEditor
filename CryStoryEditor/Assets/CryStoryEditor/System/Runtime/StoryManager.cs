@@ -31,9 +31,12 @@ namespace CryStory.Runtime
                 result = _missionList[i].Tick();
                 if (result != EnumResult.Running)
                 {
-                    Mission mission = _missionList[i]._next as Mission;
+                    for (int j = 0; j < _missionList[i]._nextNodeList.Count; j++)
+                    {
+                        RunMission(_missionList[i]._nextNodeList[i] as Mission);
+                    }
                     _missionList.RemoveAt(i);
-                    RunMission(mission);
+
                 }
             }
         }
