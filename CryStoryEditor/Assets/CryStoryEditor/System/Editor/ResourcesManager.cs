@@ -29,6 +29,11 @@ namespace CryStory.Editor
         public GUIStyle MissionNode { get { return skin.GetStyle("MissionNode"); } }
         public GUIStyle MissionNodeOn { get { return skin.GetStyle("MissionNodeOn"); } }
 
+        private TextAsset helpCN;
+        private TextAsset helpEN;
+        public string HelpCN { get { return helpCN ? helpCN.text : "错误：没有找到帮助文件!"; } }
+        public string HelpEN { get { return helpEN ? helpEN.text : "Error：Help file not found!"; } }
+
         public ResourcesManager()
         {
             if (texLogo == null)
@@ -52,6 +57,10 @@ namespace CryStory.Editor
             if (texBackground == null)
                 texBackground = Resources.Load("Background") as Texture2D;
             if (skin == null) skin = Resources.Load<GUISkin>("Skin");
+
+
+            if (helpCN == null) helpCN = Resources.Load<TextAsset>("Help_CN");
+            if (helpEN == null) helpEN = Resources.Load<TextAsset>("Help_EN");
         }
 
     }

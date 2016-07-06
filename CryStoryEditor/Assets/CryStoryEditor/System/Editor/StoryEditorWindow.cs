@@ -35,6 +35,8 @@ namespace CryStory.Editor
         public float _titleHeight = 35f;
         public float _selectionGridHeight { get { return _titleHeight + 5; } }
 
+        private int pageSelect = 0;
+
         void OnEnable()
         {
             StoryWindow = this;
@@ -49,8 +51,6 @@ namespace CryStory.Editor
 
         void OnGUI()
         {
-            //LoadTextures();
-
             //Update cache window size
             _windowRect = new Rect(0, 0, position.width, position.height);
             _contentRect = new Rect(_leftWidth, _topHeight, position.width, position.height);
@@ -60,13 +60,65 @@ namespace CryStory.Editor
             //========Story Editor ==============
             if (StoryEditor.GetInstance.OnGUI(this)) return;
 
-            EditorGUI.DrawTextureTransparent(_contentRect, ResourcesManager.GetInstance.texBackground);
+            //Show Pages
+            switch (pageSelect)
+            {
+                case 1:
+                case 2:
+                    NotingPage();
+                    break;
+                case 3:
+                    HelpPage();
+                    break;
+                case 4:
+                    AboutPage();
+                    break;
+                case 0:
+                default:
+                    MainPage();
+                    break;
+            }
+            //LoadTextures();
 
-            MissionEditor.GetInstance.OnGUI(this);
 
             //========Top Button ==============
             ShowTitle();
             ShowTopMenuUI();
+        }
+
+        private void NotingPage()
+        {
+            EditorGUI.LabelField(new Rect(_windowRect.center.x - 38, _windowRect.center.y - 50, 500, 20), "There is noting.");
+        }
+
+        private Vector2 helpScrolPos;
+        private void HelpPage()
+        {
+            GUILayout.Space(_topHeight + 20);
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(_windowRect.width * 0.25f);
+            helpScrolPos = EditorGUILayout.BeginScrollView(helpScrolPos);
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 12;
+            style.normal.textColor = Color.white;
+            GUILayout.Label(ResourcesManager.GetInstance.HelpCN, style);
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void AboutPage()
+        {
+            EditorGUI.LabelField(new Rect(_windowRect.center.x - 100, _windowRect.center.y - 100, 300, 20), "Cry Story Editor", ResourcesManager.GetInstance.skin.GetStyle("Title"));
+            EditorGUI.LabelField(new Rect(_windowRect.center.x - 33, _windowRect.center.y - 50, 500, 20), "By CWHISME");
+            EditorGUI.LabelField(new Rect(_windowRect.center.x - 20, _windowRect.center.y, 500, 20), Version.FullVersion);
+        }
+
+        private void MainPage()
+        {
+
+            EditorGUI.DrawTextureTransparent(_contentRect, ResourcesManager.GetInstance.texBackground);
+
+            MissionEditor.GetInstance.OnGUI(this,_storyObject._story._missionList.ToArray());
         }
 
         private void ShowVersion()
@@ -88,7 +140,6 @@ namespace CryStory.Editor
             //GUILayout.Space(5);
         }
 
-        private int s;
         private void ShowTopMenuUI()
         {
             //GUIStyle selectStyle = new GUIStyle();
@@ -97,7 +148,7 @@ namespace CryStory.Editor
             //selectStyle.onNormal.background = texTargetArea;//Texture2D.whiteTexture;
             Rect rect = new Rect(0, _titleHeight, _windowRect.xMax, _topHeight - _titleHeight);
             GUI.Box(rect, "", ResourcesManager.GetInstance.StyleBackground);
-            s = GUI.SelectionGrid(new Rect(0, _selectionGridHeight, _windowRect.xMax, _topHeight - _titleHeight - 5), s, new GUIContent[5] { new GUIContent("1"), new GUIContent("1"), new GUIContent("1"), new GUIContent(""), new GUIContent("") }, 5, ResourcesManager.GetInstance.skin.button);
+            pageSelect = GUI.SelectionGrid(new Rect(0, _selectionGridHeight, _windowRect.xMax, _topHeight - _titleHeight - 5), pageSelect, new GUIContent[5] { new GUIContent("Main Page"), new GUIContent("Nothing"), new GUIContent("Nothing"), new GUIContent("Help"), new GUIContent("About") }, 5, ResourcesManager.GetInstance.skin.button);
 
             // s = GUILayout.SelectionGrid(s, new GUIContent[5] { new GUIContent("1"), new GUIContent("1"), new GUIContent("1"), new GUIContent(""), new GUIContent("") }, 5, skin.button, GUILayout.Height(20),);
         }

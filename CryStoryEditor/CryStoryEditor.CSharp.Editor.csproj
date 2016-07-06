@@ -99,12 +99,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\CryStoryEditor\System\Editor\MissionEditor.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\NodeEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\ResourcesManager.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditorWindow.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryObjectInspector.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\Tools.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\Version.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help_CN.txt" />
+    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help_EN.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

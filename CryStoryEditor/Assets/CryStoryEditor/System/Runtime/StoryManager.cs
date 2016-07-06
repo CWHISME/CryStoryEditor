@@ -36,7 +36,6 @@ namespace CryStory.Runtime
                         RunMission(_missionList[i]._nextNodeList[i] as Mission);
                     }
                     _missionList.RemoveAt(i);
-
                 }
             }
         }
