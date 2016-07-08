@@ -6,6 +6,7 @@
 
 namespace CryStory.Runtime
 {
+
     abstract public class Event : UpdateNode
     {
 

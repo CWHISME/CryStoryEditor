@@ -1,46 +1,28 @@
 ﻿/**********************************************************
 *Author: wangjiaying
-*Date: 2016.6.17
+*Date: 2016.7.7
 *Func:
 **********************************************************/
-using UnityEditor;
 using UnityEngine;
-using Event = UnityEngine.Event;
+using System.Collections;
+using CryStory.Runtime;
 
 namespace CryStory.Editor
 {
-    public class MissionEditor : NodeEditor<MissionEditor>
+    public class MissionEditor : NodeContentEditor<MissionEditor>
     {
-
         protected override void InternalOnGUI()
         {
-            CreateMissionNode();
+            base.InternalOnGUI();
+            CheckReturnStoryEditor();
         }
 
-        private void CreateMissionNode()
+        private void CheckReturnStoryEditor()
         {
-            if (Event.current != null)
+            if (IsDoubleClick() && !Tools.IsValidMouseAABB(_currentNodeRect))
             {
-                if (Event.current.type == EventType.MouseDown)
-                {
-                    if (Event.current.button == 1)
-                    {
-                        //Debug.Log(Event.current.mousePosition + "     Rect:" + _contentRect);
-                        Vector2 mousePos = Event.current.mousePosition;
-                        if (mousePos.x < _contentRect.x) return;
-                        if (mousePos.y < _contentRect.y) return;
-                        GenericMenu menu = new GenericMenu();
-                        menu.AddItem(new GUIContent("Create/New Mission"), false, () =>
-                        {
-                            _currentNode = _window._storyObject.AddNewMission();
-                            _currentNode._position = CalcVirtualPosition(mousePos);
-                            _currentNode._name = "New Mission";
-                        });
-                        menu.ShowAsContext();
-                    }
-                }
+                _window._editMission = null;
             }
         }
-
     }
 }

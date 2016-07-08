@@ -98,7 +98,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CryStoryEditor\System\Editor\MainPageEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\MissionEditor.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\NodeContentEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\NodeEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\ResourcesManager.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditor.cs" />

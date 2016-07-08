@@ -7,7 +7,7 @@ using UnityEngine;
 using System.Collections;
 namespace CryStory.Runtime
 {
-    public class DragModifier : NodeBase
+    public class DragModifier : NodeContent
     {
         //===For Editor=============
         public Vector2 graphCenter;

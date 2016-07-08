@@ -23,11 +23,11 @@ namespace CryStory.Editor
         protected bool _mouseIsDown = false;
         protected Vector2 _mouseDownCenter = Vector2.zero;
 
-        protected NodeBase _currentNode;
+        protected NodeModifier _currentNode;
         protected Rect _currentNodeRect;
-        protected NodeBase _currentHover;
+        protected NodeModifier _currentHover;
         private bool _isConnecting = false;
-        public void OnGUI(StoryEditorWindow window, NodeBase[] nodes)
+        public void OnGUI(StoryEditorWindow window, NodeModifier[] nodes)
         {
             _contentRect = window._contentRect;
             _window = window;
@@ -59,6 +59,7 @@ namespace CryStory.Editor
                     if (Tools.IsValidMouseAABB(Tools.GetNodeRect(CalcRealPosition(_currentHover._position))))
                     {
                         _currentHover.SetParent(_currentNode);
+                        OnLinkNode(_currentNode, _currentHover);
                     }
                 }
             }
@@ -74,16 +75,18 @@ namespace CryStory.Editor
             }
         }
 
-        private void DrawNodes(NodeBase[] nodeList)
+        private void DrawNodes(NodeModifier[] nodeList)
         {
             for (int i = 0; i < nodeList.Length; i++)
             {
-                NodeBase node = nodeList[i];
+                NodeModifier node = nodeList[i];
                 Rect nodeRect = DrawNodeRect(node);
 
                 DrawNodeSlot(node, nodeRect);
                 //Draw conection bazier line
                 DrawBazierLine(node);
+
+                DrawNodes(node.NextNodes);
 
                 if (_isConnecting) continue;
 
@@ -91,7 +94,7 @@ namespace CryStory.Editor
             }
         }
 
-        private void DragNodeEvent(NodeBase node, Rect nodeRect)
+        private void DragNodeEvent(NodeModifier node, Rect nodeRect)
         {
             #region Drag Event
             if (Event.current != null)
@@ -150,7 +153,14 @@ namespace CryStory.Editor
                 GUILayout.BeginHorizontal();
                 EditorGUI.LabelField(new Rect(0, height, 50, 18), "Name: ");
                 Rect editNameRect = new Rect(50, height, 150, 18);
+
+                EditorGUI.BeginChangeCheck();
+                string oldName = _currentNode._name;
                 _currentNode._name = EditorGUI.TextField(editNameRect, _currentNode._name);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    OnNodeNameChange(_currentNode, oldName);
+                }
                 GUILayout.EndHorizontal();
 
                 if (Event.current != null)
@@ -211,11 +221,16 @@ namespace CryStory.Editor
 
         protected virtual void InternalOnGUI() { }
 
-        protected virtual void DrawBazierLine(NodeBase node)
+        protected virtual void OnLinkNode(NodeModifier parent, NodeModifier child) { }
+
+        protected virtual void OnNodeNameChange(NodeModifier node, string oldName) { }
+
+        protected virtual void DrawBazierLine(NodeModifier node)
         {
-            for (int j = 0; j < node._nextNodeList.Count; j++)
+            NodeModifier[] nextNodes = node.NextNodes;
+            for (int j = 0; j < nextNodes.Length; j++)
             {
-                NodeBase node2 = node._nextNodeList[j];
+                NodeModifier node2 = nextNodes[j];
                 Rect nodeRect1 = Tools.GetNodeRect(CalcRealPosition(node._position));
                 Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools._nodeHalfHeight);
                 Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y + Tools._nodeHalfHeight));
@@ -226,7 +241,7 @@ namespace CryStory.Editor
             }
         }
 
-        protected virtual Rect DrawNodeRect(NodeBase node)
+        protected virtual Rect DrawNodeRect(NodeModifier node)
         {
             Vector2 pos = CalcRealPosition(node._position);
             Rect nodeRect = Tools.GetNodeRect(pos);
@@ -236,7 +251,7 @@ namespace CryStory.Editor
             return nodeRect;
         }
 
-        protected virtual void DrawNodeSlot(NodeBase node, Rect nodeRect)
+        protected virtual void DrawNodeSlot(NodeModifier node, Rect nodeRect)
         {
             #region Event drag connection line
             if (Event.current != null)
@@ -253,7 +268,7 @@ namespace CryStory.Editor
                     outStyle.alignment = TextAnchor.MiddleRight;
 
                     GUI.Box(leftRect, node.Parent == null ? ResourcesManager.GetInstance.texInputSlot : ResourcesManager.GetInstance.texInputSlotActive, inStyle);
-                    GUI.Box(rightRect, node._nextNodeList.Count < 1 ? ResourcesManager.GetInstance.texOutputSlot : ResourcesManager.GetInstance.texOutputSlotActive, outStyle);
+                    GUI.Box(rightRect, node.NextNodes.Length < 1 ? ResourcesManager.GetInstance.texOutputSlot : ResourcesManager.GetInstance.texOutputSlotActive, outStyle);
 
                     //Connect
                     if (Event.current.type == EventType.MouseDown && Tools.IsValidMouseAABB(rightRect))

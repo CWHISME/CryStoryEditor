@@ -10,51 +10,16 @@ namespace CryStory.Runtime
 {
     public class StoryManager
     {
-        private static StoryManager _instance;
-        public static StoryManager GetInstance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new StoryManager();
-                return _instance;
-            }
-        }
+        private Story _story;
 
-        public List<Mission> _missionList = new List<Mission>();
+        public StoryManager(Story story)
+        {
+            _story = story;
+        }
 
         public void Tick()
         {
-            EnumResult result;
-            for (int i = 0; i < _missionList.Count; i++)
-            {
-                result = _missionList[i].Tick();
-                if (result != EnumResult.Running)
-                {
-                    for (int j = 0; j < _missionList[i]._nextNodeList.Count; j++)
-                    {
-                        RunMission(_missionList[i]._nextNodeList[i] as Mission);
-                    }
-                    _missionList.RemoveAt(i);
-                }
-            }
-        }
-
-        public void RunMission(Mission mission)
-        {
-            if (mission == null) return;
-            //不允许重复添加同一个任务
-            if (_missionList.Find((m) => m._prototypeId == mission._prototypeId) == null)
-                _missionList.Add(mission);
-        }
-
-        public void EndMission(Mission mission)
-        {
-            if (_missionList.Contains(mission))
-            {
-                _missionList.Remove(mission);
-                mission.OnAbort();
-            }
+            _story.Tick();
         }
     }
 }

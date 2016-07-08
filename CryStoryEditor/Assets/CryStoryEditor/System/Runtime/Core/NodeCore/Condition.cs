@@ -8,6 +8,7 @@ using System;
 
 namespace CryStory.Runtime
 {
+
     abstract public class Condition : StoryNode
     {
 

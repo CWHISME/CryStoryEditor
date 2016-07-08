@@ -62,20 +62,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\Action.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\Condition.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\DragModifier.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\Event.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\IUpdatable.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeBase.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeContent.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Action.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Condition.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Event.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Mission.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Story.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeModifier.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\StoryNode.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\UpdateNode.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\EnumResult.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Mission.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\MissionObject.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Story.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryManager.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryObject.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryRunner.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\Singleton.cs" />
     <Compile Include="Assets\Test.cs" />
   </ItemGroup>

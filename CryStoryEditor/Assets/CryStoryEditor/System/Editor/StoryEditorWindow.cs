@@ -26,6 +26,8 @@ namespace CryStory.Editor
         }
 
         public StoryObject _storyObject;
+        public Story _Story { get { return _storyObject._Story; } }
+        public Mission _editMission;
 
         public Rect _windowRect;
         public Rect _contentRect;
@@ -58,7 +60,7 @@ namespace CryStory.Editor
             //========Version          ==============
             ShowVersion();
             //========Story Editor ==============
-            if (StoryEditor.GetInstance.OnGUI(this)) return;
+            if (MainPageEditor.GetInstance.OnGUI(this)) return;
 
             //Show Pages
             switch (pageSelect)
@@ -115,10 +117,22 @@ namespace CryStory.Editor
 
         private void MainPage()
         {
-
             EditorGUI.DrawTextureTransparent(_contentRect, ResourcesManager.GetInstance.texBackground);
 
-            MissionEditor.GetInstance.OnGUI(this,_storyObject._story._missionList.ToArray());
+            if (_editMission == null)
+                StoryEditor.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
+            else MissionEditor.GetInstance.OnGUI(this, _editMission.Nodes);
+
+            if (_storyObject._haveNullData)
+            {
+                GUIStyle style = new GUIStyle();
+                style.fontSize = 16;
+                EditorGUI.LabelField(new Rect(_windowRect.center.x - 33, _windowRect.center.y + 200, 500, 20), "<color=red>You have some Mission File Lost!</color>", style);
+                if (GUI.Button(new Rect(_windowRect.center.x - 5, _windowRect.center.y + 250, 200, 40), "Remove It From Story", ResourcesManager.GetInstance.skin.button))
+                {
+                    _storyObject.RemoveAllMissingMissionData();
+                }
+            }
         }
 
         private void ShowVersion()
@@ -136,7 +150,28 @@ namespace CryStory.Editor
             //style.fontStyle = FontStyle.Bold;
             EditorGUI.DrawTextureTransparent(new Rect(0, 0, position.width, _topHeight), ResourcesManager.GetInstance.texBackground);
 
-            EditorGUI.LabelField(new Rect(0, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + _storyObject.name : "")), ResourcesManager.GetInstance.skin.GetStyle("Title"));
+            EditorGUILayout.BeginHorizontal();
+            GUIStyle style = ResourcesManager.GetInstance.skin.GetStyle("Title");
+            float btnW = 0;
+
+            if (_editMission != null)
+            {
+                btnW = 35;
+                if (GUI.Button(new Rect(2, 3, btnW + 2, _titleHeight - 3), "<-", ResourcesManager.GetInstance.skin.button))
+                    _editMission = null;
+            }
+
+            EditorGUI.LabelField(new Rect(btnW, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + (_editMission == null ? _storyObject.name : _storyObject.name + " -> " + _editMission._name) : "")), style);
+
+            GUIStyle saveStyle = new GUIStyle(ResourcesManager.GetInstance.skin.button);
+            saveStyle.normal.textColor = new Color32(255, 64, 180, 255);
+            if (GUI.Button(new Rect(_contentRect.width - 180, 3, 80, _titleHeight - 3), "Reload", saveStyle))
+                _storyObject.Load();
+            saveStyle.normal.textColor = new Color32(0, 255, 0, 255);
+            if (GUI.Button(new Rect(_contentRect.width - 90, 3, 80, _titleHeight - 3), "Save Story", saveStyle))
+                _storyObject.Save();
+
+            EditorGUILayout.EndHorizontal();
             //GUILayout.Space(5);
         }
 
@@ -163,27 +198,5 @@ namespace CryStory.Editor
             return pos;// + modifier.graphCenter - center;
         }
 
-        //public void LoadTextures()
-        //{
-        //    if (texLogo == null)
-        //        texLogo = Resources.Load("cf_logo") as Texture2D;
-        //    if (texInputSlot == null)
-        //        texInputSlot = Resources.Load("cf_input_slot") as Texture2D;
-        //    if (texInputSlotActive == null)
-        //        texInputSlotActive = Resources.Load("cf_input_slot_active") as Texture2D;
-        //    if (texOutputSlot == null)
-        //        texOutputSlot = Resources.Load("cf_output_slot") as Texture2D;
-        //    if (texOutputSlotActive == null)
-        //        texOutputSlotActive = Resources.Load("cf_output_slot_active") as Texture2D;
-        //    if (texTargetArea == null)
-        //        texTargetArea = Resources.Load("cf_target_area") as Texture2D;
-        //    if (texSave == null)
-        //        texSave = Resources.Load("cf_save") as Texture2D;
-        //    if (texGrid == null)
-        //        texGrid = Resources.Load("cf_grid") as Texture2D;
-        //    if (texWhiteBorder == null)
-        //        texWhiteBorder = Resources.Load("WhiteBorder") as Texture2D;
-        //    if (skin == null) skin = Resources.Load<GUISkin>("Skin");
-        //}
     }
 }

@@ -3,13 +3,21 @@
 *Date: 2016.6.16
 *Func:
 **********************************************************/
-
-using System;
+using UnityEngine;
 
 namespace CryStory.Runtime
 {
-    abstract public class Action : UpdateNode
+
+    public class Mission : DragModifier
     {
+
+        [HideInInspector]
+        public int _prototypeId;
+
+        public void OnAbort()
+        {
+
+        }
 
     }
 }

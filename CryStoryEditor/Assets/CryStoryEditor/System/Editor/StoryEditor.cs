@@ -3,74 +3,95 @@
 *Date: 2016.6.17
 *Func:
 **********************************************************/
-using UnityEditor;
 using CryStory.Runtime;
-using Event = UnityEngine.Event;
+using UnityEditor;
 using UnityEngine;
+using Event = UnityEngine.Event;
 
 namespace CryStory.Editor
 {
-    public class StoryEditor : Singleton<StoryEditor>
+    public class StoryEditor : NodeContentEditor<StoryEditor>
     {
 
-        public bool OnGUI(StoryEditorWindow window)
+        protected override void InternalOnGUI()
         {
-            //if (!Selection.activeObject) { ShowTips(window._windowRect.center); return true; }
-
-            StoryObject story = Selection.activeObject as StoryObject;
-            window._storyObject = story;
-            if (story == null)
-            {
-                ShowTips(window._windowRect.center);
-                return true;
-            }
-
-            return false;
+            base.InternalOnGUI();
+            CreateMissionNode();
+            OnDoubleClickMission();
         }
 
-        private void ShowTips(Vector2 center)
+        protected override void OnNodeNameChange(NodeModifier node, string oldName)
         {
-            ShowRightClickPopupMenu();
-            //GUIStyle title = new GUIStyle();
-            EditorGUI.LabelField(new Rect(center.x - 100, center.y - 100, 300, 20), "Cry Story Editor", ResourcesManager.GetInstance.skin.GetStyle("Title"));
-            EditorGUI.LabelField(new Rect(center.x - 38, center.y - 50, 500, 20), "—By CWHISME");
-            EditorGUI.LabelField(new Rect(center.x - 150, center.y - 20, 500, 20), "You are not select any story file,but you can create a new story.");
-            if (GUI.Button(new Rect(center.x - 20, center.y + 30, 60, 40), "Create", ResourcesManager.GetInstance.skin.button))
+            base.OnNodeNameChange(node, oldName);
+            if (!_window._storyObject.RenameMission(oldName, node._name))
             {
-                CreateNewStory();
+                node._name = oldName;
             }
-
-            EditorGUI.LabelField(new Rect(center.x - 20, center.y + 100, 500, 20), Version.FullVersion);
         }
 
-        private void ShowRightClickPopupMenu()
+        private void CreateMissionNode()
         {
-            if (Event.current != null && Event.current.type == EventType.mouseDown)
+            if (Event.current != null)
             {
-                if (Event.current.button == 1)
+                if (Event.current.type == EventType.MouseDown)
                 {
-                    if (StoryEditorWindow.StoryWindow != null)
-                        if (Event.current.mousePosition.y < StoryEditorWindow.StoryWindow._contentRect.y) return;
-                    GenericMenu menu = new GenericMenu();
-                    menu.AddItem(new GUIContent("Create/New Story"), false, () =>
+                    if (Event.current.button == 1)
                     {
-                        CreateNewStory();
+                        //Debug.Log(Event.current.mousePosition + "     Rect:" + _contentRect);
+                        Vector2 mousePos = Event.current.mousePosition;
+                        if (mousePos.x < _contentRect.x) return;
+                        if (mousePos.y < _contentRect.y) return;
+                        GenericMenu menu = new GenericMenu();
+                        menu.AddItem(new GUIContent("Create/New Mission"), false, () =>
+                        {
+                            MissionObject mo = ScriptableObject.CreateInstance<MissionObject>();
+                            mo._mission = _window._storyObject.AddNewMission();
+
+                            _currentNode = mo._mission;
+                            _currentNode._position = CalcVirtualPosition(mousePos);
+                            _currentNode._name = "New Mission";
+                            _currentNode.SetContent(_window._Story);
+
+                            int index = 1;
+                            while (!_window._storyObject.AssignNewMissionObject(mo))
+                            {
+                                mo._mission._name = mo._mission._name + "_" + index++;
+                            }
+
+                            CreateMissionObjectFile(mo);
+                        });
+                        menu.ShowAsContext();
                     }
-               );
-                    menu.ShowAsContext();
                 }
             }
         }
 
-        private void CreateNewStory()
+        public void OnDoubleClickMission()
         {
-            string path = EditorUtility.SaveFilePanelInProject("Create Story", "New Story", "asset", "Create new story");
-            if (!string.IsNullOrEmpty(path))
+            if (IsDoubleClick() && Tools.IsValidMouseAABB(_currentNodeRect))
             {
-                StoryObject o = ScriptableObject.CreateInstance<StoryObject>();//  new CryStory.Runtime.StoryObject();
-                AssetDatabase.CreateAsset(o, path);
-                Selection.activeObject = o;
+                //Debug.Log(_totalFrame + "    " + _nextFrame);
+                //if (_totalFrame < _nextFrame)
+                _window._editMission = _currentNode as Mission;
+                //_nextFrame = _totalFrame + 60;
+                //Debug.Log(_totalFrame + "    " + _nextFrame);
             }
+        }
+
+        private bool CreateMissionObjectFile(MissionObject o)
+        {
+            string fullPath = Application.dataPath + "/../" + _window._storyObject.GetFullMissionPath(o._mission._name);
+            if (System.IO.File.Exists(fullPath)) return false;
+
+            string dirPath = _window._storyObject.GetFullMissionDirectoryPath();
+            if (!AssetDatabase.IsValidFolder(dirPath))
+            {
+                System.IO.Directory.CreateDirectory(Application.dataPath + "/../" + dirPath);
+            }
+
+            o.Save();
+            AssetDatabase.CreateAsset(o, _window._storyObject.GetFullMissionPath(o._mission._name));
+            return true;
         }
     }
 }
