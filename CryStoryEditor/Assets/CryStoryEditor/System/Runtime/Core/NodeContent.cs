@@ -21,6 +21,7 @@ namespace CryStory.Runtime
         {
             if (_contenNodeList.Contains(node)) return false;
             _contenNodeList.Add(node);
+            //node.SetContent(this);
             return true;
         }
 

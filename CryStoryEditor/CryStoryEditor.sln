@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2013
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryStoryEditor.CSharp", "CryStoryEditor.CSharp.csproj", "{AF4A8860-B61E-B7DB-7383-B0FF77D37E43}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryStoryEditor.CSharp.Editor", "CryStoryEditor.CSharp.Editor.csproj", "{0C9D30CD-48D0-0F23-92AA-1017FFCE9665}"

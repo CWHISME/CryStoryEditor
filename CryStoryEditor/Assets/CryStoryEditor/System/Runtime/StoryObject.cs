@@ -22,6 +22,94 @@ namespace CryStory.Runtime
             }
         }
 
+        public Vector2 StoryCenter { get { return _story.graphCenter; } set { _story.graphCenter = value; } }
+
+        public bool _haveNullData;
+
+        public string _description = "This Story have not description.";
+
+        //private MissionData _coreMission;
+
+        //public MissionData CoreMission
+        //{
+        //    get { return _coreMission; }
+        //    set
+        //    {
+        //        _coreMission = value;
+        //        _coreMission._missionObject._mission.IsCoreNode = false;
+        //    }
+        //}
+
+        private List<MissionData> _missionSaveList = new List<MissionData>();
+
+        public MissionData[] MisisonDatas { get { return _missionSaveList.ToArray(); } }
+
+        /// <summary>
+        /// 直接添加一个新的任务
+        /// </summary>
+        /// <returns></returns>
+        public Mission AddNewMission()
+        {
+            Mission mission = new Mission();
+            _story.AddContentNode(mission);
+            return mission;
+        }
+
+        public bool AssignNewMissionObject(MissionObject mo)
+        {
+            //if (_missionSaveList == null) _missionSaveList = new List<MissionData>();
+            mo.Load();
+            if (_missionSaveList.Find((m) => m._name == mo._mission._name) != null) return false;
+            _missionSaveList.Add(new MissionData() { _name = mo._mission._name, _missionObject = mo });
+            return true;
+        }
+
+        public bool DeleteMissionData(MissionData mo)
+        {
+            if (!_missionSaveList.Contains(mo)) return false;
+            string path = GetFullMissionPath(mo._name);
+            UnityEditor.AssetDatabase.DeleteAsset(path);
+            _missionSaveList.Remove(mo);
+            return true;
+        }
+
+        public void RemoveAllMissingMissionData()
+        {
+            if (!UnityEditor.EditorUtility.DisplayDialog("Caution!", "If Delete It Now,You Will Be Not Recovery It!Event You Recovery The Mission File!", "OK", "Cancel")) return;
+
+            List<MissionData> toRemove = new List<MissionData>();
+            for (int i = 0; i < _missionSaveList.Count; i++)
+            {
+                if (_missionSaveList[i]._missionObject == null)
+                    toRemove.Add(_missionSaveList[i]);
+            }
+
+            for (int i = 0; i < toRemove.Count; i++)
+            {
+                _missionSaveList.Remove(toRemove[i]);
+            }
+
+            Load();
+        }
+
+
+        public MissionData GetMissionSaveDataByName(string missionName)
+        {
+            return _missionSaveList.Find((m) => m._name == missionName);
+        }
+
+        public MissionData[] GetMissionSaveDataByMission(NodeBase[] missions)
+        {
+            List<MissionData> datas = new List<MissionData>();
+            for (int i = 0; i < missions.Length; i++)
+            {
+                MissionData data = GetMissionSaveDataByName(missions[i]._name);
+                if (data != null)
+                    datas.Add(data);
+            }
+            return datas.ToArray();
+        }
+
 #if UNITY_EDITOR
         public const string MissionDirectoryExtName = "Missions";
         public string GetFullMissionDirectoryPath()
@@ -53,53 +141,22 @@ namespace CryStory.Runtime
             UnityEditor.EditorUtility.DisplayDialog("错误！", "Modify Name Failed! Msg:" + msg, "OK");
             return false;
         }
-#endif
 
-        public Vector2 StoryCenter { get { return _story.graphCenter; } set { _story.graphCenter = value; } }
-
-        public bool _haveNullData;
-
-        private List<MissionData> _missionSaveList;
-
-        //public List<SaveData> _data;
-        /// <summary>
-        /// 直接添加一个新的任务
-        /// </summary>
-        /// <returns></returns>
-        public Mission AddNewMission()
+        public void RepairMissionDataByName()
         {
-            Mission mission = new Mission();
-            _story.AddContentNode(mission);
-            return mission;
-        }
-
-        public bool AssignNewMissionObject(MissionObject mo)
-        {
-            if (_missionSaveList == null) _missionSaveList = new List<MissionData>();
-
-            if (_missionSaveList.Find((m) => m._name == mo._mission._name) != null) return false;
-            _missionSaveList.Add(new MissionData() { _name = mo._mission._name, _missionObject = mo });
-            return true;
-        }
-
-        public void RemoveAllMissingMissionData()
-        {
-            if (!UnityEditor.EditorUtility.DisplayDialog("Caution!", "If Delete It Now,You Will Be Not Recovery It!Event You Recovery The Mission File!", "OK", "Cancel")) return;
-
-            List<int> toRemove = new List<int>();
             for (int i = 0; i < _missionSaveList.Count; i++)
             {
-                if (_missionSaveList[i]._missionObject == null)
-                    toRemove.Add(i);
+                UnityEditor.EditorUtility.DisplayProgressBar("Repair Mission Data .....", "Current Repair Mission: [" + _missionSaveList[i]._name + "]", (i + 1) / _missionSaveList.Count);
+                MissionObject o = UnityEditor.AssetDatabase.LoadAssetAtPath<MissionObject>(GetFullMissionPath(_missionSaveList[i]._name));
+                if (o)
+                {
+                    _missionSaveList[i]._missionObject = o;
+                }
             }
 
-            for (int i = 0; i < toRemove.Count; i++)
-            {
-                _missionSaveList.RemoveAt(toRemove[i]);
-            }
-
-            Load();
+            UnityEditor.EditorUtility.ClearProgressBar();
         }
+#endif
 
         private void RefreshDataName()
         {
@@ -136,6 +193,11 @@ namespace CryStory.Runtime
                     continue;
                 }
                 mo.Save();
+                NodeModifier[] nextMissions = mo._mission.NextNodes;
+                if (nextMissions.Length > 0)
+                {
+                    GetMissionSaveDataByName(mo._mission._name).AddNextMissionObject(GetMissionSaveDataByMission(nextMissions));
+                }
                 UnityEditor.EditorUtility.SetDirty(mo);
             }
 
@@ -162,7 +224,24 @@ namespace CryStory.Runtime
                 }
                 data._missionObject.Load();
 
-                _story.AddContentNode(data._missionObject._mission);
+                data._missionObject._mission.SetContent(_story);
+                //_story.AddContentNode(data._missionObject._mission);
+            }
+
+            //设置已连接的节点
+            for (int i = 0; i < _missionSaveList.Count; i++)
+            {
+                MissionData data = _missionSaveList[i];
+                if (!data._missionObject) continue;
+                if (data._missionObject._nextMissionDataNameList.Count > 0)
+                {
+                    for (int j = 0; j < data._missionObject._nextMissionDataNameList.Count; j++)
+                    {
+                        MissionData next = GetMissionSaveDataByName(data._missionObject._nextMissionDataNameList[j]);
+                        if (next._missionObject == null) continue;
+                        next._missionObject._mission.SetParent(data._missionObject._mission);
+                    }
+                }
             }
 
             if (_haveNullData)
@@ -187,6 +266,37 @@ namespace CryStory.Runtime
     {
         public string _name;
         public MissionObject _missionObject;
+
+        public bool AddNextMissionObject(string o)
+        {
+            if (!_missionObject._nextMissionDataNameList.Contains(o))
+            {
+                _missionObject._nextMissionDataNameList.Add(o);
+                return true;
+            }
+            return false;
+        }
+
+        public void AddNextMissionObject(string[] os)
+        {
+            for (int i = 0; i < os.Length; i++)
+            {
+                AddNextMissionObject(os[i]);
+            }
+        }
+
+        public void AddNextMissionObject(MissionData[] os)
+        {
+            for (int i = 0; i < os.Length; i++)
+            {
+                AddNextMissionObject(os[i]._name);
+            }
+        }
+
+        public void RemoveNextMissionObject(string o)
+        {
+            _missionObject._nextMissionDataNameList.Remove(o);
+        }
     }
 
 }

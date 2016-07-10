@@ -53,12 +53,15 @@ namespace CryStory.Editor
                             _currentNode.SetContent(_window._Story);
 
                             int index = 1;
-                            while (!_window._storyObject.AssignNewMissionObject(mo))
+                            while (_window._storyObject.GetMissionSaveDataByName(mo._mission._name) != null)
                             {
                                 mo._mission._name = mo._mission._name + "_" + index++;
                             }
 
-                            CreateMissionObjectFile(mo);
+                            while (!CreateMissionObjectFile(mo))
+                                mo._mission._name = mo._mission._name + "_" + index++;
+
+                            _window._storyObject.AssignNewMissionObject(mo);
                         });
                         menu.ShowAsContext();
                     }

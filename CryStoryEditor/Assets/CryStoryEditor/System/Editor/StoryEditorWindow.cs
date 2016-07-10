@@ -66,6 +66,8 @@ namespace CryStory.Editor
             switch (pageSelect)
             {
                 case 1:
+                    RepairPages();
+                    break;
                 case 2:
                     NotingPage();
                     break;
@@ -86,6 +88,115 @@ namespace CryStory.Editor
             //========Top Button ==============
             ShowTitle();
             ShowTopMenuUI();
+        }
+
+        private Vector2 _repairPageScroll;
+        private void RepairPages()
+        {
+            GUILayout.Space(_topHeight + 20);
+
+            //EditorGUILayout.BeginHorizontal();
+            _repairPageScroll = EditorGUILayout.BeginScrollView(_repairPageScroll);
+            MissionData[] datas = _storyObject.MisisonDatas;
+
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = Color.white;
+            style.fontSize = 16;
+            EditorGUILayout.LabelField("This list is exist data but the <color=#00E3E3>File Connection</color> lost:", style);
+            style.fontSize = 14;
+            style.clipping = TextClipping.Overflow;
+            GUILayout.Space(20);
+            for (int i = 0; i < datas.Length; i++)
+            {
+                MissionData data = datas[i];
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Mission:  <color=#F9F900>" + data._name + "</color>", style);
+                if (data._missionObject == null || data._missionObject.name != data._name)
+                {
+                    EditorGUILayout.LabelField("<color=red>✘</color>", style);
+                }
+                else EditorGUILayout.LabelField("<color=#28FF28>✔</color>", style);
+
+                if (GUILayout.Button("<color=red>Delete</color>", ResourcesManager.GetInstance.skin.button, GUILayout.MaxWidth(50), GUILayout.MaxHeight(30)))
+                {
+                    _storyObject.DeleteMissionData(data);
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.Space(10);
+
+            if (GUILayout.Button("<color=#28FF28>Try Reconnect File</color>", ResourcesManager.GetInstance.skin.button, GUILayout.MaxWidth(200), GUILayout.MaxHeight(50)))
+            {
+                _storyObject.RepairMissionDataByName();
+            }
+
+            GUILayout.Space(50);
+
+            style.fontSize = 16;
+            EditorGUILayout.LabelField("This list is exist Mission File but the <color=#00E3E3>Mission Data</color> lost:", style);
+            style.fontSize = 14;
+            string path = Application.dataPath + "/../" + _storyObject.GetFullMissionDirectoryPath();
+            path = path.Replace("Assets/../", "");
+
+            if (System.IO.Directory.Exists(path))
+            {
+                string[] files = System.IO.Directory.GetFiles(path, "*.asset");
+                bool haveLost = false;
+                for (int i = 0; i < files.Length; i++)
+                {
+                    string name = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                    if (_storyObject.GetMissionSaveDataByName(name) != null) continue;
+                    haveLost = true;
+                    EditorGUILayout.LabelField("Mission:  " + name, "<color=red>Mission Data Not Found!</color>", style);
+                    if (GUILayout.Button("<color=#28FF28>Create Mission Data For It</color>", ResourcesManager.GetInstance.skin.button, GUILayout.MaxWidth(180), GUILayout.MaxHeight(30)))
+                    {
+                        string mp = files[i];//.Replace("Assets/../", "");
+                        MissionObject o = AssetDatabase.LoadAssetAtPath<MissionObject>(FileUtil.GetProjectRelativePath(mp));
+                        if (!o)
+                        {
+                            EditorUtility.DisplayDialog("Error!", "Recreate Mission Data Faild!Because the file was damaged!", "OK");
+                            continue;
+                        }
+                        _storyObject.AssignNewMissionObject(o);
+                    }
+
+                    if (GUILayout.Button("<color=red>Delete It</color>", ResourcesManager.GetInstance.skin.button, GUILayout.MaxWidth(180), GUILayout.MaxHeight(30)))
+                    {
+                        string mp = files[i];//.Replace("Assets/../", "");
+                        if (!AssetDatabase.DeleteAsset(FileUtil.GetProjectRelativePath(mp)))
+                        {
+                            EditorUtility.DisplayDialog("Error!", "Delete Faild!", "OK");
+                        }
+                    }
+                }
+
+                GUILayout.Space(10);
+
+                if (haveLost)
+                    if (GUILayout.Button("<color=#28FF28>Recreate All The Mission Data</color>", ResourcesManager.GetInstance.skin.button, GUILayout.MaxWidth(200), GUILayout.MaxHeight(50)))
+                    {
+                        for (int i = 0; i < files.Length; i++)
+                        {
+                            string name = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                            if (_storyObject.GetMissionSaveDataByName(name) != null) continue;
+                            string mp = files[i];//.Replace("Assets/../", "");
+                            MissionObject o = AssetDatabase.LoadAssetAtPath<MissionObject>(FileUtil.GetProjectRelativePath(mp));
+                            if (!o)
+                            {
+                                EditorUtility.DisplayDialog("Error!", "Recreate Mission [" + name + "] Data Faild!Because the file was damaged!", "OK");
+                                continue;
+                            }
+                            _storyObject.AssignNewMissionObject(o);
+                        }
+                    }
+
+            }
+
+            EditorGUILayout.EndScrollView();
+            //EditorGUILayout.EndHorizontal();
+            //_leftScrollPosition = GUI.BeginScrollView(new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height - _window._topHeight), _leftScrollPosition, new Rect(0, _window._topHeight, _window._leftWidth - 30, _window._windowRect.height - _window._topHeight), false, true, ResourcesManager.GetInstance.skin.horizontalScrollbar, ResourcesManager.GetInstance.skin.verticalScrollbar);
         }
 
         private void NotingPage()
@@ -112,6 +223,7 @@ namespace CryStory.Editor
         {
             EditorGUI.LabelField(new Rect(_windowRect.center.x - 100, _windowRect.center.y - 100, 300, 20), "Cry Story Editor", ResourcesManager.GetInstance.skin.GetStyle("Title"));
             EditorGUI.LabelField(new Rect(_windowRect.center.x - 33, _windowRect.center.y - 50, 500, 20), "By CWHISME");
+            EditorGUI.LabelField(new Rect(_windowRect.center.x - 55, _windowRect.center.y - 20, 500, 20), "Email: cwhisme@qq.com");
             EditorGUI.LabelField(new Rect(_windowRect.center.x - 20, _windowRect.center.y, 500, 20), Version.FullVersion);
         }
 
@@ -127,8 +239,13 @@ namespace CryStory.Editor
             {
                 GUIStyle style = new GUIStyle();
                 style.fontSize = 16;
-                EditorGUI.LabelField(new Rect(_windowRect.center.x - 33, _windowRect.center.y + 200, 500, 20), "<color=red>You have some Mission File Lost!</color>", style);
-                if (GUI.Button(new Rect(_windowRect.center.x - 5, _windowRect.center.y + 250, 200, 40), "Remove It From Story", ResourcesManager.GetInstance.skin.button))
+                EditorGUI.LabelField(new Rect(_windowRect.center.x - 33, _windowRect.center.y + 150, 500, 20), "<color=red>You have some Mission File Lost!</color>", style);
+
+                if (GUI.Button(new Rect(_windowRect.center.x - 50, _windowRect.center.y + 200, 150, 40), "<color=#28FF28>Try Repair</color>", ResourcesManager.GetInstance.skin.button))
+                {
+                    pageSelect = 1;
+                }
+                if (GUI.Button(new Rect(_windowRect.center.x + 120, _windowRect.center.y + 200, 150, 40), "<color=red>Remove It From Story</color>", ResourcesManager.GetInstance.skin.button))
                 {
                     _storyObject.RemoveAllMissingMissionData();
                 }
@@ -143,14 +260,9 @@ namespace CryStory.Editor
 
         private void ShowTitle()
         {
-            //GUILayout.Space(5);
-            //GUIStyle style = new GUIStyle();
-            //style.fontSize = 25;
-            //style.normal.textColor = Color.white;
-            //style.fontStyle = FontStyle.Bold;
             EditorGUI.DrawTextureTransparent(new Rect(0, 0, position.width, _topHeight), ResourcesManager.GetInstance.texBackground);
 
-            EditorGUILayout.BeginHorizontal();
+            //EditorGUILayout.BeginHorizontal();
             GUIStyle style = ResourcesManager.GetInstance.skin.GetStyle("Title");
             float btnW = 0;
 
@@ -171,21 +283,14 @@ namespace CryStory.Editor
             if (GUI.Button(new Rect(_contentRect.width - 90, 3, 80, _titleHeight - 3), "Save Story", saveStyle))
                 _storyObject.Save();
 
-            EditorGUILayout.EndHorizontal();
-            //GUILayout.Space(5);
+            //EditorGUILayout.EndHorizontal();
         }
 
         private void ShowTopMenuUI()
         {
-            //GUIStyle selectStyle = new GUIStyle();
-            //selectStyle.alignment = TextAnchor.MiddleCenter;
-            //selectStyle.normal.background = texGrid;//Texture2D.blackTexture;
-            //selectStyle.onNormal.background = texTargetArea;//Texture2D.whiteTexture;
             Rect rect = new Rect(0, _titleHeight, _windowRect.xMax, _topHeight - _titleHeight);
             GUI.Box(rect, "", ResourcesManager.GetInstance.StyleBackground);
-            pageSelect = GUI.SelectionGrid(new Rect(0, _selectionGridHeight, _windowRect.xMax, _topHeight - _titleHeight - 5), pageSelect, new GUIContent[5] { new GUIContent("Main Page"), new GUIContent("Nothing"), new GUIContent("Nothing"), new GUIContent("Help"), new GUIContent("About") }, 5, ResourcesManager.GetInstance.skin.button);
-
-            // s = GUILayout.SelectionGrid(s, new GUIContent[5] { new GUIContent("1"), new GUIContent("1"), new GUIContent("1"), new GUIContent(""), new GUIContent("") }, 5, skin.button, GUILayout.Height(20),);
+            pageSelect = GUI.SelectionGrid(new Rect(0, _selectionGridHeight, _windowRect.xMax, _topHeight - _titleHeight - 5), pageSelect, new GUIContent[5] { new GUIContent("Main Page"), new GUIContent("Repair"), new GUIContent("Nothing"), new GUIContent("Help"), new GUIContent("About") }, 5, ResourcesManager.GetInstance.skin.button);
         }
 
         //Tool===========

@@ -13,7 +13,10 @@ namespace CryStory.Runtime
         public Mission _mission;
 
         public List<SaveData> _data;
+        public List<string> _nextMissionDataNameList = new List<string>();
         public string _missionData;
+
+
 
         public void Save()
         {
