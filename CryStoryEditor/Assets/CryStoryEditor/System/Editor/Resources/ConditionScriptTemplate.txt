@@ -1,0 +1,17 @@
+﻿/**********************************************************
+*Author: {UserName}
+*Date: {Date}
+*Func:
+**********************************************************/
+using UnityEngine;
+
+namespace CryStory.Runtime
+{
+    public class {Name} : {Parent}
+    {
+        public override bool OnCheck()
+        {
+            return true;
+        }
+    }
+}

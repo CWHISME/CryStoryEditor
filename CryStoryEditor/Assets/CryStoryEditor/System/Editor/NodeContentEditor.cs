@@ -11,24 +11,24 @@ namespace CryStory.Editor
 {
     public class NodeContentEditor<T> : NodeEditor<T> where T : class, new()
     {
-        private int _totalFrame;
-        private int _nextFrame;
+        //private int _totalFrame;
+        //private int _nextFrame;
 
-        protected override void InternalOnGUI()
-        {
-            _totalFrame++;
-        }
+        //protected override void InternalOnGUI()
+        //{
+        //    _totalFrame++;
+        //}
 
-        protected bool IsDoubleClick()
-        {
-            if (Tools.MouseDown)
-            {
-                if (_totalFrame < _nextFrame)
-                    return true;
-                _nextFrame = _totalFrame + 60;
-                return false;
-            }
-            return false;
-        }
+        //protected bool IsDoubleClick()
+        //{
+        //    if (Tools.MouseDown)
+        //    {
+        //        if (_totalFrame < _nextFrame)
+        //            return true;
+        //        _nextFrame = _totalFrame + 60;
+        //        return false;
+        //    }
+        //    return false;
+        //}
     }
 }

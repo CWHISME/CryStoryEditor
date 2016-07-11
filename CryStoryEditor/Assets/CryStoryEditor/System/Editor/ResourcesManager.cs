@@ -26,8 +26,11 @@ namespace CryStory.Editor
         public GUISkin skin;
 
         public GUIStyle StyleBackground { get { return skin.GetStyle("Background"); } }
-        public GUIStyle MissionNode { get { return skin.GetStyle("MissionNode"); } }
-        public GUIStyle MissionNodeOn { get { return skin.GetStyle("MissionNodeOn"); } }
+        public GUIStyle Node { get { return skin.GetStyle("MissionNode"); } }
+        public GUIStyle NodeOn { get { return skin.GetStyle("MissionNodeOn"); } }
+
+        public GUIStyle CoreNode { get { return skin.GetStyle("CoreNode"); } }
+        public GUIStyle CoreNodeOn { get { return skin.GetStyle("CoreNodeOn"); } }
 
         private TextAsset helpCN;
         private TextAsset helpEN;

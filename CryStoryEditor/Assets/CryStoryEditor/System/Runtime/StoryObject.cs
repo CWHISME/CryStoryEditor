@@ -28,6 +28,7 @@ namespace CryStory.Runtime
 
         public string _description = "This Story have not description.";
 
+        private string _storyData;
         //private MissionData _coreMission;
 
         //public MissionData CoreMission
@@ -183,10 +184,21 @@ namespace CryStory.Runtime
 
             //    _data.Add(data);
             //}
+            _storyData = JsonUtility.ToJson(_story);
+
             _haveNullData = false;
+
+            List<MissionData> toDelete = new List<MissionData>();
             for (int i = 0; i < _missionSaveList.Count; i++)
             {
                 MissionObject mo = _missionSaveList[i]._missionObject;
+
+                //如果标志Mission已经为空，则代表删除
+                if (mo._mission == null)
+                {
+                    toDelete.Add(_missionSaveList[i]);
+                    continue;
+                }
                 if (mo == null)
                 {
                     _haveNullData = true;
@@ -194,11 +206,19 @@ namespace CryStory.Runtime
                 }
                 mo.Save();
                 NodeModifier[] nextMissions = mo._mission.NextNodes;
+                MissionData data = GetMissionSaveDataByName(mo._mission._name);
+                data.ClearNextMissionObject();
                 if (nextMissions.Length > 0)
                 {
-                    GetMissionSaveDataByName(mo._mission._name).AddNextMissionObject(GetMissionSaveDataByMission(nextMissions));
+                    data.AddNextMissionObject(GetMissionSaveDataByMission(nextMissions));
                 }
                 UnityEditor.EditorUtility.SetDirty(mo);
+            }
+
+            //删除
+            for (int i = 0; i < toDelete.Count; i++)
+            {
+                DeleteMissionData(toDelete[i]);
             }
 
             UnityEditor.EditorUtility.SetDirty(this);
@@ -210,7 +230,9 @@ namespace CryStory.Runtime
 
         public void Load()
         {
-            _story = new Story();
+            _story = JsonUtility.FromJson<Story>(_storyData);
+            if (_story == null)
+                _story = new Story();
 
             _haveNullData = false;
             for (int i = 0; i < _missionSaveList.Count; i++)
@@ -224,7 +246,8 @@ namespace CryStory.Runtime
                 }
                 data._missionObject.Load();
 
-                data._missionObject._mission.SetContent(_story);
+                NodeModifier.SetContent(data._missionObject._mission, _story);
+                //data._missionObject._mission.SetContent(_story);
                 //_story.AddContentNode(data._missionObject._mission);
             }
 
@@ -238,8 +261,10 @@ namespace CryStory.Runtime
                     for (int j = 0; j < data._missionObject._nextMissionDataNameList.Count; j++)
                     {
                         MissionData next = GetMissionSaveDataByName(data._missionObject._nextMissionDataNameList[j]);
+                        if (next == null) continue;
                         if (next._missionObject == null) continue;
-                        next._missionObject._mission.SetParent(data._missionObject._mission);
+                        Mission.SetParent(next._missionObject._mission, data._missionObject._mission);
+                        //next._missionObject._mission.SetParent(data._missionObject._mission);
                     }
                 }
             }
@@ -296,6 +321,11 @@ namespace CryStory.Runtime
         public void RemoveNextMissionObject(string o)
         {
             _missionObject._nextMissionDataNameList.Remove(o);
+        }
+
+        public void ClearNextMissionObject()
+        {
+            _missionObject._nextMissionDataNameList.Clear();
         }
     }
 

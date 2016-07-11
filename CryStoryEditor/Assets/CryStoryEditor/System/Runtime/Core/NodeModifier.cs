@@ -33,16 +33,23 @@ namespace CryStory.Runtime
         /// 重设其父节点
         /// </summary>
         /// <param name="node"></param>
-        public bool SetParent(NodeModifier node)
+        public void SetParent(NodeModifier node)
+        {
+            //if (node == this) return false;
+            //if (node.IsChild(this, false)) return false;
+            node.AddNextNode(this);
+            //if (node.IsParent(this)) return true;
+            //RemoveFromContent();
+            //DeleteParent();
+            _lastNode = node;
+            //return true;
+        }
+
+        public bool CanSetParent(NodeModifier node)
         {
             if (node == this) return false;
             if (node.IsChild(this, false)) return false;
-            node.AddNextNode(this);
-            if (node.IsParent(this)) return true;
-            DeleteParent();
-            _lastNode = node;
-
-            RemoveFromContent();
+            if (node.IsParent(this)) return false;
             return true;
         }
 
@@ -52,7 +59,6 @@ namespace CryStory.Runtime
         public void DeleteParent()
         {
             if (_lastNode == null) return;
-            SetContent(_lastNode.GetContentNode());
             _lastNode.Remove(this);
             _lastNode = null;
 
@@ -100,8 +106,6 @@ namespace CryStory.Runtime
         public void Remove(NodeModifier node)
         {
             _nextNodeList.Remove(node);
-            if (node._lastNode == this)
-                node.SetContent(GetContentNode());
         }
 
         /// <summary>
@@ -143,7 +147,6 @@ namespace CryStory.Runtime
         public void SetContent(NodeContent content)
         {
             if (content == null) return;
-            RemoveFromContent();
             _content = content;
             content.AddContentNode(this);
         }
@@ -158,6 +161,42 @@ namespace CryStory.Runtime
                 _content.RemoveContenNode(this);
                 _content = null;
             }
+        }
+
+        public static void Delete(NodeModifier node)
+        {
+            NodeModifier[] nodes = node.NextNodes;
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                node.Remove(nodes[i]);
+            }
+
+            node.DeleteParent();
+            node.RemoveFromContent();
+        }
+
+        public static bool SetParent(NodeModifier node, NodeModifier parentNode)
+        {
+            if (node.CanSetParent(parentNode))
+            {
+                node.RemoveFromContent();
+                node.DeleteParent();
+                node.SetParent(parentNode);
+                return true;
+            }
+            return false;
+        }
+
+        public static void SetContent(NodeModifier node, NodeContent content)
+        {
+            node.RemoveFromContent();
+            node.DeleteParent();
+            node.SetContent(content);
+        }
+
+        public static void SetToDefaltContent(NodeModifier node)
+        {
+            SetContent(node, node.GetContentNode());
         }
 
         public bool HaveParent { get { return _lastNode != null; } }

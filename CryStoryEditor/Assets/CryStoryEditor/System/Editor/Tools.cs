@@ -40,12 +40,17 @@ namespace CryStory.Editor
             Vector3 endTangent = endPos - Vector2.right * tgl;
             UnityEditor.Handles.DrawBezier(startPos, endPos, startTangent, endTangent, color, null, 2f);
             UnityEditor.Handles.DrawBezier(startPos, endPos, startTangent, endTangent, new Color(1, 1, 1, 0.3f), null, 5f);
+
+            //Draw arrow
+            UnityEditor.Handles.DrawLine(endPos + new Vector2(-10, -6), endPos);
+            UnityEditor.Handles.DrawLine(endPos + new Vector2(-10, 6), endPos);
         }
 
 
         public static bool MouseDown { get { if (Event.current != null) return Event.current.type == EventType.MouseDown; return false; } }
         public static bool MouseUp { get { if (Event.current != null) return Event.current.type == EventType.MouseUp; return false; } }
         public static bool MouseDrag { get { if (Event.current != null) return Event.current.type == EventType.MouseDrag; return false; } }
+        public static bool MouseDoubleClick { get { if (MouseDown) { return Event.current.clickCount > 1; } return false; } }
 
 
         public static Rect CalcLeftLinkRect(Rect missionRect)

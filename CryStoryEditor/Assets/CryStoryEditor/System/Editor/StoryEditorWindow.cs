@@ -28,6 +28,19 @@ namespace CryStory.Editor
         public StoryObject _storyObject;
         public Story _Story { get { return _storyObject._Story; } }
         public Mission _editMission;
+        public Vector2 CurrentContentCenter
+        {
+            get
+            {
+                return _editMission == null ? _Story.graphCenter : _editMission.graphCenter;
+            }
+            set
+            {
+                if (_editMission == null)
+                    _Story.graphCenter = value;
+                else _editMission.graphCenter = value;
+            }
+        }
 
         public Rect _windowRect;
         public Rect _contentRect;
@@ -69,7 +82,7 @@ namespace CryStory.Editor
                     RepairPages();
                     break;
                 case 2:
-                    NotingPage();
+                    SettingPage();
                     break;
                 case 3:
                     HelpPage();
@@ -199,22 +212,37 @@ namespace CryStory.Editor
             //_leftScrollPosition = GUI.BeginScrollView(new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height - _window._topHeight), _leftScrollPosition, new Rect(0, _window._topHeight, _window._leftWidth - 30, _window._windowRect.height - _window._topHeight), false, true, ResourcesManager.GetInstance.skin.horizontalScrollbar, ResourcesManager.GetInstance.skin.verticalScrollbar);
         }
 
-        private void NotingPage()
+        private void SettingPage()
         {
-            EditorGUI.LabelField(new Rect(_windowRect.center.x - 38, _windowRect.center.y - 50, 500, 20), "There is noting.");
+            //EditorGUI.LabelField(new Rect(_windowRect.center.x - 38, _windowRect.center.y - 50, 500, 20), "Story Description:");
+            //_storyObject._description = EditorGUI.TextArea(new Rect(_windowRect.center.x - 38, _windowRect.center.y, 500, 200), _storyObject._description);
+            GUILayout.Space(_topHeight + 10);
+            GUILayout.Label("Story Description:");
+            GUILayout.Space(10);
+            _storyObject._description = GUILayout.TextArea(_storyObject._description, GUILayout.MaxHeight(100));
         }
 
         private Vector2 helpScrolPos;
+        private bool langugeCN = true;
         private void HelpPage()
         {
             GUILayout.Space(_topHeight + 20);
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(_windowRect.width * 0.25f);
             helpScrolPos = EditorGUILayout.BeginScrollView(helpScrolPos);
+
+            EditorGUILayout.BeginHorizontal();
+            langugeCN = EditorGUILayout.ToggleLeft("中文", langugeCN);
+            langugeCN = !EditorGUILayout.ToggleLeft("English", !langugeCN);
+            EditorGUILayout.EndHorizontal();
+
+            GUILayout.Space(20);
+
             GUIStyle style = new GUIStyle();
             style.fontSize = 12;
             style.normal.textColor = Color.white;
-            GUILayout.Label(ResourcesManager.GetInstance.HelpCN, style);
+            GUILayout.Label(langugeCN ? ResourcesManager.GetInstance.HelpCN : ResourcesManager.GetInstance.HelpEN, style);
+            GUILayout.Space(50);
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndHorizontal();
         }
@@ -290,7 +318,7 @@ namespace CryStory.Editor
         {
             Rect rect = new Rect(0, _titleHeight, _windowRect.xMax, _topHeight - _titleHeight);
             GUI.Box(rect, "", ResourcesManager.GetInstance.StyleBackground);
-            pageSelect = GUI.SelectionGrid(new Rect(0, _selectionGridHeight, _windowRect.xMax, _topHeight - _titleHeight - 5), pageSelect, new GUIContent[5] { new GUIContent("Main Page"), new GUIContent("Repair"), new GUIContent("Nothing"), new GUIContent("Help"), new GUIContent("About") }, 5, ResourcesManager.GetInstance.skin.button);
+            pageSelect = GUI.SelectionGrid(new Rect(0, _selectionGridHeight, _windowRect.xMax, _topHeight - _titleHeight - 5), pageSelect, new GUIContent[5] { new GUIContent("Main Page"), new GUIContent("Repair"), new GUIContent("Setting"), new GUIContent("Help"), new GUIContent("About") }, 5, ResourcesManager.GetInstance.skin.button);
         }
 
         //Tool===========

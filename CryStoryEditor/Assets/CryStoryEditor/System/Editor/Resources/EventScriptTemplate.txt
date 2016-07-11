@@ -1,0 +1,22 @@
+﻿/**********************************************************
+*Author: {UserName}
+*Date: {Date}
+*Func:
+**********************************************************/
+using UnityEngine;
+
+namespace CryStory.Runtime
+{
+    public class {Name} : {Parent}
+    {
+	    protected override void RegistEvent()
+        {
+            
+        }
+
+        protected override void UnRegistEvent()
+        {
+            
+        }
+    }
+}

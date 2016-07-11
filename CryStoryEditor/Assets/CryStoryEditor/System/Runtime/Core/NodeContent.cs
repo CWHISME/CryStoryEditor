@@ -12,11 +12,17 @@ namespace CryStory.Runtime
     {
         protected List<NodeModifier> _contenNodeList = new List<NodeModifier>(2);
 
-        private List<int> _toRemoveNode = new List<int>();
+        private List<NodeModifier> _toRemoveNode = new List<NodeModifier>();
         private NodeModifier[] _toAddNode;
 
         public NodeModifier[] Nodes { get { return _contenNodeList.ToArray(); } }
 
+        /// <summary>
+        /// 将节点添加至该容器。注意：不会更改节点本身容器数据！
+        /// 使用节点SetContent代替
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public bool AddContentNode(NodeModifier node)
         {
             if (_contenNodeList.Contains(node)) return false;
@@ -41,14 +47,14 @@ namespace CryStory.Runtime
         public override EnumResult Tick()
         {
             if (_contenNodeList.Count == 0) return EnumResult.Success;
-
             //Run
             for (int i = 0; i < _contenNodeList.Count; i++)
             {
+                UnityEngine.Debug.Log("Run Node:" + _contenNodeList[i]._name);
                 if (_contenNodeList[i].Tick() != EnumResult.Running)
                 {
                     NodeModifier node = _contenNodeList[i];
-                    _toRemoveNode.Add(i);
+                    _toRemoveNode.Add(node);
                     _toAddNode = node.NextNodes;
                 }
             }
@@ -58,8 +64,9 @@ namespace CryStory.Runtime
             {
                 for (int i = 0; i < _toRemoveNode.Count; i++)
                 {
-                    _contenNodeList.RemoveAt(_toRemoveNode[i]);
+                    _contenNodeList.Remove(_toRemoveNode[i]);
                 }
+                _toRemoveNode.Clear();
             }
 
             //Add

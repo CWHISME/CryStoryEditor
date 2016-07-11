@@ -34,8 +34,8 @@ namespace CryStory.Runtime
             return EnumResult.Running;
         }
 
-        protected abstract EnumResult OnStart();
-        protected abstract EnumResult OnUpdate();
-        protected abstract void OnEnd();
+        protected virtual EnumResult OnStart() { return EnumResult.Success; }
+        protected virtual EnumResult OnUpdate() { return EnumResult.Success; }
+        protected virtual void OnEnd() { }
     }
 }

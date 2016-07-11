@@ -36,7 +36,7 @@ namespace CryStory.Editor
 
             //========Right Area===============
             DrawRightGrid();
-            DrawNodes(nodes);
+            DrawNodes(nodes, true);
             ShowConnectLine();
             //========Left Slider Area===========
             ShowLeftSliderArea();
@@ -58,9 +58,20 @@ namespace CryStory.Editor
                     if (_currentNode == _currentHover) return;
                     if (Tools.IsValidMouseAABB(Tools.GetNodeRect(CalcRealPosition(_currentHover._position))))
                     {
-                        if (_currentHover.SetParent(_currentNode))
+                        if (!_currentHover.CanSetParent(_currentNode))
+                        {
+                            if (_currentNode.IsParent(_currentHover))
+                            {
+                                _currentNode.AddNextNode(_currentHover);
+                                return;
+                            }
+
+                            EditorUtility.DisplayDialog("Error", "Not allow connect to twice parent! You must break one connect with parent and then change it.", "OK");
+                            return;
+                        }
+
+                        if (NodeModifier.SetParent(_currentHover, _currentNode))
                             OnLinkNode(_currentNode, _currentHover);
-                        else EditorUtility.DisplayDialog("Error", "Not allow connect to twice parent! You must break one connect with parent and then change it.", "OK");
                     }
                 }
             }
@@ -68,20 +79,20 @@ namespace CryStory.Editor
 
         private void ShowGraphCenterInfo()
         {
-            GUI.Label(new Rect(_contentRect.x, _contentRect.y, 120, 20), _window._storyObject.StoryCenter.ToString());
+            GUI.Label(new Rect(_contentRect.x, _contentRect.y, 120, 20), _window.CurrentContentCenter.ToString());
 
             if (GUI.Button(new Rect(_contentRect.x + 3, _contentRect.y + 20, 50, 22), "Reset", ResourcesManager.GetInstance.skin.button))
             {
-                _window._storyObject.StoryCenter = Vector2.zero;
+                _window.CurrentContentCenter = Vector2.zero;
             }
         }
 
-        private void DrawNodes(NodeModifier[] nodeList)
+        private void DrawNodes(NodeModifier[] nodeList, bool coreNode = false)
         {
             for (int i = 0; i < nodeList.Length; i++)
             {
                 NodeModifier node = nodeList[i];
-                Rect nodeRect = DrawNodeRect(node);
+                Rect nodeRect = DrawNodeRect(node, coreNode);
 
                 //Draw conection bazier line
                 DrawBazierLine(node);
@@ -201,7 +212,10 @@ namespace CryStory.Editor
                         //rect.width = 80f;
                         if (GUI.Button(GetGUILeftScrollAreaRect(_window._leftWidth - 68f, 50f, 20f), "<color=red>Delete</color>", ResourcesManager.GetInstance.skin.button))
                         {
-                            _currentNode.Remove(nodes[i]);
+                            if (nodes[i].Parent == _currentNode)
+                                NodeModifier.SetToDefaltContent(nodes[i]);
+                            else _currentNode.Remove(nodes[i]);
+                            //_currentNode.Remove(nodes[i]);
                             break;
                         }
                         //EditorGUILayout.EndHorizontal();
@@ -259,7 +273,7 @@ namespace CryStory.Editor
                 if (Event.current.type == EventType.MouseDown)
                 {
                     _mouseDownPos = Event.current.mousePosition;
-                    _mouseDownCenter = _window._storyObject.StoryCenter;
+                    _mouseDownCenter = _window.CurrentContentCenter;
                 }
 
                 if (Event.current.type == EventType.MouseDrag)
@@ -268,7 +282,7 @@ namespace CryStory.Editor
                     //                    Debug.Log("Window Center:" + _window._story._mission.graphCenter + "  mousePos:" +
                     //Event.current.mousePosition);
                     Vector2 offset = Event.current.mousePosition - _mouseDownPos;
-                    _window._storyObject.StoryCenter = _mouseDownCenter - offset;
+                    _window.CurrentContentCenter = _mouseDownCenter - offset;
                 }
             }
         }
@@ -302,12 +316,13 @@ namespace CryStory.Editor
             }
         }
 
-        protected virtual Rect DrawNodeRect(NodeModifier node)
+        protected virtual Rect DrawNodeRect(NodeModifier node, bool coreNode = false)
         {
             Vector2 pos = CalcRealPosition(node._position);
             Rect nodeRect = Tools.GetNodeRect(pos);
 
-            GUI.Box(nodeRect, node._name, _currentNode == node ? ResourcesManager.GetInstance.MissionNodeOn : ResourcesManager.GetInstance.MissionNode);
+            //GUI.Box(nodeRect, coreNode? "<color=#00FF00>" + node._name+"</color>": node._name, _currentNode == node ? (coreNode ? ResourcesManager.GetInstance.CoreNodeOn : ResourcesManager.GetInstance.NodeOn) : (coreNode ? ResourcesManager.GetInstance.CoreNode : ResourcesManager.GetInstance.Node));
+            GUI.Box(nodeRect, coreNode ? "<color=#00FF00>" + node._name + "</color>" : node._name, _currentNode == node ? ResourcesManager.GetInstance.NodeOn : ResourcesManager.GetInstance.Node);
 
             return nodeRect;
         }
@@ -344,10 +359,11 @@ namespace CryStory.Editor
                         if (node.HaveParent)
                         {
                             _isConnecting = true;
-                            _currentNode = node.Parent as Mission;
+                            _currentNode = node.Parent as NodeModifier;
                             Vector2 realPos = CalcRealPosition(_currentNode._position);
                             _currentNodeRect = Tools.GetNodeRect(realPos);
-                            node.DeleteParent();
+                            NodeModifier.SetToDefaltContent(node);
+                            //node.DeleteParent();
                         }
                     }
                 }
@@ -362,7 +378,7 @@ namespace CryStory.Editor
             center.x = (int)(center.x);
             center.y = (int)(center.y);
 
-            return pos + _window._storyObject.StoryCenter - center;
+            return pos + _window.CurrentContentCenter - center;
         }
 
         protected Vector2 CalcRealPosition(Vector2 pos)
@@ -371,7 +387,7 @@ namespace CryStory.Editor
             center.x = (int)(center.x);
             center.y = (int)(center.y);
 
-            return center + pos - _window._storyObject.StoryCenter;
+            return center + pos - _window.CurrentContentCenter;
         }
     }
 }
