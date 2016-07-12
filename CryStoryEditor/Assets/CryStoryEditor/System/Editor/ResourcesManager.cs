@@ -12,13 +12,10 @@ namespace CryStory.Editor
     {
 
         //Resources
-        public Texture2D texLogo;
         public Texture2D texInputSlot;
         public Texture2D texInputSlotActive;
         public Texture2D texOutputSlot;
         public Texture2D texOutputSlotActive;
-        public Texture2D texTargetArea;
-        public Texture2D texSave;
         public Texture2D texGrid;
         public Texture2D texWhiteBorder;
         public Texture2D texBackground;
@@ -32,6 +29,13 @@ namespace CryStory.Editor
         public GUIStyle CoreNode { get { return skin.GetStyle("CoreNode"); } }
         public GUIStyle CoreNodeOn { get { return skin.GetStyle("CoreNodeOn"); } }
 
+        public GUIStyle EventNode { get { return skin.GetStyle("EventNode"); } }
+        public GUIStyle EventNodeOn { get { return skin.GetStyle("EventNodeOn"); } }
+        public GUIStyle ConditionNode { get { return skin.GetStyle("ConditionNode"); } }
+        public GUIStyle ConditionNodeOn { get { return skin.GetStyle("ConditionNodeOn"); } }
+        public GUIStyle ActionNode { get { return skin.GetStyle("ActionNode"); } }
+        public GUIStyle ActionNodeOn { get { return skin.GetStyle("ActionNodeOn"); } }
+
         private TextAsset helpCN;
         private TextAsset helpEN;
         public string HelpCN { get { return helpCN ? helpCN.text : "错误：没有找到帮助文件!"; } }
@@ -39,22 +43,16 @@ namespace CryStory.Editor
 
         public ResourcesManager()
         {
-            if (texLogo == null)
-                texLogo = Resources.Load("cf_logo") as Texture2D;
             if (texInputSlot == null)
-                texInputSlot = Resources.Load("cf_input_slot") as Texture2D;
+                texInputSlot = Resources.Load("Image/Slot/input_slot") as Texture2D;
             if (texInputSlotActive == null)
-                texInputSlotActive = Resources.Load("cf_input_slot_active") as Texture2D;
+                texInputSlotActive = Resources.Load("Image/Slot/input_slot_active") as Texture2D;
             if (texOutputSlot == null)
-                texOutputSlot = Resources.Load("cf_output_slot") as Texture2D;
+                texOutputSlot = Resources.Load("Image/Slot/output_slot") as Texture2D;
             if (texOutputSlotActive == null)
-                texOutputSlotActive = Resources.Load("cf_output_slot_active") as Texture2D;
-            if (texTargetArea == null)
-                texTargetArea = Resources.Load("cf_target_area") as Texture2D;
-            if (texSave == null)
-                texSave = Resources.Load("cf_save") as Texture2D;
+                texOutputSlotActive = Resources.Load("Image/Slot/output_slot_active") as Texture2D;
             if (texGrid == null)
-                texGrid = Resources.Load("cf_grid") as Texture2D;
+                texGrid = Resources.Load("Image/grid") as Texture2D;
             if (texWhiteBorder == null)
                 texWhiteBorder = Resources.Load("WhiteBorder") as Texture2D;
             if (texBackground == null)
@@ -62,8 +60,8 @@ namespace CryStory.Editor
             if (skin == null) skin = Resources.Load<GUISkin>("Skin");
 
 
-            if (helpCN == null) helpCN = Resources.Load<TextAsset>("Help_CN");
-            if (helpEN == null) helpEN = Resources.Load<TextAsset>("Help_EN");
+            if (helpCN == null) helpCN = Resources.Load<TextAsset>("Help/Help_CN");
+            if (helpEN == null) helpEN = Resources.Load<TextAsset>("Help/Help_EN");
         }
 
     }

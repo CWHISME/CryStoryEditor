@@ -50,7 +50,7 @@ namespace CryStory.Runtime
             //Run
             for (int i = 0; i < _contenNodeList.Count; i++)
             {
-                UnityEngine.Debug.Log("Run Node:" + _contenNodeList[i]._name);
+                //UnityEngine.Debug.Log("Run Node:" + _contenNodeList[i]._name);
                 if (_contenNodeList[i].Tick() != EnumResult.Running)
                 {
                     NodeModifier node = _contenNodeList[i];

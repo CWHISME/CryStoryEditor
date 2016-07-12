@@ -11,7 +11,7 @@ namespace CryStory.Runtime
     {
         protected override EnumResult OnStart()
         {
-            Debug.Log("Set Var Start");
+            //Debug.Log("Set Var Start");
             return EnumResult.Success;
         }
     }

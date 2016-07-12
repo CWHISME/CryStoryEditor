@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\DragModifier.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\ISerialize.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\IUpdatable.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeBase.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeContent.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryManager.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryObject.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryRunner.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\ReflectionHelper.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\Singleton.cs" />
     <Compile Include="Assets\New5555Condition.cs" />
     <Compile Include="Assets\NewAction.cs" />
@@ -91,11 +93,11 @@
     <Compile Include="Assets\This_is_Test.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\CryStoryEditor\System\Editor\Resources\ActionScriptTemplate.txt" />
-    <None Include="Assets\CryStoryEditor\System\Editor\Resources\ConditionScriptTemplate.txt" />
-    <None Include="Assets\CryStoryEditor\System\Editor\Resources\EventScriptTemplate.txt" />
-    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help_CN.txt" />
-    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help_EN.txt" />
+    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_CN.txt" />
+    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_EN.txt" />
+    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\ActionScriptTemplate.txt" />
+    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\ConditionScriptTemplate.txt" />
+    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\EventScriptTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

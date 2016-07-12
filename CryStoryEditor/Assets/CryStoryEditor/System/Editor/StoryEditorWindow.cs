@@ -306,7 +306,10 @@ namespace CryStory.Editor
             GUIStyle saveStyle = new GUIStyle(ResourcesManager.GetInstance.skin.button);
             saveStyle.normal.textColor = new Color32(255, 64, 180, 255);
             if (GUI.Button(new Rect(_contentRect.width - 180, 3, 80, _titleHeight - 3), "Reload", saveStyle))
+            {
+                _editMission = null;
                 _storyObject.Load();
+            }
             saveStyle.normal.textColor = new Color32(0, 255, 0, 255);
             if (GUI.Button(new Rect(_contentRect.width - 90, 3, 80, _titleHeight - 3), "Save Story", saveStyle))
                 _storyObject.Save();

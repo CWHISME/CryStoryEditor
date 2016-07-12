@@ -29,6 +29,10 @@ namespace CryStory.Editor
             }
         }
 
+        protected override void DrawLeftArribute()
+        {
+        }
+
         /// <summary>
         /// 右键点击时显示的东西
         /// </summary>

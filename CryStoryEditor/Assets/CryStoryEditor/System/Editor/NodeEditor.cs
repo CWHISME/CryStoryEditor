@@ -222,6 +222,10 @@ namespace CryStory.Editor
                     }
                 }
                 #endregion
+
+                LeftHeightSpace(10);
+
+                DrawLeftArribute();
             }
 
 
@@ -310,9 +314,6 @@ namespace CryStory.Editor
                 if (isParent)
                     Tools.DrawBazier(pos1, pos2, Color.green);
                 else Tools.DrawBazier(pos1, pos2);
-
-                //if (!isParent)
-                //    DrawBazierLine(node2);
             }
         }
 
@@ -366,6 +367,50 @@ namespace CryStory.Editor
                             //node.DeleteParent();
                         }
                     }
+                }
+            }
+            #endregion
+        }
+
+        protected virtual void DrawLeftArribute()
+        {
+            #region Attribute
+
+            System.Type type = _currentNode.GetType();
+            System.Reflection.FieldInfo[] fileds = type.GetFields();
+
+            for (int i = 0; i < fileds.Length; i++)
+            {
+                System.Reflection.FieldInfo filed = fileds[i];
+                if (filed.Name == "_name" || filed.Name == "_position") continue;
+
+                LeftHeightSpace(5);
+
+                EditorGUI.LabelField(GetGUILeftScrollAreaRect(50, 18, false), filed.Name);
+                Rect rect = GetGUILeftScrollAreaRect(60, 150, 18);
+                switch (filed.FieldType.ToString())
+                {
+                    case "System.Single":
+                        filed.SetValue(_currentNode, EditorGUI.FloatField(rect, (float)filed.GetValue(_currentNode)));
+                        break;
+                    case "System.Int32":
+                        filed.SetValue(_currentNode, EditorGUI.IntField(rect, (int)filed.GetValue(_currentNode)));
+                        break;
+                    case "System.String":
+                        filed.SetValue(_currentNode, EditorGUI.TextField(rect, (string)filed.GetValue(_currentNode)));
+                        break;
+                    case "System.Boolean":
+                        filed.SetValue(_currentNode, EditorGUI.Toggle(rect, (bool)filed.GetValue(_currentNode)));
+                        break;
+                    default:
+                        if (filed.FieldType.BaseType.ToString() == "System.Enum")
+                        {
+                            //System.Enum.Parse(filed.FieldType.DeclaringType, (string)filed.GetValue(_currentNode));
+                            filed.SetValue(_currentNode, EditorGUI.EnumPopup(rect, (System.Enum)filed.GetValue(_currentNode)));
+                        }
+                        else
+                            EditorGUI.LabelField(rect, "Not Deal Object.");
+                        break;
                 }
             }
             #endregion

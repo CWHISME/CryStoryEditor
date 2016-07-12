@@ -8,6 +8,7 @@ using Event = UnityEngine.Event;
 using UnityEditor;
 using System.Reflection;
 using System;
+using CryStory.Runtime;
 
 namespace CryStory.Editor
 {
@@ -17,9 +18,40 @@ namespace CryStory.Editor
         {
             base.InternalOnGUI();
             CheckReturnStoryEditor();
-            CreateNodeMenu();
+            ShowRightClickMenu();
         }
 
+        protected override Rect DrawNodeRect(NodeModifier node, bool coreNode = false)
+        {
+            Vector2 pos = CalcRealPosition(node._position);
+            Rect nodeRect = Tools.GetNodeRect(pos);
+
+            GUIStyle style = ResourcesManager.GetInstance.Node;
+            GUIStyle selectStyle = ResourcesManager.GetInstance.NodeOn;
+            if (node is CryStory.Runtime.Event)
+            {
+                style = ResourcesManager.GetInstance.EventNode;
+                selectStyle = ResourcesManager.GetInstance.EventNodeOn;
+            }
+            else if (node is CryStory.Runtime.Condition)
+            {
+                style = ResourcesManager.GetInstance.ConditionNode;
+                selectStyle = ResourcesManager.GetInstance.ConditionNodeOn;
+            }
+            else if (node is CryStory.Runtime.Action)
+            {
+                style = ResourcesManager.GetInstance.ActionNode;
+                selectStyle = ResourcesManager.GetInstance.ActionNodeOn;
+            }
+
+            GUI.Box(nodeRect, coreNode ? "<color=#00FF00><b>" + node._name + "</b></color>" : node._name, _currentNode == node ? selectStyle : style);
+
+            return nodeRect;
+        }
+
+        /// <summary>
+        /// 检查是否应当返回上级
+        /// </summary>
         private void CheckReturnStoryEditor()
         {
             if (Tools.MouseDoubleClick && !Tools.IsValidMouseAABB(_currentNodeRect))
@@ -31,7 +63,7 @@ namespace CryStory.Editor
 
         private Vector2 _mousePosition;
 
-        private void CreateNodeMenu()
+        private void ShowRightClickMenu()
         {
             if (Event.current != null)
             {
@@ -40,22 +72,46 @@ namespace CryStory.Editor
                     _mousePosition = Event.current.mousePosition;
                     if (Event.current.button == 1)
                     {
-                        Vector2 mousePos = Event.current.mousePosition;
-                        if (mousePos.x < _contentRect.x) return;
-                        if (mousePos.y < _contentRect.y) return;
-                        GenericMenu menu = new GenericMenu();
+                        if (_currentHover == null)
+                        {
+                            CreateNodeMenu();
+                            return;
+                        }
 
-                        Assembly asm = Assembly.GetAssembly(typeof(CryStory.Runtime.Story));
-                        Type[] types = asm.GetTypes();
-
-                        AddEventMenu(menu, types, asm);
-                        AddConditionMenu(menu, types, asm);
-                        AddActionMenu(menu, types, asm);
-
-                        menu.ShowAsContext();
+                        if (!Tools.IsValidMouseAABB(Tools.GetNodeRect(CalcRealPosition(_currentHover._position))))
+                            CreateNodeMenu();
+                        else ShowDeleteNodeMenu();
                     }
                 }
             }
+        }
+
+        private void CreateNodeMenu()
+        {
+            Vector2 mousePos = Event.current.mousePosition;
+            if (mousePos.x < _contentRect.x) return;
+            if (mousePos.y < _contentRect.y) return;
+            GenericMenu menu = new GenericMenu();
+
+            Assembly asm = Assembly.GetAssembly(typeof(CryStory.Runtime.Story));
+            Type[] types = asm.GetTypes();
+
+            AddEventMenu(menu, types, asm);
+            AddConditionMenu(menu, types, asm);
+            AddActionMenu(menu, types, asm);
+
+            menu.ShowAsContext();
+        }
+
+        private void ShowDeleteNodeMenu()
+        {
+            GenericMenu menu = new GenericMenu();
+            menu.AddItem(new GUIContent("Delete"), false, () =>
+            {
+                Runtime.NodeModifier.Delete(_currentHover);
+                _currentHover = null;
+            });
+            menu.ShowAsContext();
         }
 
         private void AddEventMenu(GenericMenu menu, Type[] type, Assembly asm)

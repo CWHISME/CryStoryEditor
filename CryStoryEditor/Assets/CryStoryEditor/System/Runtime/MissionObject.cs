@@ -4,6 +4,7 @@
 *Func:
 **********************************************************/
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace CryStory.Runtime
@@ -12,51 +13,85 @@ namespace CryStory.Runtime
     {
         public Mission _mission;
 
-        public List<SaveData> _data;
+        //public List<SaveData> _data;
         public List<string> _nextMissionDataNameList = new List<string>();
-        public string _missionData;
+        //public string _missionData;
 
-
+        public byte[] _SaveData;
 
         public void Save()
         {
-            //save current mission
-            _missionData = JsonUtility.ToJson(_mission);
-
-            NodeModifier[] nodes = _mission.Nodes;
-            _data = new List<SaveData>();
-            for (int i = 0; i < nodes.Length; i++)
+            using (MemoryStream ms = new MemoryStream())
             {
-                NodeModifier node = nodes[i];
-                System.Type type = node.GetType();
-                SaveData data = new SaveData();
-                data._type = type.FullName;
-                data._json = JsonUtility.ToJson(node);
+                using (BinaryWriter w = new BinaryWriter(ms))
+                {
+                    w.Write(JsonUtility.ToJson(_mission));
 
-                _data.Add(data);
+                    NodeModifier[] nodes = _mission.Nodes;
+                    w.Write(nodes.Length);
+                    for (int i = 0; i < nodes.Length; i++)
+                    {
+                        NodeModifier node = nodes[i];
+                        System.Type type = node.GetType();
+
+                        w.Write(type.FullName);
+                        //w.Write(JsonUtility.ToJson(node));
+                        node.Serialize(w);
+                    }
+
+                }
+
+                //Save
+                _SaveData = ms.GetBuffer();
             }
+
+            UnityEditor.EditorUtility.SetDirty(this);
+            //save current mission
+
+
+            //_data = new List<SaveData>();
+            //for (int i = 0; i < nodes.Length; i++)
+            //{
+
+
+            //    _data.Add(data);
+            //}
 
         }
 
         public void Load()
         {
-            if (string.IsNullOrEmpty(_missionData))
+            using (MemoryStream ms = new MemoryStream(_SaveData))
             {
-                _mission = new Mission();
-                return;
-            }
-
-            _mission = JsonUtility.FromJson<Mission>(_missionData);
-            if (_data != null)
-            {
-                System.Reflection.Assembly asm = System.Reflection.Assembly.GetAssembly(typeof(Story));
-                for (int i = 0; i < _data.Count; i++)
+                using (BinaryReader r = new BinaryReader(ms))
                 {
-                    object o = asm.CreateInstance(_data[i]._type);
-                    JsonUtility.FromJsonOverwrite(_data[i]._json, o);
-                    _mission.AddContentNode(o as NodeModifier);
+                    _mission = JsonUtility.FromJson<Mission>(r.ReadString());
+                    if (_mission == null) _mission = new Mission();
+
+                    int count = r.ReadInt32();
+                    for (int i = 0; i < count; i++)
+                    {
+                        NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(r.ReadString());
+                        node.Deserialize(r);
+                        NodeModifier.SetContent(node, _mission);
+                    }
                 }
             }
+
+
+
+            //if (_data != null)
+            //{
+            //    System.Reflection.Assembly asm = System.Reflection.Assembly.GetAssembly(typeof(Story));
+            //    for (int i = 0; i < _data.Count; i++)
+            //    {
+            //        object o = asm.CreateInstance(_data[i]._type);
+            //        JsonUtility.FromJsonOverwrite(_data[i]._json, o);
+            //        NodeModifier node = o as NodeModifier;
+            //        NodeModifier.SetContent(node, _mission);
+            //        //_mission.AddContentNode(r);
+            //    }
+            //}
         }
     }
 
@@ -66,4 +101,5 @@ namespace CryStory.Runtime
         public string _type;
         public string _json;
     }
+
 }

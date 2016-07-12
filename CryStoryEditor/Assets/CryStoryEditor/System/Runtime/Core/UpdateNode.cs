@@ -23,11 +23,15 @@ namespace CryStory.Runtime
                 result = OnStart();
                 if (result == EnumResult.Success)
                     _isInit = true;
+                return EnumResult.Running;
             }
+
+            //UnityEngine.Debug.Log("Tick Node :" + _name + "    " + result);
 
             if (result != EnumResult.Running)
             {
                 OnEnd();
+                _isInit = false;
                 return result;
             }
 

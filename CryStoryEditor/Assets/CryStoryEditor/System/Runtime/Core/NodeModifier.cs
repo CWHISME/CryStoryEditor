@@ -3,12 +3,14 @@
 *Date: 2016.7.7
 *Func:
 **********************************************************/
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace CryStory.Runtime
 {
 
-    public class NodeModifier : NodeBase
+    public class NodeModifier : NodeBase, ISerialize
     {
         private NodeModifier _lastNode = null;
 
@@ -140,6 +142,22 @@ namespace CryStory.Runtime
             return false;
         }
 
+        public int ParentToLayer(NodeModifier parent, int layer = 0)
+        {
+            layer++;
+            if (this == parent) return layer;
+            if (_lastNode == null) return 0;
+            return _lastNode.ParentToLayer(parent, layer);
+        }
+
+        public NodeModifier LayerToParent(int layer)
+        {
+            layer--;
+            if (layer == 0) return this;
+            if (_lastNode != null) return _lastNode.LayerToParent(layer);
+            return null;
+        }
+
         /// <summary>
         /// 设置父容器
         /// </summary>
@@ -199,7 +217,52 @@ namespace CryStory.Runtime
             SetContent(node, node.GetContentNode());
         }
 
+        public void Serialize(BinaryWriter w)
+        {
+            w.Write(UnityEngine.JsonUtility.ToJson(this));
+            w.Write(_nextNodeList.Count);
+            for (int i = 0; i < _nextNodeList.Count; i++)
+            {
+                NodeModifier node = _nextNodeList[i];
+                w.Write(ParentToLayer(node));
+                bool isSingleNode = node.Parent != this;
+                w.Write(isSingleNode);
+                if (!isSingleNode)
+                {
+                    w.Write(node.GetType().FullName);
+                    node.Serialize(w);
+                }
+
+            }
+        }
+
+        public void Deserialize(BinaryReader r)
+        {
+            UnityEngine.JsonUtility.FromJsonOverwrite(r.ReadString(), this);
+            int count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                int layer = r.ReadInt32();
+                bool isSingleNode = r.ReadBoolean();
+                NodeModifier node;
+                if (isSingleNode)
+                {
+                    node = LayerToParent(layer);
+                    if (node != null)
+                        _nextNodeList.Add(node);
+                }
+                else {
+                    node = ReflectionHelper.CreateInstance<NodeModifier>(r.ReadString());
+                    SetParent(node, this);
+                    node.Deserialize(r);
+                }
+            }
+        }
+
         public bool HaveParent { get { return _lastNode != null; } }
         public NodeBase Parent { get { return _lastNode; } }
+
+
+
     }
 }
