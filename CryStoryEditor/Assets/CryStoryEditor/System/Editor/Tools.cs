@@ -23,23 +23,23 @@ namespace CryStory.Editor
             return Event.current.mousePosition.x > area.x && Event.current.mousePosition.y > area.y && Event.current.mousePosition.x < area.xMax && Event.current.mousePosition.y < area.yMax;
         }
 
-        public static void DrawBazier(Vector2 startPos, Vector2 endPos)
+        public static void DrawBazier(Vector2 startPos, Vector2 endPos, Color color)
         {
-            //float tgl = Vector2.Distance(startPos, endPos) * 0.4f;
-            //Vector3 startTangent = startPos + Vector2.right * tgl;
-            //Vector3 endTangent = endPos - Vector2.right * tgl;
-            //UnityEditor.Handles.DrawBezier(startPos, endPos, startTangent, endTangent, new Color(1, 1, 1, 0.4f), null, 2f);
-            //UnityEditor.Handles.DrawBezier(startPos, endPos, startTangent, endTangent, new Color(1, 1, 1, 0.3f), null, 5f);
-            DrawBazier(startPos, endPos, new Color(1, 1, 1, 0.4f));
+            DrawBazier(startPos, endPos, color, new Color(1, 1, 1, 0.3f));
         }
 
-        public static void DrawBazier(Vector2 startPos, Vector2 endPos, Color color)
+        public static void DrawBazier(Vector2 startPos, Vector2 endPos)
+        {
+            DrawBazier(startPos, endPos, new Color(1, 1, 1, 0.4f), new Color(1, 1, 1, 0.3f));
+        }
+
+        public static void DrawBazier(Vector2 startPos, Vector2 endPos, Color color, Color color2, float inSize = 2f, float outSize = 5f)
         {
             float tgl = Vector2.Distance(startPos, endPos) * 0.4f;
             Vector3 startTangent = startPos + Vector2.right * tgl;
             Vector3 endTangent = endPos - Vector2.right * tgl;
-            UnityEditor.Handles.DrawBezier(startPos, endPos, startTangent, endTangent, color, null, 2f);
-            UnityEditor.Handles.DrawBezier(startPos, endPos, startTangent, endTangent, new Color(1, 1, 1, 0.3f), null, 5f);
+            UnityEditor.Handles.DrawBezier(startPos, endPos, startTangent, endTangent, color, null, inSize);
+            UnityEditor.Handles.DrawBezier(startPos, endPos, startTangent, endTangent, color2, null, outSize);
 
             //Draw arrow
             UnityEditor.Handles.DrawLine(endPos + new Vector2(-10, -6), endPos);

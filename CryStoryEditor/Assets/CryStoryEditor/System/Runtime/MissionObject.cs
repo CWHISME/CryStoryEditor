@@ -71,7 +71,13 @@ namespace CryStory.Runtime
                     int count = r.ReadInt32();
                     for (int i = 0; i < count; i++)
                     {
-                        NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(r.ReadString());
+                        string fullName = r.ReadString();
+                        NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(fullName);
+                        if (node == null)
+                        {
+                            Debug.LogError("Error: The Mission Node [" + fullName + "] Was Lost!");
+                            return;
+                        }
                         node.Deserialize(r);
                         NodeModifier.SetContent(node, _mission);
                     }

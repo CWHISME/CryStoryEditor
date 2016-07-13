@@ -252,7 +252,14 @@ namespace CryStory.Runtime
                         _nextNodeList.Add(node);
                 }
                 else {
-                    node = ReflectionHelper.CreateInstance<NodeModifier>(r.ReadString());
+                    string fullName = r.ReadString();
+                    node = ReflectionHelper.CreateInstance<NodeModifier>(fullName);
+                    if (node == null)
+                    {
+                        UnityEngine.Debug.LogError("Error: The Mission Node [" + fullName + "] Was Lost!");
+                        return;
+                    }
+
                     SetParent(node, this);
                     node.Deserialize(r);
                 }
@@ -260,7 +267,7 @@ namespace CryStory.Runtime
         }
 
         public bool HaveParent { get { return _lastNode != null; } }
-        public NodeBase Parent { get { return _lastNode; } }
+        public NodeModifier Parent { get { return _lastNode; } }
 
 
 

@@ -260,8 +260,15 @@ namespace CryStory.Editor
             EditorGUI.DrawTextureTransparent(_contentRect, ResourcesManager.GetInstance.texBackground);
 
             if (_editMission == null)
-                StoryEditor.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
-            else MissionEditor.GetInstance.OnGUI(this, _editMission.Nodes);
+            {
+                if (Application.isPlaying) StoryEditorRuntime.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
+                else StoryEditor.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
+            }
+            else
+            {
+                if (Application.isPlaying) MissionEditorRuntime.GetInstance.OnGUI(this, _editMission.Nodes);
+                else MissionEditor.GetInstance.OnGUI(this, _editMission.Nodes);
+            }
 
             if (_storyObject._haveNullData)
             {
@@ -302,6 +309,9 @@ namespace CryStory.Editor
             }
 
             EditorGUI.LabelField(new Rect(btnW, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + (_editMission == null ? _storyObject.name : _storyObject.name + " -> " + _editMission._name) : "")), style);
+
+            //运行时不允许存储加载
+            if (Application.isPlaying) return;
 
             GUIStyle saveStyle = new GUIStyle(ResourcesManager.GetInstance.skin.button);
             saveStyle.normal.textColor = new Color32(255, 64, 180, 255);

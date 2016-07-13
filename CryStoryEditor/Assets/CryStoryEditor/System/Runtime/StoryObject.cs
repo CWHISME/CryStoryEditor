@@ -28,19 +28,10 @@ namespace CryStory.Runtime
 
         public string _description = "This Story have not description.";
 
+        [SerializeField]
         private string _storyData;
-        //private MissionData _coreMission;
 
-        //public MissionData CoreMission
-        //{
-        //    get { return _coreMission; }
-        //    set
-        //    {
-        //        _coreMission = value;
-        //        _coreMission._missionObject._mission.IsCoreNode = false;
-        //    }
-        //}
-
+        [SerializeField]
         private List<MissionData> _missionSaveList = new List<MissionData>();
 
         public MissionData[] MisisonDatas { get { return _missionSaveList.ToArray(); } }

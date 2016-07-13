@@ -83,12 +83,8 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryRunner.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\ReflectionHelper.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\Singleton.cs" />
-    <Compile Include="Assets\New5555Condition.cs" />
     <Compile Include="Assets\NewAction.cs" />
     <Compile Include="Assets\NewCondition.cs" />
-    <Compile Include="Assets\NewEvdfdgdgz453543ent.cs" />
-    <Compile Include="Assets\NewEvent.cs" />
-    <Compile Include="Assets\NewnibniEvent.cs" />
     <Compile Include="Assets\Test.cs" />
     <Compile Include="Assets\This_is_Test.cs" />
   </ItemGroup>

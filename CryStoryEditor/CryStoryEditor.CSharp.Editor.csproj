@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Editor:5</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.4p6</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -100,10 +102,13 @@
   <ItemGroup>
     <Compile Include="Assets\CryStoryEditor\System\Editor\CreateScriptHelper.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\MainPageEditor.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\MissionEditorRuntime.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\MissionEditor.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\NodeContentEditorRuntime.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\NodeContentEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\NodeEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\ResourcesManager.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditorRuntime.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryEditorWindow.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\StoryObjectInspector.cs" />

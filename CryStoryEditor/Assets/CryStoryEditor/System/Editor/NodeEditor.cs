@@ -8,6 +8,7 @@ using CryStory.Runtime;
 using Event = UnityEngine.Event;
 using System.Collections.Generic;
 using UnityEditor;
+using System;
 
 namespace CryStory.Editor
 {
@@ -26,7 +27,7 @@ namespace CryStory.Editor
         protected NodeModifier _currentNode;
         protected Rect _currentNodeRect;
         protected NodeModifier _currentHover;
-        private bool _isConnecting = false;
+        protected bool _isConnecting = false;
         public void OnGUI(StoryEditorWindow window, NodeModifier[] nodes)
         {
             _contentRect = window._contentRect;
@@ -87,27 +88,8 @@ namespace CryStory.Editor
             }
         }
 
-        private void DrawNodes(NodeModifier[] nodeList, bool coreNode = false)
-        {
-            for (int i = 0; i < nodeList.Length; i++)
-            {
-                NodeModifier node = nodeList[i];
-                Rect nodeRect = DrawNodeRect(node, coreNode);
 
-                //Draw conection bazier line
-                DrawBazierLine(node);
-                //Draw Node
-                DrawNodeSlot(node, nodeRect);
-
-                DrawNodes(node.GetNextNodes(node));
-
-                if (_isConnecting) continue;
-
-                DragNodeEvent(node, nodeRect);
-            }
-        }
-
-        private void DragNodeEvent(NodeModifier node, Rect nodeRect)
+        protected void DragNodeEvent(NodeModifier node, Rect nodeRect)
         {
             #region Drag Event
             if (Event.current != null)
@@ -153,22 +135,14 @@ namespace CryStory.Editor
             GUI.Box(background, "", ResourcesManager.GetInstance.StyleBackground);
 
             _leftScrollPosition = GUI.BeginScrollView(new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height - _window._topHeight), _leftScrollPosition, new Rect(0, _window._topHeight, _window._leftWidth - 30, _window._windowRect.height - _window._topHeight), false, true, ResourcesManager.GetInstance.skin.horizontalScrollbar, ResourcesManager.GetInstance.skin.verticalScrollbar);
-            //_leftScrollPosition = GUILayout.BeginScrollView(_leftScrollPosition, false, true, _window.skin.horizontalScrollbar, _window.skin.verticalScrollbar, _window.skin.GetStyle("Background"), GUILayout.Width(_window._leftWidth));
 
-            //Reset Left Scroll Area Height
             _heightLeft = _window._topHeight + 5;
-            //GUILayout.Space(height);
-            //for (int i = 0; i < 12; i++)
-            //{
-            //    GUILayout.Label("Name: ");
-            //}
+
             if (_currentNode != null)
             {
-                //EditorGUILayout.BeginHorizontal();
                 #region Modify Name
                 EditorGUI.LabelField(GetGUILeftScrollAreaRect(50, 18, false), "Name: ");
                 Rect editNameRect = GetGUILeftScrollAreaRect(50, 150, 18);// new Rect(50, _heightLeft, 150, 18);
-                //LeftHeightSpace(18f);
 
                 string oldName = _currentNode._name;
                 EditorGUI.BeginChangeCheck();
@@ -177,7 +151,6 @@ namespace CryStory.Editor
                 {
                     OnNodeNameChange(_currentNode, oldName);
                 }
-                //EditorGUILayout.EndHorizontal();
 
                 if (Event.current != null)
                 {
@@ -194,7 +167,6 @@ namespace CryStory.Editor
                 #endregion
 
                 #region Next Nodes
-                //GUILayout.Space(20);
                 NodeModifier[] nodes = _currentNode.NextNodes;
                 if (nodes.Length > 0)
                 {
@@ -205,20 +177,15 @@ namespace CryStory.Editor
                     EditorGUI.LabelField(GetGUILeftScrollAreaRect(_window._leftWidth, 30), "Next Nodes:", style);
                     for (int i = 0; i < nodes.Length; i++)
                     {
-                        //EditorGUILayout.BeginHorizontal();
                         Rect rect = GetGUILeftScrollAreaRect(_window._leftWidth, 20, false);
                         EditorGUI.LabelField(rect, nodes[i]._name);
-                        //Rect rect = EditorGUILayout.GetControlRect(false, 20);
-                        //rect.width = 80f;
                         if (GUI.Button(GetGUILeftScrollAreaRect(_window._leftWidth - 68f, 50f, 20f), "<color=red>Delete</color>", ResourcesManager.GetInstance.skin.button))
                         {
                             if (nodes[i].Parent == _currentNode)
                                 NodeModifier.SetToDefaltContent(nodes[i]);
                             else _currentNode.Remove(nodes[i]);
-                            //_currentNode.Remove(nodes[i]);
                             break;
                         }
-                        //EditorGUILayout.EndHorizontal();
                     }
                 }
                 #endregion
@@ -230,7 +197,6 @@ namespace CryStory.Editor
 
 
             GUI.EndScrollView();
-            //GUILayout.EndScrollView();
         }
 
         private float _heightLeft;
@@ -292,9 +258,54 @@ namespace CryStory.Editor
         }
 
 
+        protected void DrawDebugBazierLine(NodeModifier node)
+        {
+            //NodeModifier node0 = node.Parent;
+            //if (node0 != null)
+            //{
+            //    Rect nodeRect1 = Tools.GetNodeRect(CalcRealPosition(node0._position));
+            //    Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools._nodeHalfHeight);
+            //    Vector2 pos2 = CalcRealPosition(new Vector2(node._position.x, node._position.y + Tools._nodeHalfHeight));
+
+            //    Tools.DrawBazier(pos1, pos2, Color.blue, Color.cyan, 0.1f, 10f);
+
+            //    //DrawDebugBazierLine(node.Parent);
+            //}
+            NodeModifier[] nextNodes = node.NextNodes;
+            for (int j = 0; j < nextNodes.Length; j++)
+            {
+                NodeModifier node2 = nextNodes[j];
+                Rect nodeRect1 = Tools.GetNodeRect(CalcRealPosition(node._position));
+                Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools._nodeHalfHeight);
+                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y + Tools._nodeHalfHeight));
+
+                Tools.DrawBazier(pos1, pos2, Color.magenta, new Color32(0, 255, 255, 180), 0.1f, 10f);
+            }
+        }
+
         //Virtual Method===========================
 
         protected virtual void InternalOnGUI() { }
+
+        protected virtual void DrawNodes(NodeModifier[] nodeList, bool coreNode = false)
+        {
+            for (int i = 0; i < nodeList.Length; i++)
+            {
+                NodeModifier node = nodeList[i];
+                Rect nodeRect = DrawNodeRect(node, coreNode);
+
+                //Draw conection bazier line
+                DrawBazierLine(node);
+                //Draw Node
+                DrawNodeSlot(node, nodeRect);
+
+                DrawNodes(node.GetNextNodes(node));
+
+                if (_isConnecting) continue;
+
+                DragNodeEvent(node, nodeRect);
+            }
+        }
 
         protected virtual void OnLinkNode(NodeModifier parent, NodeModifier child) { }
 
