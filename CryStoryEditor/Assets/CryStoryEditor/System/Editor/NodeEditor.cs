@@ -61,7 +61,8 @@ namespace CryStory.Editor
                     {
                         if (!_currentHover.CanSetParent(_currentNode))
                         {
-                            if (_currentNode.IsParent(_currentHover))
+                            //if (_currentNode.IsParent(_currentHover))
+                            if (!_currentNode.HaveParentNodeInNext())
                             {
                                 _currentNode.AddNextNode(_currentHover);
                                 return;
@@ -321,8 +322,8 @@ namespace CryStory.Editor
                 Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools._nodeHalfHeight);
                 Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y + Tools._nodeHalfHeight));
 
-                bool isParent = node.IsParent(node2);
-                if (isParent)
+                bool singleNode = node2.Parent != node;//node.IsParent(node2);
+                if (singleNode)
                     Tools.DrawBazier(pos1, pos2, Color.green);
                 else Tools.DrawBazier(pos1, pos2);
             }

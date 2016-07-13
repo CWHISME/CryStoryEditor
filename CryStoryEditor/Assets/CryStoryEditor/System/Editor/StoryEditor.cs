@@ -79,7 +79,10 @@ namespace CryStory.Editor
             if (Tools.MouseDoubleClick && Tools.IsValidMouseAABB(_currentNodeRect))
             {
                 if (Event.current.button == 0)
+                {
                     _window._editMission = _currentNode as Mission;
+                    _currentNode = null;
+                }
             }
 
         }

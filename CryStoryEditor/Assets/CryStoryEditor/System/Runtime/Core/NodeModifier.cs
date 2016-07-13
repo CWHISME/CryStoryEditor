@@ -29,7 +29,7 @@ namespace CryStory.Runtime
 
         public NodeModifier[] GetNextNodes(NodeModifier node)
         {
-            return _nextNodeList.FindAll((n) => !node.IsParent(n)).ToArray();
+            return _nextNodeList.FindAll((n) => !node.IsParent(n) && n.Parent == node).ToArray();
         }
         /// <summary>
         /// 重设其父节点
@@ -120,6 +120,15 @@ namespace CryStory.Runtime
             if (_lastNode == null) return false;
             if (_lastNode == node) return true;
             return _lastNode.IsParent(node);
+        }
+
+        /// <summary>
+        /// 检查子节点列表中，是否具有父节点存在（循环）
+        /// </summary>
+        /// <returns></returns>
+        public bool HaveParentNodeInNext()
+        {
+            return _nextNodeList.Find((n) => IsParent(n)) != null;
         }
 
         /// <summary>
