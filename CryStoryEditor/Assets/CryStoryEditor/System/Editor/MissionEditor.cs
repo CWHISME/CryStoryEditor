@@ -44,7 +44,7 @@ namespace CryStory.Editor
                 selectStyle = ResourcesManager.GetInstance.ActionNodeOn;
             }
 
-            GUI.Box(nodeRect, coreNode ? "<color=#00FF00><b>" + node._name + "</b></color>" : node._name, _currentNode == node ? selectStyle : style);
+            GUI.Box(nodeRect, coreNode ? "<color=#00FF00>" + node._name + "</color>" : node._name, _currentNode == node ? selectStyle : style);
 
             return nodeRect;
         }
