@@ -13,15 +13,15 @@ namespace CryStory.Runtime
 
         public StoryObject _runStory;
 
-        private Story _story;
+        private StoryManager _storyManager;
         void Start()
         {
-            _story = _runStory._Story;
+            _storyManager = new StoryManager(_runStory._Story);
         }
 
         void Update()
         {
-            if (_story != null) _story.Tick();
+            _storyManager.Tick();
         }
     }
 }

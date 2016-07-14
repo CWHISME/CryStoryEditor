@@ -59,6 +59,13 @@ namespace CryStory.Editor
                     if (_currentNode == _currentHover) return;
                     if (Tools.IsValidMouseAABB(Tools.GetNodeRect(CalcRealPosition(_currentHover._position))))
                     {
+                        //强制链接单节点
+                        if (Event.current.control)
+                        {
+                            _currentNode.AddNextNode(_currentHover);
+                            return;
+                        }
+
                         if (!_currentHover.CanSetParent(_currentNode))
                         {
                             //if (_currentNode.IsParent(_currentHover))

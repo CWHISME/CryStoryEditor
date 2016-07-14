@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.4p6</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -75,6 +77,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeModifier.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\StoryNode.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\UpdateNode.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\EnumRunMode.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\EnumResult.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\MissionObject.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\SetVar.cs" />

@@ -9,6 +9,5 @@ namespace CryStory.Runtime
 
     abstract public class StoryNode : NodeModifier
     {
-
     }
 }

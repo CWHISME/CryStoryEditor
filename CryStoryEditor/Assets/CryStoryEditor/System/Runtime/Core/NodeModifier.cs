@@ -18,6 +18,9 @@ namespace CryStory.Runtime
 
         private List<NodeModifier> _nextNodeList = new List<NodeModifier>();
 
+        private EnumRunMode _runMode = EnumRunMode.UntilSuccess;
+        public EnumRunMode RunMode { get { return _runMode; } }
+
         //protected bool _coreNode = true;
 
         ///// <summary>

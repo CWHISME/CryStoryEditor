@@ -17,9 +17,12 @@ namespace CryStory.Runtime
             _story = story;
         }
 
+        private bool _storyEnd = false;
         public void Tick()
         {
-            _story.Tick();
+            if (_storyEnd) return;
+            if (_story.Tick() != EnumResult.Running)
+                _storyEnd = true;
         }
     }
 }
