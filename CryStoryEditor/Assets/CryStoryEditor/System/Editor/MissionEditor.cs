@@ -46,6 +46,8 @@ namespace CryStory.Editor
 
             GUI.Box(nodeRect, coreNode ? "<color=#00FF00>" + node._name + "</color>" : node._name, _currentNode == node ? selectStyle : style);
 
+            DrawRunModeLable(node, nodeRect);
+
             return nodeRect;
         }
 
@@ -122,15 +124,19 @@ namespace CryStory.Editor
             Type baseType = typeof(CryStory.Runtime.Event);
             Type[] typeList = Array.FindAll<Type>(type, (t) => t.IsSubclassOf(baseType));
 
-            for (int i = 0; i < typeList.Length; i++)
-            {
-                Type nodeType = typeList[i];
-                menu.AddItem(new GUIContent("Create/Event/" + nodeType.Name), false, () =>
-                {
-                    //Debug.Log("Add Node: " + name);
-                    CreateNode(asm, nodeType);
-                });
-            }
+            AddMenu(typeList, menu, "Create/Event/");
+
+            //for (int i = 0; i < typeList.Length; i++)
+            //{
+            //    Type nodeType = typeList[i];
+            //    CategoryAttribute[] category = nodeType.GetCustomAttributes(typeof(CategoryAttribute), true) as CategoryAttribute[];
+            //    string cat = category.Length > 0 ? category[0].Category : "";
+            //    menu.AddItem(new GUIContent("Create/Event/" + cat + "/" + nodeType.Name), false, () =>
+            //        {
+            //            //Debug.Log("Add Node: " + name);
+            //            CreateNode(asm, nodeType);
+            //        });
+            //}
         }
 
         private void AddConditionMenu(GenericMenu menu, Type[] type, Assembly asm)
@@ -138,15 +144,17 @@ namespace CryStory.Editor
             Type baseType = typeof(CryStory.Runtime.Condition);
             Type[] typeList = Array.FindAll<Type>(type, (t) => t.IsSubclassOf(baseType));
 
-            for (int i = 0; i < typeList.Length; i++)
-            {
-                Type nodeType = typeList[i];
-                menu.AddItem(new GUIContent("Create/Condition/" + nodeType.Name), false, () =>
-                {
-                    //Debug.Log("Add Node: " + name);
-                    CreateNode(asm, nodeType);
-                });
-            }
+            AddMenu(typeList, menu, "Create/Condition/");
+
+            //for (int i = 0; i < typeList.Length; i++)
+            //{
+            //    Type nodeType = typeList[i];
+            //    menu.AddItem(new GUIContent("Create/Condition/" + nodeType.Name), false, () =>
+            //    {
+            //        //Debug.Log("Add Node: " + name);
+            //        CreateNode(asm, nodeType);
+            //    });
+            //}
         }
 
         private void AddActionMenu(GenericMenu menu, Type[] type, Assembly asm)
@@ -154,20 +162,37 @@ namespace CryStory.Editor
             Type baseType = typeof(CryStory.Runtime.Action);
             Type[] typeList = Array.FindAll<Type>(type, (t) => t.IsSubclassOf(baseType));
 
+            AddMenu(typeList, menu, "Create/Action/");
+
+            //for (int i = 0; i < typeList.Length; i++)
+            //{
+            //    Type nodeType = typeList[i];
+            //    menu.AddItem(new GUIContent("Create/Action/" + nodeType.Name), false, () =>
+            //    {
+            //        //Debug.Log("Add Node: " + name);
+            //        CreateNode(asm, nodeType);
+            //    });
+            //}
+        }
+
+        private void AddMenu(Type[] typeList, GenericMenu menu, string prefix)
+        {
             for (int i = 0; i < typeList.Length; i++)
             {
                 Type nodeType = typeList[i];
-                menu.AddItem(new GUIContent("Create/Action/" + nodeType.Name), false, () =>
-                {
-                    //Debug.Log("Add Node: " + name);
-                    CreateNode(asm, nodeType);
-                });
+                CategoryAttribute[] category = nodeType.GetCustomAttributes(typeof(CategoryAttribute), true) as CategoryAttribute[];
+                string cat = category.Length > 0 ? category[0].Category + "/" : "";
+                menu.AddItem(new GUIContent(prefix + cat + nodeType.Name), false, () =>
+               {
+                   //Debug.Log("Add Node: " + name);
+                   CreateNode(nodeType);
+               });
             }
         }
 
-        private void CreateNode(Assembly asm, Type type)
+        private void CreateNode(Type type)
         {
-            object o = asm.CreateInstance(type.FullName);
+            object o = ReflectionHelper.Asm.CreateInstance(type.FullName);
             if (o != null)
             {
                 Runtime.NodeModifier node = o as Runtime.NodeModifier;

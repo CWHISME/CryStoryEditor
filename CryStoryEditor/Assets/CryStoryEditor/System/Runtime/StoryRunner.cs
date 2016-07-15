@@ -23,5 +23,6 @@ namespace CryStory.Runtime
         {
             _storyManager.Tick();
         }
+
     }
 }

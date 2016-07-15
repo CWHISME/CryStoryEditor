@@ -24,5 +24,6 @@ namespace CryStory.Runtime
             if (_story.Tick() != EnumResult.Running)
                 _storyEnd = true;
         }
+
     }
 }

@@ -36,6 +36,14 @@ namespace CryStory.Editor
         public GUIStyle ActionNode { get { return skin.GetStyle("ActionNode"); } }
         public GUIStyle ActionNodeOn { get { return skin.GetStyle("ActionNodeOn"); } }
 
+        private GUIStyle fontStyle = new GUIStyle();
+        public GUIStyle GetFontStyle(int fontSize)
+        {
+            fontStyle.normal.textColor = Color.white;
+            fontStyle.fontSize = fontSize;
+            return fontStyle;
+        }
+
         private TextAsset helpCN;
         private TextAsset helpEN;
         public string HelpCN { get { return helpCN ? helpCN.text : "错误：没有找到帮助文件!"; } }

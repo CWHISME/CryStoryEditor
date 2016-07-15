@@ -23,6 +23,7 @@ namespace CryStory.Runtime
                 result = OnStart();
                 if (result == EnumResult.Success)
                     _isInit = true;
+                else if (result == EnumResult.Failed) return EnumResult.Failed;
                 return EnumResult.Running;
             }
 

@@ -6,20 +6,26 @@
 using UnityEngine;
 using System.Collections;
 using CryStory.Runtime;
+using UnityEditor;
+using System.Collections.Generic;
 
 namespace CryStory.Editor
 {
     public class NodeContentEditorRuntime<T> : NodeEditor<T> where T : class, new()
     {
+
+        private List<NodeModifier> _alreadyDrawNode = new List<NodeModifier>(10);
+
         protected override void DrawNodes(NodeModifier[] nodeList, bool coreNode = false)
         {
+            _alreadyDrawNode.Clear();
 
             //DrawChildNodes(nodeList);
             for (int i = 0; i < nodeList.Length; i++)
             {
                 NodeModifier node = nodeList[i];
 
-                DrawChildNodes(node.NextNodes);
+                //DrawChildNodes(node.NextNodes);
                 DrawParentNodes(node, coreNode);
             }
         }
@@ -29,6 +35,9 @@ namespace CryStory.Editor
             for (int i = 0; i < nodeList.Length; i++)
             {
                 NodeModifier node = nodeList[i];
+
+                if (_alreadyDrawNode.Contains(node)) continue;
+
                 DrawNodeRect(node, coreNode);
 
                 //Draw conection bazier line
@@ -38,11 +47,10 @@ namespace CryStory.Editor
                 //Draw Node
                 //DrawNodeSlot(node, nodeRect);
 
+                _alreadyDrawNode.Add(node);
+
                 DrawChildNodes(node.GetNextNodes(node));
 
-                //if (_isConnecting) continue;
-
-                //DragNodeEvent(node, nodeRect);
             }
         }
 
@@ -54,10 +62,8 @@ namespace CryStory.Editor
 
             //Draw conection bazier line
             DrawDebugBazierLine(node);
-            //Draw Debug Line
-            //DrawDebugBazierLine(node);
-            //Draw Node
-            //DrawNodeSlot(node, nodeRect);
+
+            DrawChildNodes(node.NextNodes);
 
             DrawParentNodes(node.Parent);
 
@@ -67,9 +73,18 @@ namespace CryStory.Editor
         {
             Rect rect = base.DrawNodeRect(node, coreNode);
             DragNodeEvent(node, rect);
+
+            if (coreNode) DrawRunningNodeLabel(rect);
             //if (node.Parent != null)
             //    DrawNodeRect(node.Parent);
             return rect;
+        }
+
+        protected virtual void DrawRunningNodeLabel(Rect rect)
+        {
+            Rect labelRect = new Rect(rect);
+            labelRect.position = new Vector2(labelRect.x + (labelRect.width / 2 - 30), labelRect.y + labelRect.height);
+            EditorGUI.LabelField(labelRect, "<color=#7CFC00>Running...</color>", ResourcesManager.GetInstance.GetFontStyle(13));
         }
     }
 }

@@ -49,6 +49,9 @@ namespace CryStory.Editor
 
             DragNodeEvent(node, nodeRect);
 
+            DrawRunModeLable(node, nodeRect);
+
+            if (coreNode) DrawRunningNodeLabel(nodeRect);
             //if (node.Parent != null)
             //    DrawNodeRect(node.Parent);
 

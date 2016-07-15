@@ -27,6 +27,11 @@ namespace CryStory.Runtime
         public bool AddContentNode(NodeModifier node)
         {
             if (_contenNodeList.Contains(node) || node == null) return false;
+            //不允许已运行节点的子节点添加
+            for (int i = 0; i < _contenNodeList.Count; i++)
+            {
+                if (_contenNodeList[i].IsChild(node)) return false;
+            }
             _contenNodeList.Add(node);
             //node.SetContent(this);
             return true;
@@ -63,7 +68,7 @@ namespace CryStory.Runtime
                 {
                     NodeModifier node = _contenNodeList[i];
                     if (result == EnumResult.Failed)
-                        switch (RunMode)
+                        switch (node.RunMode)
                         {
                             case EnumRunMode.UntilSuccess:
                                 continue;
@@ -113,6 +118,13 @@ namespace CryStory.Runtime
         protected override void OnEnd()
         {
             base.OnEnd();
+
+            //NodeModifier[] nodes = _contenNodeList.ToArray();
+            //_contenNodeList.AddRange(_tempNodeList);
+            //for (int i = 0; i < nodes.Length; i++)
+            //{
+            //    _contenNodeList.Remove(nodes[i]);
+            //}
             _contenNodeList.Clear();
             _contenNodeList.AddRange(_tempNodeList);
         }

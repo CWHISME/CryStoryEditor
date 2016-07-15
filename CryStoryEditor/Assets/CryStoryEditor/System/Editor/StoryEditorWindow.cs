@@ -22,6 +22,7 @@ namespace CryStory.Editor
             float h = Screen.height * 0.7f;
             float w = Screen.width * 0.7f;
             StoryWindow.position = new Rect(Screen.width - w, Screen.height - h, w, h);
+
             StoryWindow.Show();
         }
 

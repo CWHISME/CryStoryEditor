@@ -291,6 +291,15 @@ namespace CryStory.Editor
             }
         }
 
+        //protected virtual void DrawEditRunMode()
+        //{
+        //    if (_currentNode != null)
+        //    {
+        //        Rect rect = new Rect(_currentNodeRect);
+        //        rect.
+        //    }
+        //}
+
         //Virtual Method===========================
 
         protected virtual void InternalOnGUI() { }
@@ -344,7 +353,32 @@ namespace CryStory.Editor
             //GUI.Box(nodeRect, coreNode? "<color=#00FF00>" + node._name+"</color>": node._name, _currentNode == node ? (coreNode ? ResourcesManager.GetInstance.CoreNodeOn : ResourcesManager.GetInstance.NodeOn) : (coreNode ? ResourcesManager.GetInstance.CoreNode : ResourcesManager.GetInstance.Node));
             GUI.Box(nodeRect, coreNode ? "<color=#00FF00>" + node._name + "</color>" : node._name, _currentNode == node ? ResourcesManager.GetInstance.NodeOn : ResourcesManager.GetInstance.Node);
 
+            DrawRunModeLable(node, nodeRect);
+
+
             return nodeRect;
+        }
+
+        protected virtual void DrawRunModeLable(NodeModifier node, Rect nodeRect)
+        {
+            Rect rect = new Rect(nodeRect);
+            rect.position = new Vector2(rect.position.x + (rect.width / 2 - 5), rect.position.y - 15);
+            GUIStyle style = new GUIStyle();
+            switch (node.RunMode)
+            {
+                case EnumRunMode.DirectRuning:
+                    GUI.Box(rect, "<color=#00BFFF>→</color>", style);
+                    break;
+                case EnumRunMode.UntilSuccess:
+                    GUI.Box(rect, "<color=#00FF00>✔</color>", style);
+                    break;
+                case EnumRunMode.ReturnParentNode:
+                    GUI.Box(rect, "<color=#FFFF00>←</color>", style);
+                    break;
+                case EnumRunMode.StopNodeList:
+                    GUI.Box(rect, "<color=red>✘</color>", style);
+                    break;
+            }
         }
 
         protected virtual void DrawNodeSlot(NodeModifier node, Rect nodeRect)
@@ -405,7 +439,8 @@ namespace CryStory.Editor
 
                 LeftHeightSpace(5);
 
-                EditorGUI.LabelField(GetGUILeftScrollAreaRect(50, 18, false), filed.Name);
+                Vector2 size = EditorGUIUtility.GetBuiltinSkin(EditorSkin.Scene).label.CalcSize(new GUIContent(filed.Name));
+                EditorGUI.LabelField(GetGUILeftScrollAreaRect(size.x, size.y, false), filed.Name);
                 Rect rect = GetGUILeftScrollAreaRect(60, 150, 18);
                 switch (filed.FieldType.ToString())
                 {
