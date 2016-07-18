@@ -195,10 +195,11 @@ namespace CryStory.Editor
             object o = ReflectionHelper.Asm.CreateInstance(type.FullName);
             if (o != null)
             {
-                Runtime.NodeModifier node = o as Runtime.NodeModifier;
+                Runtime.StoryNode node = o as Runtime.StoryNode;
                 if (node == null) return;
                 node._name = type.Name;
                 node._position = CalcVirtualPosition(_mousePosition);
+                node.SetID(_window._editMission.GenerateID());
                 Runtime.NodeModifier.SetContent(node, _window._editMission);
                 //node.SetContent(_window._editMission);
             }

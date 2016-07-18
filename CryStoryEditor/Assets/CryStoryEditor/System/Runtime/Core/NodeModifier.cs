@@ -12,16 +12,16 @@ namespace CryStory.Runtime
 
     public class NodeModifier : NodeBase, ISerialize
     {
-        private NodeModifier _lastNode = null;
 
-        private NodeContent _content = null;
-
-        private List<NodeModifier> _nextNodeList = new List<NodeModifier>();
+        public int _id;
 
         public EnumRunMode RunMode = EnumRunMode.UntilSuccess;
-        //public EnumRunMode RunMode { get { return _runMode; } set { _runMode = value; } }
 
-        //protected bool _coreNode = true;
+        protected NodeModifier _lastNode = null;
+
+        protected NodeContent _content = null;
+
+        protected List<NodeModifier> _nextNodeList = new List<NodeModifier>();
 
         ///// <summary>
         ///// 是否是核心节点，即：起始节点
@@ -182,6 +182,16 @@ namespace CryStory.Runtime
         }
 
         /// <summary>
+        /// 获取顶级父容器
+        /// </summary>
+        public NodeModifier GetTopParent()
+        {
+            if (Parent != null)
+                return Parent.GetTopParent();
+            return this;
+        }
+
+        /// <summary>
         /// 从父容器中删除自己
         /// </summary>
         private void RemoveFromContent()
@@ -192,6 +202,38 @@ namespace CryStory.Runtime
                 _content = null;
             }
         }
+
+        //========ID================================
+
+        public NodeModifier GetNodeByID(int id)
+        {
+            for (int i = 0; i < _nextNodeList.Count; i++)
+            {
+                NodeModifier node = _nextNodeList[i];
+                if (node == null) continue;
+                if (CompareNodeID(node, id))
+                    return node;
+
+                NodeModifier node2 = node.GetNodeByID(id);
+                if (node2 != null)
+                    return node2;
+            }
+
+            return null;
+        }
+
+        public void SetID(int id)
+        {
+            _id = id;
+        }
+
+        private bool CompareNodeID(NodeModifier node, int id)
+        {
+            if (node == null) return false;
+            return node._id == id;
+        }
+
+        //Static=============================================
 
         public static void Delete(NodeModifier node)
         {
@@ -229,6 +271,8 @@ namespace CryStory.Runtime
             SetContent(node, node.GetContentNode());
         }
 
+        //Save===========================================
+
         public void Serialize(BinaryWriter w)
         {
             w.Write(UnityEngine.JsonUtility.ToJson(this));
@@ -236,7 +280,7 @@ namespace CryStory.Runtime
             for (int i = 0; i < _nextNodeList.Count; i++)
             {
                 NodeModifier node = _nextNodeList[i];
-                w.Write(ParentToLayer(node));
+                w.Write(node._id);//(ParentToLayer(node));
                 bool isSingleNode = node.Parent != this;
                 w.Write(isSingleNode);
                 if (!isSingleNode)
@@ -246,6 +290,8 @@ namespace CryStory.Runtime
                 }
 
             }
+
+            OnSaved(w);
         }
 
         public void Deserialize(BinaryReader r)
@@ -254,12 +300,13 @@ namespace CryStory.Runtime
             int count = r.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                int layer = r.ReadInt32();
+                //int layer = r.ReadInt32();
+                int id = r.ReadInt32();
                 bool isSingleNode = r.ReadBoolean();
                 NodeModifier node;
                 if (isSingleNode)
                 {
-                    node = LayerToParent(layer);
+                    node = GetTopParent().GetNodeByID(id);//LayerToParent(layer);
                     if (node != null)
                         _nextNodeList.Add(node);
                 }
@@ -276,12 +323,16 @@ namespace CryStory.Runtime
                     node.Deserialize(r);
                 }
             }
+
+            OnLoaded(r);
         }
 
         public bool HaveParent { get { return _lastNode != null; } }
         public NodeModifier Parent { get { return _lastNode; } }
+        public NodeContent Content { get { return _content; } }
 
-
+        protected virtual void OnSaved(BinaryWriter w) { }
+        protected virtual void OnLoaded(BinaryReader r) { }
 
     }
 }

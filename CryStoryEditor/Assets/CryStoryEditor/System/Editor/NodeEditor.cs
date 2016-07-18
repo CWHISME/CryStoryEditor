@@ -435,7 +435,7 @@ namespace CryStory.Editor
             for (int i = 0; i < fileds.Length; i++)
             {
                 System.Reflection.FieldInfo filed = fileds[i];
-                if (filed.Name == "_name" || filed.Name == "_position") continue;
+                if (filed.Name.StartsWith("_")) continue;
 
                 LeftHeightSpace(5);
 
