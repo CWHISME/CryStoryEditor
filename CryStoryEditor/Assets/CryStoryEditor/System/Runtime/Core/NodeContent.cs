@@ -33,6 +33,7 @@ namespace CryStory.Runtime
                 if (_contenNodeList[i].IsChild(node)) return false;
             }
             _contenNodeList.Add(node);
+            OnAddedContentNode(node);
             //node.SetContent(this);
             return true;
         }
@@ -128,5 +129,7 @@ namespace CryStory.Runtime
             _contenNodeList.Clear();
             _contenNodeList.AddRange(_tempNodeList);
         }
+
+        protected virtual void OnAddedContentNode(NodeModifier node) { }
     }
 }

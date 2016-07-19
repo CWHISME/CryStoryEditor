@@ -4,6 +4,7 @@
 *Func:
 **********************************************************/
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace CryStory.Runtime
@@ -11,6 +12,8 @@ namespace CryStory.Runtime
 
     public class Mission : DragModifier
     {
+
+        public MissionDescription _missionDescription;
 
         private List<int> _idList = new List<int>();
 
@@ -23,10 +26,11 @@ namespace CryStory.Runtime
             return id;
         }
 
-        protected override void OnSaved(System.IO.BinaryWriter w)
+        /// <summary>
+        /// 校验及保存ID
+        /// </summary>
+        public override void Serialize(System.IO.BinaryWriter w)
         {
-            base.OnSaved(w);
-
             List<int> notUsedID = new List<int>();
             for (int i = 0; i < _idList.Count; i++)
             {
@@ -38,6 +42,28 @@ namespace CryStory.Runtime
             {
                 _idList.Remove(notUsedID[i]);
             }
+
+            w.Write(_idList.Count);
+            for (int i = 0; i < _idList.Count; i++)
+            {
+                w.Write(_idList[i]);
+            }
+
+            w.Write(_missionDescription.GetType().FullName);
+            _missionDescription.Serialize(w);
+        }
+
+        public override void Deserialize(BinaryReader r)
+        {
+            int count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                _idList.Add(r.ReadInt32());
+            }
+
+            string name = r.ReadString();
+            _missionDescription = ReflectionHelper.CreateInstance<MissionDescription>(name);
+            _missionDescription.Deserialize(r);
         }
 
         public void OnAbort()

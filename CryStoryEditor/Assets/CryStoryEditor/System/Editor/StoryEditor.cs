@@ -29,8 +29,13 @@ namespace CryStory.Editor
             }
         }
 
-        protected override void DrawLeftArribute()
+        protected override void DrawLeftArribute(object o)
         {
+            EditorGUI.LabelField(GetGUILeftScrollAreaRect(0, 150, 18), "Mission Description:");
+            LeftHeightSpace(10);
+            System.Reflection.FieldInfo info = o.GetType().GetField("_missionDescription");
+            object o_o = info.GetValue(o);
+            base.DrawLeftArribute(o_o);
         }
 
         /// <summary>

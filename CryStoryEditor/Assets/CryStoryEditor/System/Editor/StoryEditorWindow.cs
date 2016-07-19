@@ -71,8 +71,6 @@ namespace CryStory.Editor
             _windowRect = new Rect(0, 0, position.width, position.height);
             _contentRect = new Rect(_leftWidth, _topHeight, position.width, position.height);
 
-            //========Version          ==============
-            ShowVersion();
             //========Story Editor ==============
             if (MainPageEditor.GetInstance.OnGUI(this)) return;
 
@@ -102,6 +100,8 @@ namespace CryStory.Editor
             //========Top Button ==============
             ShowTitle();
             ShowTopMenuUI();
+            //========Version          ==============
+            ShowVersion();
         }
 
         private Vector2 _repairPageScroll;
@@ -218,6 +218,13 @@ namespace CryStory.Editor
             //EditorGUI.LabelField(new Rect(_windowRect.center.x - 38, _windowRect.center.y - 50, 500, 20), "Story Description:");
             //_storyObject._description = EditorGUI.TextArea(new Rect(_windowRect.center.x - 38, _windowRect.center.y, 500, 200), _storyObject._description);
             GUILayout.Space(_topHeight + 10);
+            GUILayout.Label("Mission Description Template:");
+            Type[] types = ReflectionHelper.GetTypeSubclass(typeof(MissionDescription));
+            string[] str = Array.ConvertAll<Type, string>(types, (i) => i.Name);
+            int index = Array.FindIndex<Type>(types, (t) => t.FullName == _Story._missionDescriptionType);
+            index = EditorGUILayout.Popup(index, str);
+            _Story._missionDescriptionType = types[index].FullName;
+
             GUILayout.Label("Story Description:");
             GUILayout.Space(10);
             _storyObject._description = GUILayout.TextArea(_storyObject._description, GUILayout.MaxHeight(100));

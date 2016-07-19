@@ -4,6 +4,7 @@
 *Func:
 **********************************************************/
 
+using System;
 using System.Reflection;
 
 namespace CryStory
@@ -29,6 +30,12 @@ namespace CryStory
         public static T CreateInstance<T>(string fullName) where T : class, new()
         {
             return CreateInstance(fullName) as T;
+        }
+
+        public static Type[] GetTypeSubclass(Type type)
+        {
+            Type[] types = Asm.GetTypes();
+            return Array.FindAll<Type>(types, (t) => t.IsSubclassOf(type));
         }
 
     }

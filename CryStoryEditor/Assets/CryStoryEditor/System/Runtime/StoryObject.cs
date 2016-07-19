@@ -4,6 +4,7 @@
 *Func:
 **********************************************************/
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace CryStory.Runtime
@@ -28,8 +29,7 @@ namespace CryStory.Runtime
 
         public string _description = "This Story have not description.";
 
-        [SerializeField]
-        private string _storyData;
+        public byte[] _SaveData;
 
         [SerializeField]
         private List<MissionData> _missionSaveList = new List<MissionData>();
@@ -161,7 +161,15 @@ namespace CryStory.Runtime
 
         public void Save()
         {
-            _storyData = JsonUtility.ToJson(_story);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (BinaryWriter w = new BinaryWriter(ms))
+                {
+                    w.Write(JsonUtility.ToJson(_story));
+                }
+                _SaveData = ms.ToArray();
+            }
+
 
             _haveNullData = false;
 
@@ -223,7 +231,17 @@ namespace CryStory.Runtime
 
         public void Load()
         {
-            _story = JsonUtility.FromJson<Story>(_storyData);
+            if (_SaveData.Length > 0)
+                using (MemoryStream ms = new MemoryStream(_SaveData))
+                {
+                    using (BinaryReader r = new BinaryReader(ms))
+                    {
+                        string storyData = r.ReadString();
+                        _story = JsonUtility.FromJson<Story>(storyData);
+                    }
+                    _SaveData = ms.ToArray();
+                }
+
             if (_story == null)
                 _story = new Story();
 
@@ -237,6 +255,7 @@ namespace CryStory.Runtime
                     _haveNullData = true;
                     continue;
                 }
+
                 data._missionObject.Load();
 
                 NodeModifier.SetContent(data._missionObject._mission, _story);

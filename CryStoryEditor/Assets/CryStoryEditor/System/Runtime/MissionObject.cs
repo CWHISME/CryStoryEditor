@@ -26,6 +26,7 @@ namespace CryStory.Runtime
                 using (BinaryWriter w = new BinaryWriter(ms))
                 {
                     w.Write(JsonUtility.ToJson(_mission));
+                    _mission.Serialize(w);
 
                     NodeModifier[] nodes = _mission.Nodes;
                     w.Write(nodes.Length);
@@ -67,6 +68,7 @@ namespace CryStory.Runtime
                 {
                     _mission = JsonUtility.FromJson<Mission>(r.ReadString());
                     if (_mission == null) _mission = new Mission();
+                    _mission.Deserialize(r);
 
                     int count = r.ReadInt32();
                     for (int i = 0; i < count; i++)

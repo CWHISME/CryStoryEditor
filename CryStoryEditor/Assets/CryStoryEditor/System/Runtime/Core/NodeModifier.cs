@@ -273,7 +273,7 @@ namespace CryStory.Runtime
 
         //Save===========================================
 
-        public void Serialize(BinaryWriter w)
+        public virtual void Serialize(BinaryWriter w)
         {
             w.Write(UnityEngine.JsonUtility.ToJson(this));
             w.Write(_nextNodeList.Count);
@@ -294,7 +294,7 @@ namespace CryStory.Runtime
             OnSaved(w);
         }
 
-        public void Deserialize(BinaryReader r)
+        public virtual void Deserialize(BinaryReader r)
         {
             UnityEngine.JsonUtility.FromJsonOverwrite(r.ReadString(), this);
             int count = r.ReadInt32();
