@@ -267,6 +267,9 @@ namespace CryStory.Editor
         {
             EditorGUI.DrawTextureTransparent(_contentRect, ResourcesManager.GetInstance.texBackground);
 
+            //更新ValueManager中MissionConstainer，避免Mission页面无法找到Mission
+            ValueManagerWindow.missionContainer = _editMission;
+
             if (_editMission == null)
             {
                 if (Application.isPlaying) StoryEditorRuntime.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
@@ -318,18 +321,23 @@ namespace CryStory.Editor
 
             EditorGUI.LabelField(new Rect(btnW, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + (_editMission == null ? _storyObject.name : _storyObject.name + " -> " + _editMission._name) : "")), style);
 
+            GUIStyle buttonStyle = new GUIStyle(ResourcesManager.GetInstance.skin.button);
+            if (GUI.Button(new Rect(_contentRect.width - 270, 3, 80, _titleHeight - 3), "Values", buttonStyle))
+            {
+                ValueManagerWindow.Open();
+            }
+
             //运行时不允许存储加载
             if (Application.isPlaying) return;
 
-            GUIStyle saveStyle = new GUIStyle(ResourcesManager.GetInstance.skin.button);
-            saveStyle.normal.textColor = new Color32(255, 64, 180, 255);
-            if (GUI.Button(new Rect(_contentRect.width - 180, 3, 80, _titleHeight - 3), "Reload", saveStyle))
+            buttonStyle.normal.textColor = new Color32(255, 64, 180, 255);
+            if (GUI.Button(new Rect(_contentRect.width - 180, 3, 80, _titleHeight - 3), "Reload", buttonStyle))
             {
                 _editMission = null;
                 _storyObject.Load();
             }
-            saveStyle.normal.textColor = new Color32(0, 255, 0, 255);
-            if (GUI.Button(new Rect(_contentRect.width - 90, 3, 80, _titleHeight - 3), "Save Story", saveStyle))
+            buttonStyle.normal.textColor = new Color32(0, 255, 0, 255);
+            if (GUI.Button(new Rect(_contentRect.width - 90, 3, 80, _titleHeight - 3), "Save Story", buttonStyle))
                 _storyObject.Save();
 
             //EditorGUILayout.EndHorizontal();

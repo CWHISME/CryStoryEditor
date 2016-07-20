@@ -4,14 +4,17 @@
 *Func:
 **********************************************************/
 
-public class CategoryAttribute : System.Attribute
+namespace CryStory.Runtime
 {
-
-    private string _category;
-    public string Category { get { return _category; } }
-
-    public CategoryAttribute(string category)
+    public class CategoryAttribute : System.Attribute
     {
-        _category = category;
+
+        private string _category;
+        public string Category { get { return _category; } }
+
+        public CategoryAttribute(string category)
+        {
+            _category = category;
+        }
     }
 }

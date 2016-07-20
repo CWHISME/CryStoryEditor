@@ -12,30 +12,47 @@ namespace CryStory.Runtime
 
     public class NodeModifier : NodeBase, ISerialize
     {
-
+        /// <summary>
+        /// 处于Mission中的唯一性ID
+        /// </summary>
         public int _id;
 
+        /// <summary>
+        /// 运行节点的模式
+        /// </summary>
         public EnumRunMode RunMode = EnumRunMode.UntilSuccess;
 
+        /// <summary>
+        /// 父节点引用
+        /// </summary>
         protected NodeModifier _lastNode = null;
 
+        /// <summary>
+        /// 容器节点引用
+        /// </summary>
         protected NodeContent _content = null;
 
+        /// <summary>
+        /// 子节点列表
+        /// </summary>
         protected List<NodeModifier> _nextNodeList = new List<NodeModifier>();
 
-        ///// <summary>
-        ///// 是否是核心节点，即：起始节点
-        ///// </summary>
-        //public bool IsCoreNode { get { return _coreNode; } set { _coreNode = value; } }
-
+        /// <summary>
+        /// 获取子节点列表
+        /// </summary>
         public NodeModifier[] NextNodes { get { return _nextNodeList.ToArray(); } }
 
+        /// <summary>
+        /// 获取指定节点的父节点是自身，并且指定节点并非子节点的父节点的子节点
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public NodeModifier[] GetNextNodes(NodeModifier node)
         {
             return _nextNodeList.FindAll((n) => !node.IsParent(n) && n.Parent == node).ToArray();
         }
         /// <summary>
-        /// 重设其父节点
+        ///设置父节点
         /// </summary>
         /// <param name="node"></param>
         public void SetParent(NodeModifier node)
@@ -50,6 +67,11 @@ namespace CryStory.Runtime
             //return true;
         }
 
+        /// <summary>
+        /// 是否可以将指定节点设置为自身的父节点
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public bool CanSetParent(NodeModifier node)
         {
             if (node == this) return false;
@@ -88,6 +110,10 @@ namespace CryStory.Runtime
             }
         }
 
+        /// <summary>
+        /// 获取容器节点
+        /// </summary>
+        /// <returns></returns>
         public NodeContent GetContentNode()
         {
             if (_content != null) return _content;
@@ -154,6 +180,12 @@ namespace CryStory.Runtime
             return false;
         }
 
+        /// <summary>
+        /// 父节点转化为Layer，即层级数(用于保存)
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="layer"></param>
+        /// <returns></returns>
         public int ParentToLayer(NodeModifier parent, int layer = 0)
         {
             layer++;
@@ -162,6 +194,11 @@ namespace CryStory.Runtime
             return _lastNode.ParentToLayer(parent, layer);
         }
 
+        /// <summary>
+        /// 通过层级数转化为父节点引用
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <returns></returns>
         public NodeModifier LayerToParent(int layer)
         {
             layer--;
@@ -204,7 +241,11 @@ namespace CryStory.Runtime
         }
 
         //========ID================================
-
+        /// <summary>
+        /// 通过ID获取节点引用
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public NodeModifier GetNodeByID(int id)
         {
             for (int i = 0; i < _nextNodeList.Count; i++)
@@ -234,7 +275,8 @@ namespace CryStory.Runtime
         }
 
         //Static=============================================
-
+        //以下静态方法将会同时处理设置中的各项引用、依赖关系
+        //<<<===============================================
         public static void Delete(NodeModifier node)
         {
             NodeModifier[] nodes = node.NextNodes;

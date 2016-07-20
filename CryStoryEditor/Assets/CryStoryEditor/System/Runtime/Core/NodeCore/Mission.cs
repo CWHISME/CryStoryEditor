@@ -13,10 +13,20 @@ namespace CryStory.Runtime
     public class Mission : DragModifier
     {
 
+        /// <summary>
+        /// 存储任务详情
+        /// </summary>
         public MissionDescription _missionDescription;
 
+        /// <summary>
+        /// 唯一ID，当然，只针对每一个Mission而言
+        /// </summary>
         private List<int> _idList = new List<int>();
 
+        /// <summary>
+        /// 为节点计算一个唯一ID
+        /// </summary>
+        /// <returns></returns>
         public int GenerateID()
         {
             int id;
@@ -51,6 +61,8 @@ namespace CryStory.Runtime
 
             w.Write(_missionDescription.GetType().FullName);
             _missionDescription.Serialize(w);
+
+            OnSaved(w);
         }
 
         public override void Deserialize(BinaryReader r)
@@ -64,6 +76,8 @@ namespace CryStory.Runtime
             string name = r.ReadString();
             _missionDescription = ReflectionHelper.CreateInstance<MissionDescription>(name);
             _missionDescription.Deserialize(r);
+
+            OnLoaded(r);
         }
 
         public void OnAbort()

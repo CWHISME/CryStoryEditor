@@ -7,7 +7,7 @@
 namespace CryStory.Runtime
 {
 
-    abstract public class Event : UpdateNode
+    abstract public class Event : StoryNode
     {
 
         private bool _trigger = false;

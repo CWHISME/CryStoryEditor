@@ -10,14 +10,30 @@ namespace CryStory.Runtime
 
     public class NodeContent : UpdateNode
     {
+        /// <summary>
+        /// 存储了位于该容器中所有一级节点
+        /// </summary>
         protected List<NodeModifier> _contenNodeList = new List<NodeModifier>(2);
 
+        /// <summary>
+        /// 运行时保存将要删除者
+        /// </summary>
         private List<NodeModifier> _toRemoveNode = new List<NodeModifier>();
+        /// <summary>
+        /// 运行时保存将要添加者
+        /// </summary>
         private List<NodeModifier> _toAddNode = new List<NodeModifier>();
 
+        /// <summary>
+        /// 获取所有处于该容器的一级节点
+        /// </summary>
         public NodeModifier[] Nodes { get { return _contenNodeList.ToArray(); } }
 
+        /// <summary>
+        /// 缓存，以备结束时恢复初始容器节点
+        /// </summary>
         private NodeModifier[] _tempNodeList;
+
         /// <summary>
         /// 将节点添加至该容器。注意：不会更改节点本身容器数据！
         /// 使用节点SetContent代替
@@ -38,6 +54,10 @@ namespace CryStory.Runtime
             return true;
         }
 
+        /// <summary>
+        /// 将一组节点添加至容器
+        /// </summary>
+        /// <param name="nodes"></param>
         public void AddContentNode(NodeModifier[] nodes)
         {
             for (int i = 0; i < nodes.Length; i++)
@@ -46,6 +66,9 @@ namespace CryStory.Runtime
             }
         }
 
+        /// <summary>
+        /// 添加一个节点至容器
+        /// </summary>
         public bool RemoveContenNode(NodeModifier node)
         {
             return _contenNodeList.Remove(node);
@@ -92,6 +115,9 @@ namespace CryStory.Runtime
             return EnumResult.Running;
         }
 
+        /// <summary>
+        /// 处理容器类节点运行中的增删情况
+        /// </summary>
         protected void ProcessNode()
         {
             //Remove
@@ -116,6 +142,9 @@ namespace CryStory.Runtime
             }
         }
 
+        /// <summary>
+        /// 结束之后，恢复节点
+        /// </summary>
         protected override void OnEnd()
         {
             base.OnEnd();

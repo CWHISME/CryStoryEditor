@@ -64,13 +64,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Attributes\ValueFuncAttribute.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Attributes\ValueNameSelectAttribute.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Attributes\CategoryAttribute.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\ValueContainer.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\DragModifier.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\ISerialize.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\IUpdatable.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissionDescription\MissionDescriptionTest.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissionDescription\MissionDescriptionSimpleRPG.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissionDescription\MissionDescription.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissionDescription\MissionDescriptionSimpleRPG.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissionDescription\MissionDescriptionTest.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeBase.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeContent.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Action.cs" />
@@ -81,6 +84,9 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeModifier.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\StoryNode.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\UpdateNode.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\Value.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\ValueFunctor.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\ValueScope.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\EnumResult.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\EnumRunMode.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\MissionObject.cs" />

@@ -10,14 +10,15 @@ namespace CryStory.Runtime
     [Category("Values")]
     public class SetVar : Action
     {
-        public string ThisIsTestVarForValueLength = "Test";
-        public float Var = 555;
+        [ValueNameSelect(ValueScope.Mission)]
+        public string ValueName;
+        public ValueFunctor Functor;
+        public string Value;
 
         protected override EnumResult OnStart()
         {
-            Var = Random.Range(99.9f, 111.6f);
-            //Debug.Log("Set Var Start");
-            return EnumResult.Failed;
+            GetMission._valueContainer[ValueName].OperationValue(Functor, Value);
+            return EnumResult.Success;
         }
     }
 }

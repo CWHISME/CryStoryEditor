@@ -7,7 +7,7 @@
 namespace CryStory.Runtime
 {
 
-    abstract public class UpdateNode : StoryNode
+    abstract public class UpdateNode : NodeModifier
     {
 
         private bool _isInit = false;
@@ -39,6 +39,9 @@ namespace CryStory.Runtime
             return EnumResult.Running;
         }
 
+        /// <summary>
+        /// 处于Runnig中，将会一直执行，当成功后进入Update，失败则直接退出
+        /// </summary>
         protected virtual EnumResult OnStart() { return EnumResult.Success; }
         protected virtual EnumResult OnUpdate() { return EnumResult.Success; }
         protected virtual void OnEnd() { }

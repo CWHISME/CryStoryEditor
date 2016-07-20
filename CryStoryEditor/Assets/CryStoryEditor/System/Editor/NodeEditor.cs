@@ -431,62 +431,85 @@ namespace CryStory.Editor
                 LeftHeightSpace(5);
 
                 Vector2 size = EditorGUIUtility.GetBuiltinSkin(EditorSkin.Scene).label.CalcSize(new GUIContent(filed.Name));
-                EditorGUI.LabelField(GetGUILeftScrollAreaRect(size.x, size.y, false), filed.Name);
+                EditorGUI.LabelField(GetGUILeftScrollAreaRect(size.x, size.y, size.x > 60), filed.Name);
                 Rect rect = GetGUILeftScrollAreaRect(60, 150, 18);
 
 
-                switch (filed.FieldType.ToString())
-                {
-                    case "System.Single":
-                        filed.SetValue(o, EditorGUI.FloatField(rect, (float)filed.GetValue(o)));
-                        break;
-                    case "System.Int32":
-                        filed.SetValue(o, EditorGUI.IntField(rect, (int)filed.GetValue(o)));
-                        break;
-                    case "System.String":
-                        filed.SetValue(o, EditorGUI.TextField(rect, (string)filed.GetValue(o)));
-                        break;
-                    case "System.Boolean":
-                        filed.SetValue(o, EditorGUI.Toggle(rect, (bool)filed.GetValue(o)));
-                        break;
-                    case "System.String[]":
-                        string[] array = filed.GetValue(o) as string[];
-                        rect = GetGUILeftScrollAreaRect(175, 20, 18);
-                        LeftHeightSpace(6);
-                        if (GUI.Button(rect, "+", ResourcesManager.GetInstance.skin.button))
-                            Array.Resize<string>(ref array, array.Length + 1);
-                        for (int j = 0; j < array.Length; j++)
-                        {
-                            rect = GetGUILeftScrollAreaRect(10, 160, 18, false);
-                            array[j] = EditorGUI.TextField(rect, (string)array[j]);
-                            rect = GetGUILeftScrollAreaRect(175, 20, 18);
-                            if (GUI.Button(rect, "-", ResourcesManager.GetInstance.skin.button))
-                            {
-                                for (int n = j; n < array.Length - 1; n++)
-                                {
-                                    array[j] = array[j + 1];
-                                }
-                                Array.Resize<string>(ref array, array.Length - 1);
-                                break;
-                            }
-                            LeftHeightSpace(2);
-                        }
-                        filed.SetValue(o, array);
-                        break;
-                    default:
-                        if (filed.FieldType.BaseType.ToString() == "System.Enum")
-                        {
-                            //System.Enum.Parse(filed.FieldType.DeclaringType, (string)filed.GetValue(_currentNode));
-                            filed.SetValue(o, EditorGUI.EnumPopup(rect, (System.Enum)filed.GetValue(o)));
-                        }
-                        else
-                            EditorGUI.LabelField(rect, "Not Deal Object.");
-                        break;
-                }
+                if (!DrawAttribute(filed, rect, o))
+                    DrawNormalValue(filed, rect, o);
             }
             #endregion
         }
 
+        private bool DrawAttribute(System.Reflection.FieldInfo filed, Rect rect, object o)
+        {
+            ValueNameSelectAttribute selectVarName = Attribute.GetCustomAttribute(filed, typeof(ValueNameSelectAttribute)) as ValueNameSelectAttribute;
+            if (selectVarName != null)
+            {
+                Mission mission = _currentNode.GetContentNode() as Mission;
+                if (mission == null) return false;
+                string[] keys = selectVarName.GetValueNameList(mission);
+                int index = Array.FindIndex<string>(keys, (k) => k == (string)filed.GetValue(o));
+                if (index == -1) index = 0;
+                index = EditorGUI.Popup(rect, index, keys);
+                if (keys.Length > 0)
+                    filed.SetValue(o, keys[index]);
+                return true;
+            }
+            return false;
+        }
+
+        private void DrawNormalValue(System.Reflection.FieldInfo filed, Rect rect, object o)
+        {
+            switch (filed.FieldType.ToString())
+            {
+                case "System.Single":
+                    filed.SetValue(o, EditorGUI.FloatField(rect, (float)filed.GetValue(o)));
+                    break;
+                case "System.Int32":
+                    filed.SetValue(o, EditorGUI.IntField(rect, (int)filed.GetValue(o)));
+                    break;
+                case "System.String":
+                    filed.SetValue(o, EditorGUI.TextField(rect, (string)filed.GetValue(o)));
+                    break;
+                case "System.Boolean":
+                    filed.SetValue(o, EditorGUI.Toggle(rect, (bool)filed.GetValue(o)));
+                    break;
+                case "System.String[]":
+                    string[] array = filed.GetValue(o) as string[];
+                    rect = GetGUILeftScrollAreaRect(175, 20, 18);
+                    LeftHeightSpace(6);
+                    if (GUI.Button(rect, "+", ResourcesManager.GetInstance.skin.button))
+                        Array.Resize<string>(ref array, array.Length + 1);
+                    for (int j = 0; j < array.Length; j++)
+                    {
+                        rect = GetGUILeftScrollAreaRect(10, 160, 18, false);
+                        array[j] = EditorGUI.TextField(rect, (string)array[j]);
+                        rect = GetGUILeftScrollAreaRect(175, 20, 18);
+                        if (GUI.Button(rect, "-", ResourcesManager.GetInstance.skin.button))
+                        {
+                            for (int n = j; n < array.Length - 1; n++)
+                            {
+                                array[j] = array[j + 1];
+                            }
+                            Array.Resize<string>(ref array, array.Length - 1);
+                            break;
+                        }
+                        LeftHeightSpace(2);
+                    }
+                    filed.SetValue(o, array);
+                    break;
+                default:
+                    if (filed.FieldType.BaseType.ToString() == "System.Enum")
+                    {
+                        //System.Enum.Parse(filed.FieldType.DeclaringType, (string)filed.GetValue(_currentNode));
+                        filed.SetValue(o, EditorGUI.EnumPopup(rect, (System.Enum)filed.GetValue(o)));
+                    }
+                    else
+                        EditorGUI.LabelField(rect, "Not Deal Object.");
+                    break;
+            }
+        }
         //Tool====================================
         protected Vector2 CalcVirtualPosition(Vector2 pos)
         {

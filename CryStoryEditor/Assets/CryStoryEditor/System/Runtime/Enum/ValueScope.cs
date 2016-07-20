@@ -1,16 +1,13 @@
 ﻿/**********************************************************
 *Author: wangjiaying
-*Date: 2016.6.16
+*Date: 2016.7.20
 *Func:
 **********************************************************/
 
-using System;
-
 namespace CryStory.Runtime
 {
-
-    abstract public class Action : StoryNode
+    public enum ValueScope
     {
-
+        Story, Mission
     }
 }
