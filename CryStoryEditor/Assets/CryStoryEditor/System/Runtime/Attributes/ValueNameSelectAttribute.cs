@@ -8,10 +8,11 @@ using System.Collections.Generic;
 
 namespace CryStory.Runtime
 {
+    [System.AttributeUsage(System.AttributeTargets.Field)]
     public class ValueNameSelectAttribute : System.Attribute
     {
 
-        private ValueScope _valueScope;
+        public ValueScope _valueScope;
         public ValueNameSelectAttribute(ValueScope scope)
         {
             _valueScope = scope;

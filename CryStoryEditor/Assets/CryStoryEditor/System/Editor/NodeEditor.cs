@@ -9,6 +9,7 @@ using Event = UnityEngine.Event;
 using System.Collections.Generic;
 using UnityEditor;
 using System;
+using System.Reflection;
 
 namespace CryStory.Editor
 {
@@ -372,6 +373,47 @@ namespace CryStory.Editor
             }
         }
 
+        protected virtual void DrawDescription(Rect nodeRect, string description)
+        {
+            if (string.IsNullOrEmpty(description)) return;
+
+            Rect rect = new Rect(nodeRect);
+            rect.position = new Vector2(rect.position.x, rect.position.y + rect.height);
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = Color.white;
+            style.clipping = TextClipping.Overflow;
+            //style.alignment = TextAnchor.UpperCenter;
+            style.wordWrap = true;
+
+            GUIContent con = new GUIContent(description);
+            float height = style.CalcHeight(con, rect.width);
+
+            rect.size = new Vector2(rect.width, height);
+            EditorGUI.LabelField(rect, con, style);
+        }
+
+        protected virtual void DrawHelp(NodeModifier node)
+        {
+            if (node == null) return;
+            HelpAttribute help = Attribute.GetCustomAttribute(node.GetType(), typeof(HelpAttribute)) as HelpAttribute;
+            if (help == null) return;
+
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 13;
+            style.normal.textColor = Color.white;
+            style.clipping = TextClipping.Overflow;
+            style.wordWrap = true;
+
+            GUIContent con = new GUIContent(help.Help);
+            //Vector2 size = style.CalcSize(con);
+            float width = 200;// size.x > 200 ? 200 : size.x;
+            float height = style.CalcHeight(con, width);
+
+            Rect rect = new Rect(_contentRect.x + 5, _contentRect.y + 50, width, height);
+            //GUI.Box(rect, "", ResourcesManager.GetInstance.skin.box);
+            EditorGUI.LabelField(rect, con, style);
+        }
+
         protected virtual void DrawNodeSlot(NodeModifier node, Rect nodeRect)
         {
             #region Event drag connection line
@@ -435,17 +477,20 @@ namespace CryStory.Editor
                 Rect rect = GetGUILeftScrollAreaRect(60, 150, 18);
 
 
-                if (!DrawAttribute(filed, rect, o))
+                if (!DrawSelectValueName(filed, rect, o) && !DrawKeyRefernceControl(filed, rect, o))
                     DrawNormalValue(filed, rect, o);
             }
             #endregion
         }
 
-        private bool DrawAttribute(System.Reflection.FieldInfo filed, Rect rect, object o)
+        private bool DrawSelectValueName(System.Reflection.FieldInfo filed, Rect rect, object o)
         {
+            #region Select Value Name
             ValueNameSelectAttribute selectVarName = Attribute.GetCustomAttribute(filed, typeof(ValueNameSelectAttribute)) as ValueNameSelectAttribute;
+
             if (selectVarName != null)
             {
+                //选择值
                 Mission mission = _currentNode.GetContentNode() as Mission;
                 if (mission == null) return false;
                 string[] keys = selectVarName.GetValueNameList(mission);
@@ -454,9 +499,89 @@ namespace CryStory.Editor
                 index = EditorGUI.Popup(rect, index, keys);
                 if (keys.Length > 0)
                     filed.SetValue(o, keys[index]);
+
+                //选择变量作用域域
+                //>>>>失败，Attribute似乎不能保存修改后的数据
+
+                //Vector2 size = EditorGUIUtility.GetBuiltinSkin(EditorSkin.Scene).label.CalcSize(new GUIContent(filed.Name));
+                //EditorGUI.LabelField(GetGUILeftScrollAreaRect(size.x, size.y, size.x > 60), "Value Scope");
+                //rect = GetGUILeftScrollAreaRect(60, 150, 18);
+                ////selectVarName._valueScope = ValueScope.Story;
+                //selectVarName._valueScope = (ValueScope)EditorGUI.EnumPopup(rect, selectVarName._valueScope);
                 return true;
             }
             return false;
+            #endregion
+        }
+
+        //主要针对枚举“ValueFunctor”进行处理
+        private bool DrawKeyRefernceControl(FieldInfo filed, Rect rect, object o)
+        {
+            ValueKeyReferenceAttribute VarRefernce = Attribute.GetCustomAttribute(filed, typeof(ValueKeyReferenceAttribute)) as ValueKeyReferenceAttribute;
+
+            if (VarRefernce == null) return false;
+
+            FieldInfo refInfo = o.GetType().GetField(VarRefernce._keyRef);
+            if (refInfo == null) return false;
+
+            string key = (string)refInfo.GetValue(o);
+
+            if (string.IsNullOrEmpty(key)) return false;
+
+            Mission mission = _currentNode.GetContentNode() as Mission;
+            if (mission == null) return false;
+
+            Value var;
+
+            var = VarRefernce.GetValue(mission, key);
+            //if (!mission._valueContainer.TryGetValue(key, out var)) return false;
+            if (var == null) return false;
+
+            //非Enum处理
+            if (filed.FieldType.BaseType.ToString() != "System.Enum")
+            {
+                if (var.ValueType != VarType.BOOL) return false;
+                object o_o = filed.GetValue(o);
+                if (o_o == null) o_o = true;
+
+                try
+                {
+                    filed.SetValue(o, EditorGUI.Toggle(rect, bool.Parse(o_o.ToString())).ToString());
+                }
+                catch (Exception)
+                {
+                    filed.SetValue(o, bool.TrueString);
+                }
+                return true;
+            }
+
+            Enum funcValue = (Enum)filed.GetValue(o);
+
+            //编辑界面
+            Enum en = EditorGUI.EnumPopup(rect, funcValue);
+
+            string eN = en.ToString();//Enum.GetName(filed.GetType(), funcValue);
+
+            FieldInfo enumInfo = filed.FieldType.GetField(eN);
+
+            ValueFuncAttribute funcAttr = Attribute.GetCustomAttribute(enumInfo, typeof(ValueFuncAttribute)) as ValueFuncAttribute;
+
+            if (funcAttr == null) return false;
+
+            //ValueFunctor func = (ValueFunctor)filed.GetValue(o);
+
+            if ((funcAttr._varType & var.ValueType) == 0)
+            {
+                EditorUtility.DisplayDialog("Error!", "Not allow to [" + eN + "] for Value [" + key + "]！\nValue Type:" + var.ValueType, "OK");
+
+                filed.SetValue(o, ValueFunctor.Set);
+
+                return true;
+            }
+
+            filed.SetValue(o, en);
+
+            return true;
         }
 
         private void DrawNormalValue(System.Reflection.FieldInfo filed, Rect rect, object o)

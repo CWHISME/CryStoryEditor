@@ -19,6 +19,8 @@ namespace CryStory.Editor
             base.InternalOnGUI();
             CheckReturnStoryEditor();
             ShowRightClickMenu();
+
+            DrawHelp(_currentNode);
         }
 
         protected override Rect DrawNodeRect(NodeModifier node, bool coreNode = false)
@@ -47,6 +49,8 @@ namespace CryStory.Editor
             GUI.Box(nodeRect, coreNode ? "<color=#00FF00>" + node._name + "</color>" : node._name, _currentNode == node ? selectStyle : style);
 
             DrawRunModeLable(node, nodeRect);
+
+            DrawDescription(nodeRect, (node as StoryNode).ToDescription());
 
             return nodeRect;
         }
@@ -114,6 +118,7 @@ namespace CryStory.Editor
             menu.AddItem(new GUIContent("Delete"), false, () =>
             {
                 Runtime.NodeModifier.Delete(_currentHover);
+                if (_currentNode == _currentHover) _currentNode = null;
                 _currentHover = null;
             });
             menu.ShowAsContext();

@@ -14,7 +14,7 @@ namespace CryStory.Runtime
         private object _value;
         private VarType _varType;
 
-        public VarType VarlueType { get { return _varType; } }
+        public VarType ValueType { get { return _varType; } }
 
         public Value(int v)
         {
@@ -45,7 +45,7 @@ namespace CryStory.Runtime
             get
             {
                 if (_value == null) return 0;
-                if (_varType == VarType.INT || _varType == VarType.FLOAT) return int.Parse((string)_value);
+                if (_varType == VarType.INT || _varType == VarType.FLOAT) return (int)_value;
                 return 0;
             }
             set
@@ -59,7 +59,7 @@ namespace CryStory.Runtime
             get
             {
                 if (_value == null) return 0;
-                if (_varType == VarType.INT || _varType == VarType.FLOAT) return float.Parse((string)_value);
+                if (_varType == VarType.INT || _varType == VarType.FLOAT) return (float)_value;
                 return 0;
             }
             set
@@ -73,7 +73,7 @@ namespace CryStory.Runtime
             get
             {
                 if (_value == null) return false;
-                if (_varType == VarType.BOOL) return bool.Parse((string)_value);
+                if (_varType == VarType.BOOL) return (bool)_value;
                 return false;
             }
             set
@@ -98,9 +98,20 @@ namespace CryStory.Runtime
 
         public void OperationValue(ValueFunctor func, string val)
         {
+            if (func == ValueFunctor.Set) _value = val;
+        }
+
+        public void OperationValue(ValueFunctor func, bool val)
+        {
+            if (func == ValueFunctor.Set) _value = val;
+        }
+
+        public void OperationValue(ValueFunctor func, Int32 val)
+        {
             switch (func)
             {
                 case ValueFunctor.Set:
+
                     break;
                 case ValueFunctor.Add:
                     break;
@@ -118,7 +129,7 @@ namespace CryStory.Runtime
         public void Serialize(BinaryWriter w)
         {
             w.Write((int)_varType);
-            w.Write((string)_value);
+            w.Write(_value.ToString());
         }
 
         public void Deserialize(BinaryReader r)
@@ -126,6 +137,19 @@ namespace CryStory.Runtime
             int t = r.ReadInt32();
             _varType = (VarType)t;
             _value = r.ReadString();
+
+            switch (_varType)
+            {
+                case VarType.INT:
+                    _value = Convert.ToInt32(_value);
+                    break;
+                case VarType.FLOAT:
+                    _value = Convert.ToSingle(_value);
+                    break;
+                case VarType.BOOL:
+                    _value = Convert.ToBoolean(_value);
+                    break;
+            }
         }
     }
 
@@ -134,7 +158,7 @@ namespace CryStory.Runtime
     {
         INT = 1,
         FLOAT = 4,
-        BOOL = 16,
-        STRING = 32
+        BOOL = 8,
+        STRING = 16
     }
 }

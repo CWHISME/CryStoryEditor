@@ -20,5 +20,7 @@ namespace CryStory.Runtime
                 return null;
             }
         }
+
+        public virtual string ToDescription() { return ""; }
     }
 }

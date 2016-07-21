@@ -50,6 +50,11 @@ namespace CryStory.Editor
             EditorGUILayout.EndHorizontal();
         }
 
+        void Update()
+        {
+            Repaint();
+        }
+
         private void ShowSeperator()
         {
             GUILayout.BeginVertical();
@@ -82,10 +87,8 @@ namespace CryStory.Editor
 
                 GUILayout.Space(10);
 
-                foreach (var val in story._Story._valueContainer)
-                {
-                    ShowValue(val.Key, val.Value);
-                }
+                ShowContainer(story._Story);
+
                 EditorGUILayout.EndVertical();
             }
         }
@@ -123,19 +126,29 @@ namespace CryStory.Editor
 
             GUILayout.Space(10);
 
-            foreach (var val in container._valueContainer)
-            {
-                ShowValue(val.Key, val.Value);
-            }
+            ShowContainer(container);
+
             EditorGUILayout.EndVertical();
         }
 
-        private void ShowValue(string name, Value val)
+        private void ShowContainer(ValueContainer container)
+        {
+            foreach (var val in container._valueContainer)
+            {
+                if (ShowValue(val.Key, val.Value))
+                {
+                    container._valueContainer.Remove(val.Key);
+                    return;
+                }
+            }
+        }
+
+        private bool ShowValue(string name, Value val)
         {
             EditorGUILayout.BeginHorizontal();
 
-            EditorGUILayout.LabelField(name);
-            switch (val.VarlueType)
+            EditorGUILayout.LabelField("<color=#00FFFF>" + name + "</color>[<color=yellow>" + val.ValueType + "</color>]", ResourcesManager.GetInstance.GetFontStyle(12));
+            switch (val.ValueType)
             {
                 case VarType.INT:
                     val.IntValue = EditorGUILayout.IntField(val.IntValue);
@@ -151,8 +164,12 @@ namespace CryStory.Editor
                     break;
             }
 
-            EditorGUILayout.EndHorizontal();
-        }
+            if (GUILayout.Button("X"))
+                return true;
 
+            EditorGUILayout.EndHorizontal();
+            return false;
+        }
+    
     }
 }

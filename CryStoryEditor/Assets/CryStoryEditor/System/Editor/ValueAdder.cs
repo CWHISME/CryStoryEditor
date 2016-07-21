@@ -45,7 +45,15 @@ namespace CryStory.Editor
                     _var = EditorGUILayout.TextField("Value:", _var);
                     break;
                 case VarType.BOOL:
-                    _var = EditorGUILayout.Toggle(bool.Parse(_var)).ToString();
+                    if (string.IsNullOrEmpty(_var)) _var = bool.TrueString;
+                    try
+                    {
+                        _var = EditorGUILayout.Toggle(bool.Parse(_var)).ToString();
+                    }
+                    catch (System.Exception)
+                    {
+                        _var = bool.TrueString;
+                    }
                     break;
             }
 
