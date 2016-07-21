@@ -40,6 +40,12 @@ namespace CryStory.Runtime
             _varType = VarType.STRING;
         }
 
+        public Value(string v, VarType type)
+        {
+            _value = v;
+            _varType = type;
+        }
+
         public int IntValue
         {
             get
@@ -126,18 +132,8 @@ namespace CryStory.Runtime
             }
         }
 
-        public void Serialize(BinaryWriter w)
+        public void ConverToRealType()
         {
-            w.Write((int)_varType);
-            w.Write(_value.ToString());
-        }
-
-        public void Deserialize(BinaryReader r)
-        {
-            int t = r.ReadInt32();
-            _varType = (VarType)t;
-            _value = r.ReadString();
-
             switch (_varType)
             {
                 case VarType.INT:
@@ -150,6 +146,21 @@ namespace CryStory.Runtime
                     _value = Convert.ToBoolean(_value);
                     break;
             }
+        }
+
+        public void Serialize(BinaryWriter w)
+        {
+            w.Write((int)_varType);
+            w.Write(_value.ToString());
+        }
+
+        public void Deserialize(BinaryReader r)
+        {
+            int t = r.ReadInt32();
+            _varType = (VarType)t;
+            _value = r.ReadString();
+
+            ConverToRealType();
         }
     }
 

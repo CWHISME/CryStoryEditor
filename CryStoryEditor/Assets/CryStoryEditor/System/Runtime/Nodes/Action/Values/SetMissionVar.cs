@@ -7,8 +7,8 @@ using UnityEngine;
 
 namespace CryStory.Runtime
 {
-    [Help("设置Mission变量的值")]
-    [Category("Values")]
+    [Help("设置作用域为当前Mission的变量的值")]
+    [Category("System/Values")]
     public class SetMissionVar : Action
     {
         [ValueNameSelect(ValueScope.Mission)]
@@ -26,7 +26,7 @@ namespace CryStory.Runtime
 
         public override string ToDescription()
         {
-            return "Mission变量 " + ValueName + " " + Functor + " " + Value;
+            return "设置变量 [" + ValueName + "] " + Functor + " [" + Value + "]";
         }
     }
 }

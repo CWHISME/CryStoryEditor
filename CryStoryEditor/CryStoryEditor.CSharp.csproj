@@ -69,6 +69,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Attributes\ValueFuncAttribute.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Attributes\ValueNameSelectAttribute.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Attributes\CategoryAttribute.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\ExtensionMethod.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\ValueContainer.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\DragModifier.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\ISerialize.cs" />
@@ -92,8 +93,9 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\EnumResult.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\EnumRunMode.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\MissionObject.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\SetStoryVar.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\SetMissionVar.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\AddMissionVar.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\SetStoryVar.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\SetMissionVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryManager.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryObject.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryRunner.cs" />

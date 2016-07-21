@@ -21,6 +21,15 @@ namespace CryStory.Runtime
             return true;
         }
 
+        public bool AddValue(string key, VarType type, string v)
+        {
+            if (HaveKey(key)) return false;
+            Value val = new Value(v, type);
+            val.ConverToRealType();
+            _valueContainer[key] = val;
+            return true;
+        }
+
         public Value GetValue(string key)
         {
             if (HaveKey(key)) return _valueContainer[key];
