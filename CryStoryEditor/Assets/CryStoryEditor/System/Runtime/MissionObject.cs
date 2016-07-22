@@ -21,83 +21,59 @@ namespace CryStory.Runtime
 
         public void Save()
         {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                using (BinaryWriter w = new BinaryWriter(ms))
-                {
-                    w.Write(JsonUtility.ToJson(_mission));
-                    _mission.Serialize(w);
+            //using (MemoryStream ms = new MemoryStream())
+            //{
+            //    using (BinaryWriter w = new BinaryWriter(ms))
+            //    {
+            //        w.Write(JsonUtility.ToJson(_mission));
+            //        _mission.Serialize(w);
 
-                    NodeModifier[] nodes = _mission.Nodes;
-                    w.Write(nodes.Length);
-                    for (int i = 0; i < nodes.Length; i++)
-                    {
-                        NodeModifier node = nodes[i];
-                        System.Type type = node.GetType();
+            //        NodeModifier[] nodes = _mission.Nodes;
+            //        w.Write(nodes.Length);
+            //        for (int i = 0; i < nodes.Length; i++)
+            //        {
+            //            NodeModifier node = nodes[i];
+            //            System.Type type = node.GetType();
 
-                        w.Write(type.FullName);
-                        //w.Write(JsonUtility.ToJson(node));
-                        node.Serialize(w);
-                    }
+            //            w.Write(type.FullName);
+            //            node.Serialize(w);
+            //        }
 
-                }
+            //    }
 
-                //Save
-                _SaveData = ms.GetBuffer();
-            }
+            //    //Save
+            //    _SaveData = ms.GetBuffer();
+            //}
+            _SaveData = _mission.Save();
 
             UnityEditor.EditorUtility.SetDirty(this);
-            //save current mission
-
-
-            //_data = new List<SaveData>();
-            //for (int i = 0; i < nodes.Length; i++)
-            //{
-
-
-            //    _data.Add(data);
-            //}
-
         }
 
         public void Load()
         {
-            using (MemoryStream ms = new MemoryStream(_SaveData))
-            {
-                using (BinaryReader r = new BinaryReader(ms))
-                {
-                    _mission = JsonUtility.FromJson<Mission>(r.ReadString());
-                    if (_mission == null) _mission = new Mission();
-                    _mission.Deserialize(r);
-
-                    int count = r.ReadInt32();
-                    for (int i = 0; i < count; i++)
-                    {
-                        string fullName = r.ReadString();
-                        NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(fullName);
-                        if (node == null)
-                        {
-                            Debug.LogError("Error: The Mission Node [" + fullName + "] Was Lost!");
-                            return;
-                        }
-                        node.Deserialize(r);
-                        NodeModifier.SetContent(node, _mission);
-                    }
-                }
-            }
-
-
-
-            //if (_data != null)
+            _mission = new Mission();
+            _mission.Load(_SaveData);
+            //using (MemoryStream ms = new MemoryStream(_SaveData))
             //{
-            //    System.Reflection.Assembly asm = System.Reflection.Assembly.GetAssembly(typeof(Story));
-            //    for (int i = 0; i < _data.Count; i++)
+            //    using (BinaryReader r = new BinaryReader(ms))
             //    {
-            //        object o = asm.CreateInstance(_data[i]._type);
-            //        JsonUtility.FromJsonOverwrite(_data[i]._json, o);
-            //        NodeModifier node = o as NodeModifier;
-            //        NodeModifier.SetContent(node, _mission);
-            //        //_mission.AddContentNode(r);
+            //        _mission = JsonUtility.FromJson<Mission>(r.ReadString());
+            //        if (_mission == null) _mission = new Mission();
+            //        _mission.Deserialize(r);
+
+            //        int count = r.ReadInt32();
+            //        for (int i = 0; i < count; i++)
+            //        {
+            //            string fullName = r.ReadString();
+            //            NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(fullName);
+            //            if (node == null)
+            //            {
+            //                Debug.LogError("Error: The Mission Node [" + fullName + "] Was Lost!");
+            //                return;
+            //            }
+            //            node.Deserialize(r);
+            //            NodeModifier.SetContent(node, _mission);
+            //        }
             //    }
             //}
         }

@@ -4,6 +4,8 @@
 *Func:
 **********************************************************/
 
+using System.IO;
+
 namespace CryStory.Runtime
 {
 
@@ -22,5 +24,15 @@ namespace CryStory.Runtime
         }
 
         public virtual string ToDescription() { return ""; }
+
+        public sealed override void Serialize(BinaryWriter w)
+        {
+            base.Serialize(w);
+        }
+
+        public sealed override void Deserialize(BinaryReader r)
+        {
+            base.Deserialize(r);
+        }
     }
 }

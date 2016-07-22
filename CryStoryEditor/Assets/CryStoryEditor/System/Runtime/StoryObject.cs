@@ -239,7 +239,6 @@ namespace CryStory.Runtime
                         string storyData = r.ReadString();
                         _story = JsonUtility.FromJson<Story>(storyData);
                     }
-                    _SaveData = ms.ToArray();
                 }
 
             if (_story == null)
@@ -293,9 +292,15 @@ namespace CryStory.Runtime
         }
         #endregion
 #else
-        public void Load()
+        public byte[] Save()
         {
-        
+            return _story.Save();
+        }
+
+        public void Load(byte[] data)
+        {
+            _story = new Story();
+            _story.Load(data);
         }
 #endif
     }
