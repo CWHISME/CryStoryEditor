@@ -190,12 +190,12 @@ namespace CryStory.Editor
                 menu.AddItem(new GUIContent(prefix + cat + nodeType.Name), false, () =>
                {
                    //Debug.Log("Add Node: " + name);
-                   CreateNode(nodeType);
+                   CreateNode(nodeType, _window._editMission, CalcVirtualPosition(_mousePosition));
                });
             }
         }
 
-        private void CreateNode(Type type)
+        private void CreateNode(Type type, DragModifier content, Vector3 pos)
         {
             object o = ReflectionHelper.Asm.CreateInstance(type.FullName);
             if (o != null)
@@ -203,10 +203,9 @@ namespace CryStory.Editor
                 Runtime.StoryNode node = o as Runtime.StoryNode;
                 if (node == null) return;
                 node._name = type.Name;
-                node._position = CalcVirtualPosition(_mousePosition);
-                node.SetID(_window._editMission.GenerateID());
-                Runtime.NodeModifier.SetContent(node, _window._editMission);
-                //node.SetContent(_window._editMission);
+                node._position = pos;
+                node.SetID(content.GenerateID());
+                Runtime.NodeModifier.SetContent(node, content);
             }
         }
     }

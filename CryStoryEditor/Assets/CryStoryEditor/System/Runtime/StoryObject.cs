@@ -25,17 +25,19 @@ namespace CryStory.Runtime
 
         public Vector2 StoryCenter { get { return _story.graphCenter; } set { _story.graphCenter = value; } }
 
-        public bool _haveNullData;
-
         public string _description = "This Story have not description.";
 
         public byte[] _SaveData;
+
+#if UNITY_EDITOR
 
         [SerializeField]
         private List<MissionData> _missionSaveList = new List<MissionData>();
 
         public MissionData[] MisisonDatas { get { return _missionSaveList.ToArray(); } }
 
+        public bool _haveNullData;
+#endif
         /// <summary>
         /// 直接添加一个新的任务
         /// </summary>
@@ -47,6 +49,7 @@ namespace CryStory.Runtime
             return mission;
         }
 
+#if UNITY_EDITOR
         public bool AssignNewMissionObject(MissionObject mo)
         {
             //if (_missionSaveList == null) _missionSaveList = new List<MissionData>();
@@ -101,8 +104,6 @@ namespace CryStory.Runtime
             }
             return datas.ToArray();
         }
-
-#if UNITY_EDITOR
         #region Editor Method
         public const string MissionDirectoryExtName = "Missions";
         public string GetFullMissionDirectoryPath()
@@ -166,6 +167,8 @@ namespace CryStory.Runtime
                 using (BinaryWriter w = new BinaryWriter(ms))
                 {
                     w.Write(JsonUtility.ToJson(_story));
+
+                    _story.SaveInEditor(w);
                 }
                 _SaveData = ms.ToArray();
             }
@@ -238,6 +241,7 @@ namespace CryStory.Runtime
                     {
                         string storyData = r.ReadString();
                         _story = JsonUtility.FromJson<Story>(storyData);
+                        _story.LoadInEditor(r);
                     }
                 }
 
@@ -269,18 +273,27 @@ namespace CryStory.Runtime
                 if (!data._missionObject) continue;
                 if (data._missionObject._nextMissionDataNameList.Count > 0)
                 {
-                    for (int j = 0; j < data._missionObject._nextMissionDataNameList.Count; j++)
+                    //for (int j = 0; j < data._missionObject._nextMissionDataNameList.Count; j++)
+                    //{
+                    //    MissionData next = GetMissionSaveDataByName(data._missionObject._nextMissionDataNameList[j]);
+                    //    if (next == null) continue;
+                    //    if (next._missionObject == null) continue;
+
+                    //    //if (!data._missionObject._mission.IsParent(next._missionObject._mission))
+                    //    //    Mission.SetParent(next._missionObject._mission, data._missionObject._mission);
+                    //    //else data._missionObject._mission.AddNextNode(next._missionObject._mission);
+                    //}
+
+                    foreach (var item in data._missionObject._nextMissionDataNameList)
                     {
-                        MissionData next = GetMissionSaveDataByName(data._missionObject._nextMissionDataNameList[j]);
+                        MissionData next = GetMissionSaveDataByName(item.Key);
                         if (next == null) continue;
                         if (next._missionObject == null) continue;
-                        //if (next._missionObject._mission.IsParent(data._missionObject._mission))
-                        //    Mission.SetParent(next._missionObject._mission, data._missionObject._mission);
-                        //else next._missionObject._mission.AddNextNode(data._missionObject._mission);
-                        if (!data._missionObject._mission.IsParent(next._missionObject._mission))
-                            Mission.SetParent(next._missionObject._mission, data._missionObject._mission);
-                        else data._missionObject._mission.AddNextNode(next._missionObject._mission);
-                        //next._missionObject._mission.SetParent(data._missionObject._mission);
+                        if (item.Value)
+                        {
+                            data._missionObject._mission.AddNextNode(next._missionObject._mission);
+                        }
+                        else Mission.SetParent(next._missionObject._mission, data._missionObject._mission);
                     }
                 }
             }
@@ -305,35 +318,37 @@ namespace CryStory.Runtime
 #endif
     }
 
+#if UNITY_EDITOR
     [System.Serializable]
     public class MissionData
     {
         public string _name;
         public MissionObject _missionObject;
 
-        public bool AddNextMissionObject(string o)
-        {
-            if (!_missionObject._nextMissionDataNameList.Contains(o))
-            {
-                _missionObject._nextMissionDataNameList.Add(o);
-                return true;
-            }
-            return false;
-        }
+        //public bool AddNextMissionObject(string o, bool singleNode)
+        //{
+        //    if (!_missionObject._nextMissionDataNameList.ContainsKey(o))
+        //    {
+        //        _missionObject._nextMissionDataNameList.Add(o, singleNode);
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-        public void AddNextMissionObject(string[] os)
-        {
-            for (int i = 0; i < os.Length; i++)
-            {
-                AddNextMissionObject(os[i]);
-            }
-        }
+        //public void AddNextMissionObject(string[] os, bool singleNode)
+        //{
+        //    for (int i = 0; i < os.Length; i++)
+        //    {
+        //        AddNextMissionObject(os[i]);
+        //    }
+        //}
 
         public void AddNextMissionObject(MissionData[] os)
         {
             for (int i = 0; i < os.Length; i++)
             {
-                AddNextMissionObject(os[i]._name);
+                _missionObject.AddNextMissionName(os[i]._name, os[i]._missionObject._mission.Parent != _missionObject._mission);
+                //AddNextMissionObject(os[i]._name, os[i]._missionObject._mission.Parent != _missionObject._mission);
             }
         }
 
@@ -348,4 +363,5 @@ namespace CryStory.Runtime
         }
     }
 
+#endif
 }

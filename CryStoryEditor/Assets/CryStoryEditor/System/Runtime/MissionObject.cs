@@ -14,7 +14,9 @@ namespace CryStory.Runtime
         public Mission _mission;
 
         //public List<SaveData> _data;
-        public List<string> _nextMissionDataNameList = new List<string>();
+
+        //Name:IsSingleNode
+        public Dictionary<string, bool> _nextMissionDataNameList = new Dictionary<string, bool>();
         //public string _missionData;
 
         public byte[] _SaveData;
@@ -46,7 +48,9 @@ namespace CryStory.Runtime
             //}
             _SaveData = _mission.Save();
 
+#if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(this);
+#endif
         }
 
         public void Load()
@@ -77,13 +81,11 @@ namespace CryStory.Runtime
             //    }
             //}
         }
-    }
 
-    [System.Serializable]
-    public class SaveData
-    {
-        public string _type;
-        public string _json;
+        public void AddNextMissionName(string name, bool singleNode)
+        {
+            _nextMissionDataNameList[name] = singleNode;
+        }
     }
 
 }

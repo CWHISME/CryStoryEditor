@@ -4,6 +4,8 @@
 *Func:
 **********************************************************/
 using CryStory.Runtime;
+using System;
+using UnityEngine;
 
 namespace CryStory.Editor
 {

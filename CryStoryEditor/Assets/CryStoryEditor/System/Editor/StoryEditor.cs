@@ -123,6 +123,7 @@ namespace CryStory.Editor
                 _currentNode = mo._mission;
                 _currentNode._position = CalcVirtualPosition(mousePos);
                 _currentNode._name = "New Mission";
+                _currentNode.SetID(_window._Story.GenerateID());
                 Mission.SetContent(_currentNode, _window._Story);
                 //_currentNode.SetContent(_window._Story);
 

@@ -4,6 +4,8 @@
 *Func:
 **********************************************************/
 
+using System.IO;
+
 namespace CryStory.Runtime
 {
 
@@ -45,5 +47,17 @@ namespace CryStory.Runtime
         protected virtual EnumResult OnStart() { return EnumResult.Success; }
         protected virtual EnumResult OnUpdate() { return EnumResult.Success; }
         protected virtual void OnEnd() { }
+
+        protected override void OnSaved(BinaryWriter w)
+        {
+            base.OnSaved(w);
+            w.Write(_isInit);
+        }
+
+        protected override void OnLoaded(BinaryReader r)
+        {
+            base.OnLoaded(r);
+            _isInit = r.ReadBoolean();
+        }
     }
 }

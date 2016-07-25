@@ -4,6 +4,7 @@
 *Func:
 **********************************************************/
 using System.Collections.Generic;
+using System.IO;
 
 namespace CryStory.Runtime
 {
@@ -32,7 +33,7 @@ namespace CryStory.Runtime
         /// <summary>
         /// 缓存，以备结束时恢复初始容器节点
         /// </summary>
-        private NodeModifier[] _tempNodeList;
+        protected NodeModifier[] _tempNodeList = null;
 
         /// <summary>
         /// 将节点添加至该容器。注意：不会更改节点本身容器数据！
@@ -67,7 +68,7 @@ namespace CryStory.Runtime
         }
 
         /// <summary>
-        /// 添加一个节点至容器
+        /// 删除一个节点
         /// </summary>
         public bool RemoveContenNode(NodeModifier node)
         {
@@ -157,8 +158,108 @@ namespace CryStory.Runtime
             //}
             _contenNodeList.Clear();
             _contenNodeList.AddRange(_tempNodeList);
+            _tempNodeList = null;
         }
 
         protected virtual void OnAddedContentNode(NodeModifier node) { }
+
+        //Save 
+        protected override void OnSaved(BinaryWriter w)
+        {
+            base.OnSaved(w);
+
+            bool running = _tempNodeList != null;
+            if (running) running = _tempNodeList.Length > 0;
+
+            w.Write(running);
+            if (running)
+            {
+                //Save Oringin Node
+                //处于正在运行节点，保存初始节点及当前运行节点ID
+                w.Write(_tempNodeList.Length);
+                for (int i = 0; i < _tempNodeList.Length; i++)
+                {
+                    NodeModifier node = _tempNodeList[i];
+                    System.Type type = node.GetType();
+
+                    w.Write(type.FullName);
+                    node.Serialize(w);
+                }
+
+                w.Write(_contenNodeList.Count);
+                for (int i = 0; i < _contenNodeList.Count; i++)
+                {
+                    w.Write(_contenNodeList[i]._id);
+                }
+            }
+            else {
+                //未运行节点，直接保存当前节点即可
+                w.Write(_contenNodeList.Count);
+                for (int i = 0; i < _contenNodeList.Count; i++)
+                {
+                    NodeModifier node = _contenNodeList[i];
+                    System.Type type = node.GetType();
+
+                    w.Write(type.FullName);
+                    node.Serialize(w);
+                }
+            }
+
+        }
+
+        protected override void OnLoaded(BinaryReader r)
+        {
+            base.OnLoaded(r);
+            bool running = r.ReadBoolean();
+
+            //恢复初始节点
+            int count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                string fullName = r.ReadString();
+                NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(fullName);
+                if (node == null)
+                {
+                    return;
+                }
+                node.Deserialize(r);
+                NodeModifier.SetContent(node, this);
+            }
+
+            if (running)
+            {
+                //恢复运行节点（以ID为主）
+                count = r.ReadInt32();
+                List<NodeModifier> runningNode = new List<NodeModifier>();
+                for (int i = 0; i < count; i++)
+                {
+                    for (int j = 0; j < _contenNodeList.Count; j++)
+                    {
+                        NodeModifier node = _contenNodeList[j].GetNodeByID(r.ReadInt32());
+                        if (node != null)
+                        {
+                            runningNode.Add(node);
+                            break;
+                        }
+                    }
+                }
+
+                //装填缓存节点
+                _tempNodeList = _contenNodeList.ToArray();
+
+                //移除初始节点
+                for (int i = 0; i < _tempNodeList.Length; i++)
+                {
+                    RemoveContenNode(_tempNodeList[i]);
+                }
+
+                //重新加入已运行节点
+                for (int i = 0; i < runningNode.Count; i++)
+                {
+                    AddContentNode(runningNode[i]);
+                }
+            }
+        }
+
     }
 }

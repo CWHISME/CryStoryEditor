@@ -57,14 +57,8 @@ namespace CryStory.Runtime
         /// <param name="node"></param>
         public void SetParent(NodeModifier node)
         {
-            //if (node == this) return false;
-            //if (node.IsChild(this, false)) return false;
             node.AddNextNode(this);
-            //if (node.IsParent(this)) return true;
-            //RemoveFromContent();
-            //DeleteParent();
             _lastNode = node;
-            //return true;
         }
 
         /// <summary>

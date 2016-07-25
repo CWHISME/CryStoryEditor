@@ -47,6 +47,18 @@ namespace CryStory.Runtime
         {
             base.OnSaved(w);
 
+            SaveValue(w);
+        }
+
+        protected override void OnLoaded(BinaryReader r)
+        {
+            base.OnLoaded(r);
+
+            LoadValue(r);
+        }
+
+        private void SaveValue(BinaryWriter w)
+        {
             w.Write(_valueContainer.Count);
             foreach (var item in _valueContainer)
             {
@@ -55,10 +67,8 @@ namespace CryStory.Runtime
             }
         }
 
-        protected override void OnLoaded(BinaryReader r)
+        private void LoadValue(BinaryReader r)
         {
-            base.OnLoaded(r);
-
             int count = r.ReadInt32();
             for (int i = 0; i < count; i++)
             {
@@ -68,5 +78,17 @@ namespace CryStory.Runtime
                 AddValue(key, v);
             }
         }
+
+#if UNITY_EDITOR
+        public virtual void SaveInEditor(BinaryWriter w)
+        {
+            SaveValue(w);
+        }
+
+        public virtual void LoadInEditor(BinaryReader r)
+        {
+            LoadValue(r);
+        }
+#endif
     }
 }
