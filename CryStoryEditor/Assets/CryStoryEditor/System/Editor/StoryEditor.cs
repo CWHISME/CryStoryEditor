@@ -35,6 +35,12 @@ namespace CryStory.Editor
             LeftHeightSpace(10);
             System.Reflection.FieldInfo info = o.GetType().GetField("_missionDescription");
             object o_o = info.GetValue(o);
+            if (o_o == null)
+            {
+                o_o = ReflectionHelper.CreateInstance(_window._Story._missionDescriptionType);
+                info.SetValue(o, o_o);
+            }
+
             base.DrawLeftArribute(o_o);
         }
 
@@ -144,6 +150,12 @@ namespace CryStory.Editor
         private void ShowDeleteNodeMenu()
         {
             GenericMenu menu = new GenericMenu();
+
+            menu.AddItem(new GUIContent("Duplicate"), false, () =>
+            {
+                DuplicateNode(_currentHover);
+            });
+
             menu.AddItem(new GUIContent("Delete"), false, () =>
             {
                 NodeModifier.Delete(_currentHover);
@@ -152,6 +164,7 @@ namespace CryStory.Editor
                 if (_currentNode == _currentHover) _currentNode = null;
                 _currentHover = null;
             });
+
             menu.ShowAsContext();
         }
     }

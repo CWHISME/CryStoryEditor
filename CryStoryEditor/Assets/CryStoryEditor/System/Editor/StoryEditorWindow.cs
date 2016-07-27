@@ -53,6 +53,10 @@ namespace CryStory.Editor
 
         private int pageSelect = 0;
 
+        public const float _zoomMin = 0.4f;
+        public const float _zoomMax = 2f;
+        public float Zoom { get { return _storyObject._zoom; } set { _storyObject._zoom = value; } }
+
         void OnEnable()
         {
             StoryWindow = this;
@@ -281,6 +285,19 @@ namespace CryStory.Editor
                 else MissionEditor.GetInstance.OnGUI(this, _editMission.Nodes);
             }
 
+
+            //处理缩放
+            if (UnityEngine.Event.current != null)
+            {
+                if (UnityEngine.Event.current.type == EventType.ScrollWheel)
+                {
+                    _storyObject._zoom -= UnityEngine.Event.current.delta.y * 0.01f;
+                    _storyObject._zoom = Mathf.Clamp(_storyObject._zoom, _zoomMin, _zoomMax);
+                    //Debug.Log(_zoom);
+                }
+            }
+
+            //显示清理损毁节点信息
             if (_storyObject._haveNullData)
             {
                 GUIStyle style = new GUIStyle();

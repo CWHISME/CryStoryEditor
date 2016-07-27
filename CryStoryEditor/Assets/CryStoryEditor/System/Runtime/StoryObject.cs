@@ -37,6 +37,9 @@ namespace CryStory.Runtime
         public MissionData[] MisisonDatas { get { return _missionSaveList.ToArray(); } }
 
         public bool _haveNullData;
+
+        public float _zoom = 1f;
+
 #endif
         /// <summary>
         /// 直接添加一个新的任务
@@ -262,8 +265,6 @@ namespace CryStory.Runtime
                 data._missionObject.Load();
 
                 NodeModifier.SetContent(data._missionObject._mission, _story);
-                //data._missionObject._mission.SetContent(_story);
-                //_story.AddContentNode(data._missionObject._mission);
             }
 
             //设置已连接的节点
@@ -271,25 +272,14 @@ namespace CryStory.Runtime
             {
                 MissionData data = _missionSaveList[i];
                 if (!data._missionObject) continue;
-                if (data._missionObject._nextMissionDataNameList.Count > 0)
+                if (data._missionObject._nextMissionNodeList.Count > 0)
                 {
-                    //for (int j = 0; j < data._missionObject._nextMissionDataNameList.Count; j++)
-                    //{
-                    //    MissionData next = GetMissionSaveDataByName(data._missionObject._nextMissionDataNameList[j]);
-                    //    if (next == null) continue;
-                    //    if (next._missionObject == null) continue;
-
-                    //    //if (!data._missionObject._mission.IsParent(next._missionObject._mission))
-                    //    //    Mission.SetParent(next._missionObject._mission, data._missionObject._mission);
-                    //    //else data._missionObject._mission.AddNextNode(next._missionObject._mission);
-                    //}
-
-                    foreach (var item in data._missionObject._nextMissionDataNameList)
+                    foreach (var item in data._missionObject._nextMissionNodeList)
                     {
-                        MissionData next = GetMissionSaveDataByName(item.Key);
+                        MissionData next = GetMissionSaveDataByName(item.Name);
                         if (next == null) continue;
                         if (next._missionObject == null) continue;
-                        if (item.Value)
+                        if (item.IsSingleNode)
                         {
                             data._missionObject._mission.AddNextNode(next._missionObject._mission);
                         }
@@ -325,41 +315,23 @@ namespace CryStory.Runtime
         public string _name;
         public MissionObject _missionObject;
 
-        //public bool AddNextMissionObject(string o, bool singleNode)
-        //{
-        //    if (!_missionObject._nextMissionDataNameList.ContainsKey(o))
-        //    {
-        //        _missionObject._nextMissionDataNameList.Add(o, singleNode);
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-        //public void AddNextMissionObject(string[] os, bool singleNode)
-        //{
-        //    for (int i = 0; i < os.Length; i++)
-        //    {
-        //        AddNextMissionObject(os[i]);
-        //    }
-        //}
-
         public void AddNextMissionObject(MissionData[] os)
         {
             for (int i = 0; i < os.Length; i++)
             {
                 _missionObject.AddNextMissionName(os[i]._name, os[i]._missionObject._mission.Parent != _missionObject._mission);
-                //AddNextMissionObject(os[i]._name, os[i]._missionObject._mission.Parent != _missionObject._mission);
             }
         }
 
-        public void RemoveNextMissionObject(string o)
-        {
-            _missionObject._nextMissionDataNameList.Remove(o);
-        }
+        //public void RemoveNextMissionObject(string o)
+        //{
+        //    _missionObject._nextMissionNodeLIst.RemoveAll();
+        //    _missionObject._nextMissionNodeLIst.Remove(o);
+        //}
 
         public void ClearNextMissionObject()
         {
-            _missionObject._nextMissionDataNameList.Clear();
+            _missionObject._nextMissionNodeList.Clear();
         }
     }
 

@@ -55,21 +55,27 @@ namespace CryStory.Editor
 
         public static Rect CalcLeftLinkRect(Rect missionRect)
         {
-            return new Rect(new Vector2(missionRect.min.x, missionRect.min.y + 12), new Vector2(25, 25));
+            float size = 25 * Zoom;
+            return new Rect(new Vector2(missionRect.min.x, missionRect.min.y + 12 * Zoom), new Vector2(size, size));
         }
 
         public static Rect CalcRightLinkRect(Rect missionRect)
         {
-            return new Rect(new Vector2(missionRect.max.x - 25, missionRect.min.y + 12), new Vector2(25, 25));
+            float size = 25 * Zoom;
+            return new Rect(new Vector2(missionRect.max.x - size, missionRect.min.y + 12 * Zoom), new Vector2(size, size));
         }
 
 
         public const float _nodeWidth = 200f;
         public const float _nodeHeight = 50f;
         public const float _nodeHalfHeight = 25f;
+        public static float NodeHalfHeightZoomed { get { return _nodeHeight * 0.5f * StoryEditorWindow.StoryWindow.Zoom; } }
+        public static float Zoom { get { return StoryEditorWindow.StoryWindow.Zoom; } }
         public static Rect GetNodeRect(Vector2 realPos)
         {
-            return new Rect(realPos.x, realPos.y, 200, 50);
+            //Debug.Log(StoryEditorWindow.StoryWindow.Zoom);
+            float zoom = StoryEditorWindow.StoryWindow.Zoom;
+            return new Rect(realPos.x * zoom, realPos.y * zoom, _nodeWidth * zoom, _nodeHeight * zoom);
         }
 
 

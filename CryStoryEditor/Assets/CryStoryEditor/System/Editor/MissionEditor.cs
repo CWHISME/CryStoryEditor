@@ -46,6 +46,11 @@ namespace CryStory.Editor
                 selectStyle = ResourcesManager.GetInstance.ActionNodeOn;
             }
 
+            style = new GUIStyle(style);
+            selectStyle = new GUIStyle(selectStyle);
+            style.fontSize = (int)(style.fontSize * Tools.Zoom);
+            selectStyle.fontSize = (int)(selectStyle.fontSize * Tools.Zoom);
+
             GUI.Box(nodeRect, coreNode ? "<color=#00FF00>" + node._name + "</color>" : node._name, _currentNode == node ? selectStyle : style);
 
             DrawRunModeLable(node, nodeRect);
@@ -115,6 +120,12 @@ namespace CryStory.Editor
         private void ShowDeleteNodeMenu()
         {
             GenericMenu menu = new GenericMenu();
+
+            menu.AddItem(new GUIContent("Duplicate"), false, () =>
+            {
+                DuplicateNode(_currentHover);
+            });
+
             menu.AddItem(new GUIContent("Delete"), false, () =>
             {
                 Runtime.NodeModifier.Delete(_currentHover);

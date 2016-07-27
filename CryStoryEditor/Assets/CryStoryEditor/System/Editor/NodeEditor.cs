@@ -44,15 +44,31 @@ namespace CryStory.Editor
             ShowLeftSliderArea();
             //Make graph dragable
             DragGraph();
+            //Quilk Key
+            QuilkKey();
+
 
             InternalOnGUI();
+        }
+
+        private void QuilkKey()
+        {
+            if (_currentNode == null) return;
+            //Duplicate
+            if (Event.current != null)
+            {
+                if (Event.current.control && Event.current.keyCode == KeyCode.D)
+                {
+                    DuplicateNode(_currentNode);
+                }
+            }
         }
 
         private void ShowConnectLine()
         {
             if (_isConnecting && _currentNode != null)
             {
-                Vector2 pos1 = new Vector2(_currentNodeRect.max.x, _currentNodeRect.max.y - Tools._nodeHalfHeight);
+                Vector2 pos1 = new Vector2(_currentNodeRect.max.x, _currentNodeRect.max.y - Tools.NodeHalfHeightZoomed);
                 Tools.DrawBazier(pos1, Event.current.mousePosition);
                 if (Tools.MouseUp)
                 {
@@ -89,9 +105,16 @@ namespace CryStory.Editor
 
         private void ShowGraphCenterInfo()
         {
-            GUI.Label(new Rect(_contentRect.x, _contentRect.y, 120, 20), _window.CurrentContentCenter.ToString());
+            _window.Zoom = GUI.HorizontalSlider(new Rect(_contentRect.x + 3, _contentRect.y, 200, 20), _window.Zoom, StoryEditorWindow._zoomMin, StoryEditorWindow._zoomMax);
+            if (GUI.Button(new Rect(_contentRect.x + 205, _contentRect.y, 20, 20), "R", ResourcesManager.GetInstance.skin.button))
+            {
+                _window.Zoom = 1;
+            }
 
-            if (GUI.Button(new Rect(_contentRect.x + 3, _contentRect.y + 20, 50, 22), "Reset", ResourcesManager.GetInstance.skin.button))
+
+            GUI.Label(new Rect(_contentRect.x, _contentRect.y + 20, 120, 20), _window.CurrentContentCenter.ToString());
+
+            if (GUI.Button(new Rect(_contentRect.x + 3, _contentRect.y + 40, 50, 22), "Reset", ResourcesManager.GetInstance.skin.button))
             {
                 _window.CurrentContentCenter = Vector2.zero;
             }
@@ -236,8 +259,8 @@ namespace CryStory.Editor
             Vector2 nodepos = CalcVirtualPosition(Vector2.zero);
             coord.x = nodepos.x / 128.0f;
             coord.y = nodepos.y / 128.0f;
-            coord.width = _contentRect.width / 128.0f;
-            coord.height = -_contentRect.height / 128.0f;
+            coord.width = _contentRect.width / 128.0f / _window.Zoom;
+            coord.height = -_contentRect.height / 128.0f / _window.Zoom;
             GUI.color = new Color(1f, 1f, 1f, 0.1f);
             GUI.DrawTextureWithTexCoords(_contentRect, ResourcesManager.GetInstance.texGrid, coord);
             GUI.color = Color.white;
@@ -261,7 +284,7 @@ namespace CryStory.Editor
                     //                    Debug.Log("Window Center:" + _window._story._mission.graphCenter + "  mousePos:" +
                     //Event.current.mousePosition);
                     Vector2 offset = Event.current.mousePosition - _mouseDownPos;
-                    _window.CurrentContentCenter = _mouseDownCenter - offset;
+                    _window.CurrentContentCenter = _mouseDownCenter - offset / _window.Zoom;
                 }
             }
         }
@@ -285,8 +308,8 @@ namespace CryStory.Editor
             {
                 NodeModifier node2 = nextNodes[j];
                 Rect nodeRect1 = Tools.GetNodeRect(CalcRealPosition(node._position));
-                Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools._nodeHalfHeight);
-                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y + Tools._nodeHalfHeight));
+                Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools.NodeHalfHeightZoomed);
+                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y + Tools.NodeHalfHeightZoomed));
 
                 Tools.DrawBazier(pos1, pos2, Color.magenta, new Color32(0, 255, 255, 180), 0.1f, 10f);
             }
@@ -327,8 +350,10 @@ namespace CryStory.Editor
             {
                 NodeModifier node2 = nextNodes[j];
                 Rect nodeRect1 = Tools.GetNodeRect(CalcRealPosition(node._position));
-                Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools._nodeHalfHeight);
-                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y + Tools._nodeHalfHeight));
+                Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools.NodeHalfHeightZoomed);
+                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y /*+ Tools.NodeHalfHeightZoomed*/));
+                pos2 *= Tools.Zoom;
+                pos2.y += Tools.NodeHalfHeightZoomed;
 
                 bool singleNode = node2.Parent != node;//node.IsParent(node2);
                 if (singleNode)
@@ -343,7 +368,9 @@ namespace CryStory.Editor
             Rect nodeRect = Tools.GetNodeRect(pos);
 
             //GUI.Box(nodeRect, coreNode? "<color=#00FF00>" + node._name+"</color>": node._name, _currentNode == node ? (coreNode ? ResourcesManager.GetInstance.CoreNodeOn : ResourcesManager.GetInstance.NodeOn) : (coreNode ? ResourcesManager.GetInstance.CoreNode : ResourcesManager.GetInstance.Node));
-            GUI.Box(nodeRect, coreNode ? "<color=#00FF00>" + node._name + "</color>" : node._name, _currentNode == node ? ResourcesManager.GetInstance.NodeOn : ResourcesManager.GetInstance.Node);
+            GUIStyle style = new GUIStyle(_currentNode == node ? ResourcesManager.GetInstance.NodeOn : ResourcesManager.GetInstance.Node);
+            style.fontSize = (int)(style.fontSize * _window.Zoom);
+            GUI.Box(nodeRect, coreNode ? "<color=#00FF00>" + node._name + "</color>" : node._name, style);
 
             DrawRunModeLable(node, nodeRect);
 
@@ -379,10 +406,8 @@ namespace CryStory.Editor
 
             Rect rect = new Rect(nodeRect);
             rect.position = new Vector2(rect.position.x, rect.position.y + rect.height);
-            GUIStyle style = new GUIStyle();
-            style.normal.textColor = Color.white;
+            GUIStyle style = ResourcesManager.GetInstance.GetFontStyle((int)(12 * Tools.Zoom));
             style.clipping = TextClipping.Overflow;
-            //style.alignment = TextAnchor.UpperCenter;
             style.wordWrap = true;
 
             GUIContent con = new GUIContent(description);
@@ -652,6 +677,21 @@ namespace CryStory.Editor
             center.y = (int)(center.y);
 
             return center + pos - _window.CurrentContentCenter;
+        }
+
+        protected void DuplicateNode(NodeModifier targetNode)
+        {
+            NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(targetNode.GetType().FullName);
+            JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(targetNode), node);
+            node._position = new Vector2(node._position.x + 10, node._position.y + 10);
+            if (targetNode.Parent != null)
+            {
+                NodeModifier.SetParent(node, targetNode.Parent);
+            }
+            else if (targetNode.Content != null)
+            {
+                NodeModifier.SetContent(node, targetNode.Content);
+            }
         }
     }
 }
