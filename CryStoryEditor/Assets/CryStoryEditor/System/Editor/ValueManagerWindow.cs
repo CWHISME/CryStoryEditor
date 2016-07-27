@@ -30,7 +30,7 @@ namespace CryStory.Editor
             _instance = EditorWindow.CreateInstance<ValueManagerWindow>();
             _instance.titleContent = new GUIContent("Value Manager");
             float h = 600;// Screen.height * 0.8f;
-            float w = 630;//Screen.width * 0.95f;
+            float w = 650;//Screen.width * 0.95f;
             _instance.position = new Rect(Screen.width - w, Screen.height - h, w, h);
             _instance.maxSize = new Vector2(w, Screen.height);
 
@@ -39,8 +39,12 @@ namespace CryStory.Editor
 
         void OnGUI()
         {
+            GUILayout.Space(5);
+            EditorGUILayout.LabelField("Value Manager", ResourcesManager.GetInstance.GetFontStyle(22));
+            GUILayout.Space(10);
             EditorGUILayout.BeginHorizontal();
             //Story Value Manager
+
             StoryValue();
 
             ShowSeperator();
@@ -76,12 +80,12 @@ namespace CryStory.Editor
             }
             if (story._Story != null)
             {
-                EditorGUILayout.BeginVertical();
+                EditorGUILayout.BeginVertical(GUILayout.Width(300));
 
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(story.name, ResourcesManager.GetInstance.GetFontStyle(15));
+                EditorGUILayout.LabelField("<color=#FF00FF>" + story.name + "</color>", ResourcesManager.GetInstance.GetFontStyle(18));
                 //GUILayout.Space(10);
-                if (GUILayout.Button("Add Value"))
+                if (GUILayout.Button("<color=#00FF00>Add Value</color>", ResourcesManager.GetInstance.skin.button, GUILayout.Height(25)))
                     ValueAdder.Open(story._Story);
                 EditorGUILayout.EndHorizontal();
 
@@ -115,12 +119,12 @@ namespace CryStory.Editor
                 return;
             }
 
-            EditorGUILayout.BeginVertical();
+            EditorGUILayout.BeginVertical(GUILayout.Width(300));
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(container._name, ResourcesManager.GetInstance.GetFontStyle(15));
+            EditorGUILayout.LabelField("<color=#FF00FF>" + container._name + "</color>", ResourcesManager.GetInstance.GetFontStyle(18));
 
-            if (GUILayout.Button("Add Value"))
+            if (GUILayout.Button("<color=#00FF00>Add Value</color>", ResourcesManager.GetInstance.skin.button, GUILayout.Height(25)))
                 ValueAdder.Open(container);
             EditorGUILayout.EndHorizontal();
 
@@ -164,12 +168,15 @@ namespace CryStory.Editor
                     break;
             }
 
-            if (GUILayout.Button("X"))
-                return true;
+            if (GUILayout.Button("<color=red>X</color>", ResourcesManager.GetInstance.skin.button, GUILayout.Height(18), GUILayout.Width(18)))
+            {
+                if (EditorUtility.DisplayDialog("Caution!", "You will delete value [" + name + "] !", "Confirm", "Cancel"))
+                    return true;
+            }
 
             EditorGUILayout.EndHorizontal();
             return false;
         }
-    
+
     }
 }

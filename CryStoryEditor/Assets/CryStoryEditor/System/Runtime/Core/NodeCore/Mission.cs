@@ -34,16 +34,7 @@ namespace CryStory.Runtime
 
                     w.Write(_missionDescription.GetType().FullName);
                     _missionDescription.Serialize(w);
-                    //NodeModifier[] nodes = Nodes;
-                    //w.Write(nodes.Length);
-                    //for (int i = 0; i < nodes.Length; i++)
-                    //{
-                    //    NodeModifier node = nodes[i];
-                    //    System.Type type = node.GetType();
 
-                    //    w.Write(type.FullName);
-                    //    node.Serialize(w);
-                    //}
                 }
                 //Save
                 return ms.GetBuffer();
@@ -61,26 +52,11 @@ namespace CryStory.Runtime
                 using (BinaryReader r = new BinaryReader(ms))
                 {
                     JsonUtility.FromJsonOverwrite(r.ReadString(), this);
-                    //this = JsonUtility.FromJson<Mission>(r.ReadString());
-                    //if (_mission == null) _mission = new Mission();
                     Deserialize(r);
 
                     string name = r.ReadString();
                     _missionDescription = ReflectionHelper.CreateInstance<MissionDescription>(name);
                     _missionDescription.Deserialize(r);
-                    //int count = r.ReadInt32();
-                    //for (int i = 0; i < count; i++)
-                    //{
-                    //    string fullName = r.ReadString();
-                    //    NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(fullName);
-                    //    if (node == null)
-                    //    {
-                    //        Debug.LogError("Error: The Mission Node [" + fullName + "] Was Lost!");
-                    //        return;
-                    //    }
-                    //    node.Deserialize(r);
-                    //    NodeModifier.SetContent(node, this);
-                    //}
                 }
             }
         }

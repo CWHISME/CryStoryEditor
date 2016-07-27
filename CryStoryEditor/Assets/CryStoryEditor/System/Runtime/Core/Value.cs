@@ -104,7 +104,21 @@ namespace CryStory.Runtime
 
         public void OperationValue(ValueFunctor func, string val)
         {
-            if (func == ValueFunctor.Set) _value = val;
+            switch (ValueType)
+            {
+                case VarType.INT:
+                    OperationValue(func, Convert.ToInt32(val));
+                    break;
+                case VarType.FLOAT:
+                    OperationValue(func, Convert.ToSingle(val));
+                    break;
+                case VarType.BOOL:
+                    OperationValue(func, Convert.ToBoolean(val));
+                    break;
+                case VarType.STRING:
+                    if (func == ValueFunctor.Set) _value = val;
+                    break;
+            }
         }
 
         public void OperationValue(ValueFunctor func, bool val)
@@ -112,24 +126,128 @@ namespace CryStory.Runtime
             if (func == ValueFunctor.Set) _value = val;
         }
 
-        public void OperationValue(ValueFunctor func, Int32 val)
+        public void OperationValue(ValueFunctor func, int val)
         {
+            if (ValueType != VarType.INT) return;
+
+            int realVal = IntValue;
             switch (func)
             {
                 case ValueFunctor.Set:
-
+                    realVal = val;
                     break;
                 case ValueFunctor.Add:
+                    realVal += val;
                     break;
                 case ValueFunctor.Reduce:
+                    realVal -= val;
                     break;
                 case ValueFunctor.Multiply:
+                    realVal *= val;
                     break;
                 case ValueFunctor.Divide:
-                    break;
-                default:
+                    realVal /= val;
                     break;
             }
+            _value = realVal;
+        }
+
+        public void OperationValue(ValueFunctor func, float val)
+        {
+            if (ValueType != VarType.FLOAT) return;
+
+            float realVal = IntValue;
+            switch (func)
+            {
+                case ValueFunctor.Set:
+                    realVal = val;
+                    break;
+                case ValueFunctor.Add:
+                    realVal += val;
+                    break;
+                case ValueFunctor.Reduce:
+                    realVal -= val;
+                    break;
+                case ValueFunctor.Multiply:
+                    realVal *= val;
+                    break;
+                case ValueFunctor.Divide:
+                    realVal /= val;
+                    break;
+            }
+            _value = realVal;
+        }
+
+        public bool Compare(string v, ValueCompare compare)
+        {
+            switch (ValueType)
+            {
+                case VarType.INT:
+                    Compare(Convert.ToInt32(v), compare);
+                    break;
+                case VarType.FLOAT:
+                    Compare(Convert.ToSingle(v), compare);
+                    break;
+                case VarType.BOOL:
+                    Compare(Convert.ToBoolean(v), compare);
+                    break;
+                case VarType.STRING:
+                    return StringValue == v;
+            }
+
+            return false;
+        }
+
+        public bool Compare(bool val, ValueCompare compare)
+        {
+            switch (compare)
+            {
+                case ValueCompare.Equal:
+                    return val == BoolValue;
+                case ValueCompare.NotEqual:
+                    return val != BoolValue;
+            }
+            return false;
+        }
+
+        public bool Compare(int val, ValueCompare compare)
+        {
+            switch (compare)
+            {
+                case ValueCompare.Equal:
+                    return IntValue == val;
+                case ValueCompare.NotEqual:
+                    return IntValue != val;
+                case ValueCompare.Less:
+                    return IntValue < val;
+                case ValueCompare.Greater:
+                    return IntValue > val;
+                case ValueCompare.LessEqual:
+                    return IntValue <= val;
+                case ValueCompare.GreaterEqual:
+                    return IntValue >= val;
+            }
+            return false;
+        }
+
+        public bool Compare(float val, ValueCompare compare)
+        {
+            switch (compare)
+            {
+                case ValueCompare.Equal:
+                    return FloatValue == val;
+                case ValueCompare.NotEqual:
+                    return FloatValue != val;
+                case ValueCompare.Less:
+                    return FloatValue < val;
+                case ValueCompare.Greater:
+                    return FloatValue > val;
+                case ValueCompare.LessEqual:
+                    return FloatValue <= val;
+                case ValueCompare.GreaterEqual:
+                    return FloatValue >= val;
+            }
+            return false;
         }
 
         public void ConverToRealType()

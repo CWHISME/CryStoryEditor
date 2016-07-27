@@ -34,8 +34,6 @@ namespace CryStory.Editor
             _contentRect = window._contentRect;
             _window = window;
 
-            ShowGraphCenterInfo();
-
             //========Right Area===============
             DrawRightGrid();
             DrawNodes(nodes, true);
@@ -46,6 +44,8 @@ namespace CryStory.Editor
             DragGraph();
             //Quilk Key
             QuilkKey();
+            //LeftTopInfo
+            ShowGraphCenterInfo();
 
 
             InternalOnGUI();
@@ -128,6 +128,8 @@ namespace CryStory.Editor
             {
                 if (Event.current.button == 0)
                 {
+                    if (!Tools.IsInContent(nodeRect)) return;
+
                     if (Event.current.type == EventType.MouseDown && Tools.IsValidMouseAABB(nodeRect))
                     {
                         _mouseIsDown = true;
@@ -425,7 +427,7 @@ namespace CryStory.Editor
 
             GUIStyle style = new GUIStyle();
             style.fontSize = 13;
-            style.normal.textColor = Color.white;
+            style.normal.textColor = Color.white;// new Color32(238, 130, 238, 255);
             style.clipping = TextClipping.Overflow;
             style.wordWrap = true;
 
@@ -434,7 +436,7 @@ namespace CryStory.Editor
             float width = 200;// size.x > 200 ? 200 : size.x;
             float height = style.CalcHeight(con, width);
 
-            Rect rect = new Rect(_contentRect.x + 5, _contentRect.y + 50, width, height);
+            Rect rect = new Rect(_contentRect.x + 5, _contentRect.y + 70, width, height);
             //GUI.Box(rect, "", ResourcesManager.GetInstance.skin.box);
             EditorGUI.LabelField(rect, con, style);
         }
@@ -599,7 +601,7 @@ namespace CryStory.Editor
             {
                 EditorUtility.DisplayDialog("Error!", "Not allow to [" + eN + "] for Value [" + key + "]！\nValue Type:" + var.ValueType, "OK");
 
-                filed.SetValue(o, ValueFunctor.Set);
+                filed.SetValue(o, 0);
 
                 return true;
             }

@@ -23,6 +23,11 @@ namespace CryStory.Editor
             return Event.current.mousePosition.x > area.x && Event.current.mousePosition.y > area.y && Event.current.mousePosition.x < area.xMax && Event.current.mousePosition.y < area.yMax;
         }
 
+        public static bool IsInContent(Rect area)
+        {
+            return area.x > StoryEditorWindow.StoryWindow._leftWidth && area.y > StoryEditorWindow.StoryWindow._titleHeight;
+        }
+
         public static void DrawBazier(Vector2 startPos, Vector2 endPos, Color color)
         {
             DrawBazier(startPos, endPos, color, new Color(1, 1, 1, 0.3f));

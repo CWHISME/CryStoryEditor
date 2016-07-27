@@ -58,7 +58,7 @@ namespace CryStory.Editor
             }
 
             GUILayout.Space(10);
-            if (GUILayout.Button("Add"))
+            if (GUILayout.Button("Add", ResourcesManager.GetInstance.skin.button, GUILayout.Height(25)))
             {
                 if (_container.HaveKey(_name))
                 {

@@ -47,7 +47,7 @@ namespace CryStory.Editor
             string content = txt.text.Replace("{Date}", System.DateTime.Now.ToString()).Replace("{Name}", name).Replace(
                 "{Parent}", parent).Replace("{UserName}", System.Environment.UserName + " with PC " + System.Environment.MachineName);
 
-            System.IO.File.WriteAllText(path, content);
+            System.IO.File.WriteAllText(path, content, System.Text.Encoding.UTF8);
 
             AssetDatabase.Refresh();
         }
