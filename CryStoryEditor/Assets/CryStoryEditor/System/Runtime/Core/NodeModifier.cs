@@ -311,6 +311,18 @@ namespace CryStory.Runtime
 
         public virtual void Serialize(BinaryWriter w)
         {
+
+            //using (MemoryStream s = new MemoryStream())
+            //{
+            //    using (BinaryWriter ww = new BinaryWriter(s))
+            //    {
+            //        ww.Write(UnityEngine.JsonUtility.ToJson(this));
+            //    }
+            //    byte[] b = s.GetBuffer();
+            //    w.Write(b.Length);
+            //    w.Write(b);
+            //}
+
             w.Write(UnityEngine.JsonUtility.ToJson(this));
             w.Write(_nextNodeList.Count);
             for (int i = 0; i < _nextNodeList.Count; i++)
@@ -351,8 +363,11 @@ namespace CryStory.Runtime
                     node = ReflectionHelper.CreateInstance<NodeModifier>(fullName);
                     if (node == null)
                     {
+#if UNITY_EDITOR
                         UnityEngine.Debug.LogError("Error: The Mission Node [" + fullName + "] Was Lost!");
-                        return;
+#endif
+                        //return;
+                        node = ReflectionHelper.CreateInstance<NodeModifier>("CryStory.Runtime.MissingNode");
                     }
 
                     SetParent(node, this);

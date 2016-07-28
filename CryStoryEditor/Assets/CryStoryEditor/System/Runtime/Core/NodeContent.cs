@@ -220,6 +220,8 @@ namespace CryStory.Runtime
                 NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(fullName);
                 if (node == null)
                 {
+                    //node = ReflectionHelper.CreateInstance<NodeModifier>("CryStory.Runtime.MissingNode");
+                    //It's mission
                     return;
                 }
                 node.Deserialize(r);
@@ -260,6 +262,15 @@ namespace CryStory.Runtime
                 }
             }
         }
+
+        //private void SaveNode(BinaryWriter w,NodeModifier node)
+        //{
+        //    System.Type type = node.GetType();
+        //    w.Write(type.FullName);
+
+        //    long length = w.BaseStream.Length;
+        //    node.Serialize(w);
+        //}
 
     }
 }
