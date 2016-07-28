@@ -128,7 +128,7 @@ namespace CryStory.Editor
             {
                 if (Event.current.button == 0)
                 {
-                    if (!Tools.IsInContent(nodeRect)) return;
+                    if (!Tools.MouseIsInContent()) return;
 
                     if (Event.current.type == EventType.MouseDown && Tools.IsValidMouseAABB(nodeRect))
                     {
