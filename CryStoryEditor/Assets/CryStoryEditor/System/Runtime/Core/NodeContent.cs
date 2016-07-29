@@ -84,6 +84,18 @@ namespace CryStory.Runtime
         }
 
         /// <summary>
+        /// 将一组节点添加至容器
+        /// </summary>
+        /// <param name="nodes"></param>
+        public void AddContentNode(List<NodeModifier> nodes)
+        {
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                AddContentNode(nodes[i]);
+            }
+        }
+
+        /// <summary>
         /// 删除一个节点
         /// </summary>
         public bool RemoveContenNode(NodeModifier node)
@@ -101,13 +113,17 @@ namespace CryStory.Runtime
         {
             if (_contenNodeList.Count == 0) return EnumResult.Success;
             //Run
+            //UnityEngine.Profiler.BeginSample("Sample Node Tick: " + _name);
             for (int i = 0; i < _contenNodeList.Count; i++)
             {
-                //UnityEngine.Debug.Log("Run Node:" + _contenNodeList[i]._name);
                 EnumResult result = _contenNodeList[i].Tick(this);
+
+                //UnityEngine.Profiler.BeginSample("Sample Failed: " + _name);
                 if (result != EnumResult.Running)
                 {
                     NodeModifier node = _contenNodeList[i];
+
+                    //UnityEngine.Profiler.BeginSample("Sample Check: " + _name);
                     if (result == EnumResult.Failed)
                         switch (node.RunMode)
                         {
@@ -121,6 +137,9 @@ namespace CryStory.Runtime
                                 _toRemoveNode.Add(node);
                                 continue;
                         }
+                    //UnityEngine.Profiler.EndSample();
+
+                    //UnityEngine.Profiler.EndSample();
 
                     _toRemoveNode.Add(node);
 
@@ -132,9 +151,10 @@ namespace CryStory.Runtime
                         if (child != null)
                             _toAddNode.Add(child);
                     }
-                    else _toAddNode.AddRange(node.NextNodes);
+                    else node.GetNextNodes(_toAddNode);
                 }
             }
+            //UnityEngine.Profiler.EndSample();
 
             ProcessNode();
 
@@ -151,19 +171,15 @@ namespace CryStory.Runtime
             {
                 for (int i = 0; i < _toRemoveNode.Count; i++)
                 {
-                    //若处于最后一个节点，则结束时，将其初始节点重新添加
-                    //if (_contenNodeList.Count == 1 && _toAddNode.Count == 0)
-                    //    _finalNode = _contenNodeList[0];
-
                     _contenNodeList.Remove(_toRemoveNode[i]);
                 }
                 _toRemoveNode.Clear();
             }
 
             //Add
-            if (_toAddNode != null)
+            if (_toAddNode.Count > 0)
             {
-                AddContentNode(_toAddNode.ToArray());
+                AddContentNode(_toAddNode);
                 _toAddNode.Clear();
             }
         }
@@ -175,12 +191,6 @@ namespace CryStory.Runtime
         {
             base.OnEnd();
 
-            //NodeModifier[] nodes = _contenNodeList.ToArray();
-            //_contenNodeList.AddRange(_tempNodeList);
-            //for (int i = 0; i < nodes.Length; i++)
-            //{
-            //    _contenNodeList.Remove(nodes[i]);
-            //}
             _contenNodeList.Clear();
             _contenNodeList.AddRange(_tempNodeList);
             _tempNodeList = null;

@@ -36,8 +36,6 @@ namespace CryStory.Runtime
                 return EnumResult.Running;
             }
 
-            //UnityEngine.Debug.Log("Tick Node :" + _name + "    " + result);
-
             if (result != EnumResult.Running)
             {
                 OnEnd();

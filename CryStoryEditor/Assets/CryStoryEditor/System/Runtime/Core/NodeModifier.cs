@@ -51,6 +51,7 @@ namespace CryStory.Runtime
         {
             return _nextNodeList.FindAll((n) => !node.IsParent(n) && n.Parent == node).ToArray();
         }
+
         /// <summary>
         ///设置父节点
         /// </summary>
@@ -59,6 +60,15 @@ namespace CryStory.Runtime
         {
             node.AddNextNode(this);
             _lastNode = node;
+        }
+
+        /// <summary>
+        /// 获取子节点列表
+        /// </summary>
+        /// <param name="nodes"></param>
+        public void GetNextNodes(List<NodeModifier> nodes)
+        {
+            nodes.AddRange(_nextNodeList);
         }
 
         /// <summary>
