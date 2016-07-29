@@ -51,6 +51,8 @@ namespace CryStory.Runtime
 
         public byte[] _SaveData = new byte[] { };
 
+        public float _saveVersion = Story.SaveVersion;
+
 #if UNITY_EDITOR
 
         [SerializeField]
@@ -191,6 +193,10 @@ namespace CryStory.Runtime
             {
                 using (BinaryWriter w = new BinaryWriter(ms))
                 {
+                    _saveVersion = Story.SaveVersion;
+
+                    w.Write(Story.SaveVersion);
+
                     w.Write(JsonUtility.ToJson(_story));
 
                     _story.SaveInEditor(w);
@@ -259,6 +265,7 @@ namespace CryStory.Runtime
             else UnityEditor.EditorUtility.DisplayDialog("Tips", "Some Data Save Failed!You should check out it.", "OK");
         }
 
+        private bool _queryloaded = false;
         public void Load()
         {
             if (_SaveData.Length > 0)
@@ -266,6 +273,22 @@ namespace CryStory.Runtime
                 {
                     using (BinaryReader r = new BinaryReader(ms))
                     {
+                        float ver = r.ReadSingle();
+                        if (ver != Story.SaveVersion)
+                        {
+                            Debug.LogError("Error:Archive data version not same! Curent: " + Story.SaveVersion + " Data: " + ver);
+#if UNITY_EDITOR
+                            if (!_queryloaded)
+                            {
+                                _queryloaded = true;
+                                if (!UnityEditor.EditorUtility.DisplayDialog("Error!", "Error:Archive data version not the same! Curent Version: " + Story.SaveVersion + " Data Version:" + ver, "Force Load", "Cancel"))
+                                    return;
+                            }
+#endif
+                        }
+
+                        _queryloaded = false;
+
                         string storyData = r.ReadString();
                         _story = JsonUtility.FromJson<Story>(storyData);
                         _story.LoadInEditor(r);

@@ -28,6 +28,8 @@ namespace CryStory.Editor
                 CryStory.Editor.StoryEditorWindow.Open();
 
             GUILayout.Space(10);
+            EditorGUILayout.LabelField("Archive Version: ", ((StoryObject)target)._saveVersion.ToString());
+
             string path = Application.dataPath + "/../" + AssetDatabase.GetAssetPath(target);
             //System.DateTime createDate = System.IO.File.GetCreationTime(path);
             System.DateTime modifyDate = System.IO.File.GetLastAccessTime(path);
