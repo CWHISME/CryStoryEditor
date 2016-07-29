@@ -333,7 +333,13 @@ namespace CryStory.Editor
                 Rect nodeRect = DrawNodeRect(node, coreNode);
 
                 //Draw conection bazier line
-                DrawBazierLine(node);
+                if (node is Decorator)
+                {
+                    DrawBazierLine(node, (node as Decorator).ColorLine);
+                }
+                else
+                    DrawBazierLine(node);
+                //DrawBazierLine(node);
                 //Draw Node
                 DrawNodeSlot(node, nodeRect);
 
@@ -351,19 +357,24 @@ namespace CryStory.Editor
 
         protected virtual void DrawBazierLine(NodeModifier node)
         {
+            DrawBazierLine(node, Color.green);
+        }
+
+        protected virtual void DrawBazierLine(NodeModifier node, Color color)
+        {
             NodeModifier[] nextNodes = node.NextNodes;
             for (int j = 0; j < nextNodes.Length; j++)
             {
                 NodeModifier node2 = nextNodes[j];
                 Rect nodeRect1 = Tools.GetNodeRect(CalcRealPosition(node._position));
                 Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools.NodeHalfHeightZoomed);
-                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y /*+ Tools.NodeHalfHeightZoomed*/));
+                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y));
                 pos2 *= Tools.Zoom;
                 pos2.y += Tools.NodeHalfHeightZoomed;
 
-                bool singleNode = node2.Parent != node;//node.IsParent(node2);
+                bool singleNode = node2.Parent != node;
                 if (singleNode)
-                    Tools.DrawBazier(pos1, pos2, Color.green);
+                    Tools.DrawBazier(pos1, pos2, color);
                 else Tools.DrawBazier(pos1, pos2);
             }
         }

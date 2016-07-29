@@ -40,9 +40,9 @@
 
    <color=#00FF00>文字绿色</color>：代表该节点属于核心节点，即：当运行时，将会首先从核心节点开始运行。可以允
                   许有多个核心节点，效果就是同时并行执行。
-   <color=#017bbc>蓝色</color>：代表事件(Event)节点。
+   <color=#6A5ACD>石蓝色</color>：代表事件(Event)节点。
    <color=#918763>淡黄色</color>：代表判断(Condition)节点。
-   <color=#6A5ACD>石蓝色</color>：代表行为(Action)节点。
+   <color=#017bbc>蓝色</color>：代表行为(Action)节点。
 
    关于节点顶上的图标：
 

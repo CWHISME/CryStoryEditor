@@ -17,6 +17,11 @@ namespace CryStory.Editor
         [MenuItem("StoryEditor/Open Story Editor")]
         public static void Open()
         {
+            if (StoryWindow != null)
+            {
+                StoryWindow.Show();
+                return;
+            }
             StoryWindow = EditorWindow.CreateInstance<StoryEditorWindow>();
             StoryWindow.titleContent = new GUIContent("Story Editor");
             float h = Screen.height * 0.7f;

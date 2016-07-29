@@ -113,10 +113,14 @@ namespace CryStory.Editor
             AddEventMenu(menu, types, asm);
             AddConditionMenu(menu, types, asm);
             AddActionMenu(menu, types, asm);
+            AddDecoratorMenu(menu, types, asm);
 
             menu.ShowAsContext();
         }
 
+        /// <summary>
+        /// 显示删除复制等菜单
+        /// </summary>
         private void ShowDeleteNodeMenu()
         {
             GenericMenu menu = new GenericMenu();
@@ -142,17 +146,6 @@ namespace CryStory.Editor
 
             AddMenu(typeList, menu, "Create/Event/");
 
-            //for (int i = 0; i < typeList.Length; i++)
-            //{
-            //    Type nodeType = typeList[i];
-            //    CategoryAttribute[] category = nodeType.GetCustomAttributes(typeof(CategoryAttribute), true) as CategoryAttribute[];
-            //    string cat = category.Length > 0 ? category[0].Category : "";
-            //    menu.AddItem(new GUIContent("Create/Event/" + cat + "/" + nodeType.Name), false, () =>
-            //        {
-            //            //Debug.Log("Add Node: " + name);
-            //            CreateNode(asm, nodeType);
-            //        });
-            //}
         }
 
         private void AddConditionMenu(GenericMenu menu, Type[] type, Assembly asm)
@@ -162,15 +155,6 @@ namespace CryStory.Editor
 
             AddMenu(typeList, menu, "Create/Condition/");
 
-            //for (int i = 0; i < typeList.Length; i++)
-            //{
-            //    Type nodeType = typeList[i];
-            //    menu.AddItem(new GUIContent("Create/Condition/" + nodeType.Name), false, () =>
-            //    {
-            //        //Debug.Log("Add Node: " + name);
-            //        CreateNode(asm, nodeType);
-            //    });
-            //}
         }
 
         private void AddActionMenu(GenericMenu menu, Type[] type, Assembly asm)
@@ -179,16 +163,14 @@ namespace CryStory.Editor
             Type[] typeList = Array.FindAll<Type>(type, (t) => t.IsSubclassOf(baseType));
 
             AddMenu(typeList, menu, "Create/Action/");
+        }
 
-            //for (int i = 0; i < typeList.Length; i++)
-            //{
-            //    Type nodeType = typeList[i];
-            //    menu.AddItem(new GUIContent("Create/Action/" + nodeType.Name), false, () =>
-            //    {
-            //        //Debug.Log("Add Node: " + name);
-            //        CreateNode(asm, nodeType);
-            //    });
-            //}
+        private void AddDecoratorMenu(GenericMenu menu, Type[] type, Assembly asm)
+        {
+            Type baseType = typeof(CryStory.Runtime.Decorator);
+            Type[] typeList = Array.FindAll<Type>(type, (t) => t.IsSubclassOf(baseType));
+
+            AddMenu(typeList, menu, "Create/Decorator/");
         }
 
         private void AddMenu(Type[] typeList, GenericMenu menu, string prefix)

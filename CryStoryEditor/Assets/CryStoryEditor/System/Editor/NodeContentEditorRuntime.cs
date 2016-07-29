@@ -41,7 +41,12 @@ namespace CryStory.Editor
                 DrawNodeRect(node, coreNode);
 
                 //Draw conection bazier line
-                DrawBazierLine(node);
+                if (node is Decorator)
+                {
+                    DrawBazierLine(node, (node as Decorator).ColorLine);
+                }
+                else
+                    DrawBazierLine(node);
                 //Draw Debug Line
                 //DrawDebugBazierLine(node);
                 //Draw Node

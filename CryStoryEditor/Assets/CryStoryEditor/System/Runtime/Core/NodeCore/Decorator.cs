@@ -1,6 +1,6 @@
 ﻿/**********************************************************
 *Author: wangjiaying
-*Date: 2016.6.16
+*Date: 2016.7.29
 *Func:
 **********************************************************/
 
@@ -9,16 +9,11 @@ using System;
 namespace CryStory.Runtime
 {
 
-    abstract public class Condition : StoryNode
+    abstract public class Decorator : StoryNode
     {
-
-        public abstract bool OnCheck();
-
-        public sealed override EnumResult Tick(NodeContent content)
+        public override EnumResult Tick(NodeContent content)
         {
-            if (OnCheck())
-                return EnumResult.Success;
-            return EnumResult.Failed;
+            return OnProcessing(content, NextNodes);
         }
 
         protected sealed override EnumResult OnStart()
@@ -33,6 +28,16 @@ namespace CryStory.Runtime
 
         protected sealed override void OnEnd()
         {
+        }
+
+        protected virtual EnumResult OnProcessing(NodeContent content, NodeModifier[] nextNode)
+        {
+            return EnumResult.Success;
+        }
+
+        public virtual UnityEngine.Color ColorLine
+        {
+            get { return UnityEngine.Color.white; }
         }
     }
 }

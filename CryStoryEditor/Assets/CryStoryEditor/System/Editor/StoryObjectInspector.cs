@@ -24,8 +24,14 @@ namespace CryStory.Editor
             EditorGUILayout.HelpBox(((StoryObject)target)._description, MessageType.Info);
 
             GUILayout.Space(10);
+
+            EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Edit >>>", GUILayout.Height(40), GUILayout.Width(80)))
                 CryStory.Editor.StoryEditorWindow.Open();
+
+            if (GUILayout.Button("Value >>>", GUILayout.Height(40), GUILayout.Width(80)))
+                CryStory.Editor.ValueManagerWindow.Open();
+            EditorGUILayout.EndHorizontal();
 
             GUILayout.Space(10);
             EditorGUILayout.LabelField("Archive Version: ", ((StoryObject)target)._saveVersion.ToString());

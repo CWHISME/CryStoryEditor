@@ -22,6 +22,7 @@ namespace CryStory.Runtime
         {
             _SaveData = _mission.SaveThisNode();
 
+            //_mission = null;
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(this);
 #endif

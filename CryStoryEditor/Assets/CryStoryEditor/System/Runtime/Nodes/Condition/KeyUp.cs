@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace CryStory.Runtime
 {
+    [Category("System")]
     [Help("如果松开某个按钮")]
     public class KeyUp : Condition
     {

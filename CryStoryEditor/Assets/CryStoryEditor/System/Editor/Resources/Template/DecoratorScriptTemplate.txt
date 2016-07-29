@@ -1,0 +1,16 @@
+﻿/**********************************************************
+*Author: {UserName}
+*Date: {Date}
+*Func:
+**********************************************************/
+
+namespace CryStory.Runtime
+{
+    public class {Name} : {Parent}
+    {
+	    protected override EnumResult OnProcessing(NodeContent content, NodeModifier[] nextNode)
+        {
+            return base.OnProcessing(content, nextNode);
+        }
+    }
+}

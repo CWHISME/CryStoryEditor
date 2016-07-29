@@ -27,7 +27,8 @@ namespace CryStory.Examples
 
         public void Load()
         {
-            _runner.LoadStory(_saveData);
+            if (_saveData != null)
+                _runner.LoadStory(_saveData);
         }
     }
 }

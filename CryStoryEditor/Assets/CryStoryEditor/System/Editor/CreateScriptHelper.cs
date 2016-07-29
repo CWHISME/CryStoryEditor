@@ -34,6 +34,14 @@ namespace CryStory.Editor
             CreateScript(path, "Event");
         }
 
+        [MenuItem("StoryEditor/Create/Decorator")]
+        private static void CreateDecorator()
+        {
+            string path = EditorUtility.SaveFilePanel("Create Decorator", Application.dataPath, "NewDecorator", "cs");
+            if (string.IsNullOrEmpty(path)) return;
+            CreateScript(path, "Decorator");
+        }
+
         private static void CreateScript(string path, string parent)
         {
             TextAsset txt = Resources.Load<TextAsset>("Template/" + parent + "ScriptTemplate");

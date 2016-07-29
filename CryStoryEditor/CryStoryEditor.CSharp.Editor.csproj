@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Full v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Editor:5</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.4p6</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -104,6 +102,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Editor\MainPageEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\MissionEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\MissionEditorRuntime.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Editor\MissionObjectInspector.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\NodeContentEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\NodeContentEditorRuntime.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\NodeEditor.cs" />
@@ -122,6 +121,7 @@
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_EN.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\ActionScriptTemplate.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\ConditionScriptTemplate.txt" />
+    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\DecoratorScriptTemplate.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\EventScriptTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

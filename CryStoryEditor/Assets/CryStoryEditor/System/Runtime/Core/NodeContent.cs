@@ -104,7 +104,7 @@ namespace CryStory.Runtime
             for (int i = 0; i < _contenNodeList.Count; i++)
             {
                 //UnityEngine.Debug.Log("Run Node:" + _contenNodeList[i]._name);
-                EnumResult result = _contenNodeList[i].Tick();
+                EnumResult result = _contenNodeList[i].Tick(this);
                 if (result != EnumResult.Running)
                 {
                     NodeModifier node = _contenNodeList[i];
@@ -123,7 +123,16 @@ namespace CryStory.Runtime
                         }
 
                     _toRemoveNode.Add(node);
-                    _toAddNode.AddRange(node.NextNodes);
+
+                    //单独处理Decorator节点运行
+                    //仅运行非单节点
+                    if (node is Decorator)
+                    {
+                        NodeModifier child = System.Array.Find<NodeModifier>(node.NextNodes, (n) => n.Parent == node);
+                        if (child != null)
+                            _toAddNode.Add(child);
+                    }
+                    else _toAddNode.AddRange(node.NextNodes);
                 }
             }
 

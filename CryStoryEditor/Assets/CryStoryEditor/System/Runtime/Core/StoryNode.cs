@@ -34,5 +34,6 @@ namespace CryStory.Runtime
         {
             base.Deserialize(r);
         }
+
     }
 }

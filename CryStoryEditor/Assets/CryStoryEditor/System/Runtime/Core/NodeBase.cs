@@ -11,7 +11,7 @@ namespace CryStory.Runtime
 
     abstract public class NodeBase
     {
-        public virtual EnumResult Tick() { return EnumResult.Success; }
+        public virtual EnumResult Tick(NodeContent content) { return EnumResult.Success; }
 
         //For Editor
         public UnityEngine.Vector2 _position;

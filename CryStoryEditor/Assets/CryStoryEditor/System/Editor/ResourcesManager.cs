@@ -44,6 +44,13 @@ namespace CryStory.Editor
             return fontStyle;
         }
 
+        public GUIStyle GetFontStyle(int fontSize, Color color)
+        {
+            fontStyle.normal.textColor = color;
+            fontStyle.fontSize = fontSize;
+            return fontStyle;
+        }
+
         private TextAsset helpCN;
         private TextAsset helpEN;
         public string HelpCN { get { return helpCN ? helpCN.text : "错误：没有找到帮助文件!"; } }

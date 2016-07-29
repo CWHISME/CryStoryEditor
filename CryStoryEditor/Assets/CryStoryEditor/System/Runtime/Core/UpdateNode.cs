@@ -13,8 +13,14 @@ namespace CryStory.Runtime
     {
 
         private bool _isInit = false;
+        private bool _running = false;
 
-        public override EnumResult Tick()
+        public override EnumResult Tick(NodeContent content)
+        {
+            return Tick();
+        }
+
+        public virtual EnumResult Tick()
         {
             EnumResult result;
             if (_isInit)
@@ -22,6 +28,7 @@ namespace CryStory.Runtime
                 result = OnUpdate();
             }
             else {
+                _running = true;
                 result = OnStart();
                 if (result == EnumResult.Success)
                     _isInit = true;
@@ -52,12 +59,26 @@ namespace CryStory.Runtime
         {
             base.OnSaved(w);
             w.Write(_isInit);
+            w.Write(_running);
+            if (_running) OnGameSave(w);
         }
 
         protected override void OnLoaded(BinaryReader r)
         {
             base.OnLoaded(r);
             _isInit = r.ReadBoolean();
+            _running = r.ReadBoolean();
+            if (_running)
+                OnGameLoad(r);
         }
+
+        /// <summary>
+        /// 当游戏运行中被保存
+        /// </summary>
+        protected virtual void OnGameSave(BinaryWriter w) { }
+        /// <summary>
+        /// 当游戏中被加载
+        /// </summary>
+        protected virtual void OnGameLoad(BinaryReader r) { }
     }
 }

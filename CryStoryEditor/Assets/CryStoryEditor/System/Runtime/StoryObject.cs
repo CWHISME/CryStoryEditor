@@ -310,6 +310,7 @@ namespace CryStory.Runtime
                 }
 
                 data._missionObject.Load();
+                data._missionObject._mission._name = data._name;
 
                 NodeModifier.SetContent(data._missionObject._mission, _story);
             }
