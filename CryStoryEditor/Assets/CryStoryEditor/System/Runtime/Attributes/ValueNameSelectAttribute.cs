@@ -30,7 +30,7 @@ namespace CryStory.Runtime
             }
             else if (_valueScope == ValueScope.Story)
             {
-                ValueContainer con = mission.GetContentNode() as ValueContainer;
+                ValueContainer con = mission.GetContent() as ValueContainer;
                 if (con != null)
                     foreach (var item in con._valueContainer)
                     {

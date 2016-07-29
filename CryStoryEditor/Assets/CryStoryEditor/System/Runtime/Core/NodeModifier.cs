@@ -108,10 +108,10 @@ namespace CryStory.Runtime
         /// 获取容器节点
         /// </summary>
         /// <returns></returns>
-        public NodeContent GetContentNode()
+        public NodeContent GetContent()
         {
             if (_content != null) return _content;
-            if (_lastNode != null) return _lastNode.GetContentNode();
+            if (_lastNode != null) return _lastNode.GetContent();
             return null;
         }
 
@@ -225,7 +225,7 @@ namespace CryStory.Runtime
         /// <summary>
         /// 从父容器中删除自己
         /// </summary>
-        private void RemoveFromContent()
+        public void RemoveFromContent()
         {
             if (_content != null)
             {
@@ -240,16 +240,19 @@ namespace CryStory.Runtime
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public NodeModifier GetNodeByID(int id)
+        public NodeModifier GetNextNodeByID(int id)
         {
+            if (_id == id) return this;
+
             for (int i = 0; i < _nextNodeList.Count; i++)
             {
                 NodeModifier node = _nextNodeList[i];
                 if (node == null) continue;
+                if (IsParent(node)) continue;
                 if (CompareNodeID(node, id))
                     return node;
 
-                NodeModifier node2 = node.GetNodeByID(id);
+                NodeModifier node2 = node.GetNextNodeByID(id);
                 if (node2 != null)
                     return node2;
             }
@@ -304,25 +307,13 @@ namespace CryStory.Runtime
 
         public static void SetToDefaltContent(NodeModifier node)
         {
-            SetContent(node, node.GetContentNode());
+            SetContent(node, node.GetContent());
         }
 
         //Save===========================================
 
         public virtual void Serialize(BinaryWriter w)
         {
-
-            //using (MemoryStream s = new MemoryStream())
-            //{
-            //    using (BinaryWriter ww = new BinaryWriter(s))
-            //    {
-            //        ww.Write(UnityEngine.JsonUtility.ToJson(this));
-            //    }
-            //    byte[] b = s.GetBuffer();
-            //    w.Write(b.Length);
-            //    w.Write(b);
-            //}
-
             w.Write(UnityEngine.JsonUtility.ToJson(this));
             w.Write(_nextNodeList.Count);
             for (int i = 0; i < _nextNodeList.Count; i++)
@@ -354,7 +345,7 @@ namespace CryStory.Runtime
                 NodeModifier node;
                 if (isSingleNode)
                 {
-                    node = GetTopParent().GetNodeByID(id);//LayerToParent(layer);
+                    node = GetTopParent().GetNextNodeByID(id);//LayerToParent(layer);
                     if (node != null)
                         _nextNodeList.Add(node);
                 }
@@ -367,7 +358,7 @@ namespace CryStory.Runtime
                         UnityEngine.Debug.LogError("Error: The Mission Node [" + fullName + "] Was Lost!");
 #endif
                         //return;
-                        node = ReflectionHelper.CreateInstance<NodeModifier>("CryStory.Runtime.MissingNode");
+                        node = ReflectionHelper.CreateInstance<NodeModifier>("CryStory.Runtime._MissingNode");
                     }
 
                     SetParent(node, this);

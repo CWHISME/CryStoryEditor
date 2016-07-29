@@ -91,7 +91,7 @@ namespace CryStory.Editor
             {
                 if (Event.current.button == 0)
                 {
-                    _window._editMission = _currentNode as Mission;
+                    _window.EditMission = _currentNode as Mission;
                     _currentNode = null;
                 }
             }
@@ -124,14 +124,13 @@ namespace CryStory.Editor
             menu.AddItem(new GUIContent("Create/New Mission"), false, () =>
             {
                 MissionObject mo = ScriptableObject.CreateInstance<MissionObject>();
-                mo._mission = _window._storyObject.AddNewMission();
+                mo._mission = new Mission();
 
                 _currentNode = mo._mission;
                 _currentNode._position = CalcVirtualPosition(mousePos);
                 _currentNode._name = "New Mission";
                 _currentNode.SetID(_window._Story.GenerateID());
                 Mission.SetContent(_currentNode, _window._Story);
-                //_currentNode.SetContent(_window._Story);
 
                 int index = 1;
                 while (_window._storyObject.GetMissionSaveDataByName(mo._mission._name) != null)
@@ -143,6 +142,11 @@ namespace CryStory.Editor
                     mo._mission._name = mo._mission._name + "_" + index++;
 
                 _window._storyObject.AssignNewMissionObject(mo);
+
+                //避免新的实例与Object实例不同
+                _currentNode.RemoveFromContent();
+                _currentNode = mo._mission;
+                Mission.SetContent(_currentNode, _window._Story);
             });
             menu.ShowAsContext();
         }

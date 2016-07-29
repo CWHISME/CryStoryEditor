@@ -146,6 +146,7 @@ namespace CryStory.Editor
 
                     if (Event.current.type == EventType.MouseDrag && Event.current.button == 0 && _mouseIsDown)
                     {
+                        if (_currentNode == null) return;
                         //Debug.Log(Event.current.button);
                         Vector2 offset = Event.current.mousePosition - _mouseDownPos;
 
@@ -311,7 +312,10 @@ namespace CryStory.Editor
                 NodeModifier node2 = nextNodes[j];
                 Rect nodeRect1 = Tools.GetNodeRect(CalcRealPosition(node._position));
                 Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools.NodeHalfHeightZoomed);
-                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y + Tools.NodeHalfHeightZoomed));
+                Vector2 pos2 = CalcRealPosition(new Vector2(node2._position.x, node2._position.y));
+                pos2 *= Tools.Zoom;
+                pos2.y += Tools.NodeHalfHeightZoomed;
+
 
                 Tools.DrawBazier(pos1, pos2, Color.magenta, new Color32(0, 255, 255, 180), 0.1f, 10f);
             }
@@ -518,7 +522,7 @@ namespace CryStory.Editor
             if (selectVarName != null)
             {
                 //选择值
-                Mission mission = _currentNode.GetContentNode() as Mission;
+                Mission mission = _currentNode.GetContent() as Mission;
                 if (mission == null) return false;
                 string[] keys = selectVarName.GetValueNameList(mission);
                 int index = Array.FindIndex<string>(keys, (k) => k == (string)filed.GetValue(o));
@@ -555,7 +559,7 @@ namespace CryStory.Editor
 
             if (string.IsNullOrEmpty(key)) return false;
 
-            Mission mission = _currentNode.GetContentNode() as Mission;
+            Mission mission = _currentNode.GetContent() as Mission;
             if (mission == null) return false;
 
             Value var;

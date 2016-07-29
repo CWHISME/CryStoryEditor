@@ -45,6 +45,11 @@ namespace CryStory.Editor
                 selectStyle = ResourcesManager.GetInstance.ActionNodeOn;
             }
 
+            style = new GUIStyle(style);
+            selectStyle = new GUIStyle(selectStyle);
+            style.fontSize = (int)(style.fontSize * Tools.Zoom);
+            selectStyle.fontSize = (int)(selectStyle.fontSize * Tools.Zoom);
+
             GUI.Box(nodeRect, coreNode ? "<color=#00FF00>" + node._name + "</color>" : node._name, _currentNode == node ? selectStyle : style);
 
             DragNodeEvent(node, nodeRect);
@@ -66,7 +71,7 @@ namespace CryStory.Editor
             if (Tools.MouseDoubleClick && !Tools.IsValidMouseAABB(_currentNodeRect))
             {
                 if (Event.current.button == 0)
-                    _window._editMission = null;
+                    _window.EditMission = null;
             }
         }
 
@@ -180,7 +185,7 @@ namespace CryStory.Editor
                 if (node == null) return;
                 node._name = type.Name;
                 node._position = CalcVirtualPosition(_mousePosition);
-                Runtime.NodeModifier.SetContent(node, _window._editMission);
+                Runtime.NodeModifier.SetContent(node, _window.EditMission);
                 //node.SetContent(_window._editMission);
             }
         }

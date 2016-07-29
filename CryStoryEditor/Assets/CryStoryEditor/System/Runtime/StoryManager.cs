@@ -11,6 +11,7 @@ namespace CryStory.Runtime
     public class StoryManager
     {
         private Story _story;
+        public Story Story { get { return _story; } }
 
         public StoryManager(Story story)
         {
@@ -23,6 +24,13 @@ namespace CryStory.Runtime
             if (_storyEnd) return;
             if (_story.Tick() != EnumResult.Running)
                 _storyEnd = true;
+        }
+
+        public void LoadStory(byte[] saveData)
+        {
+            _story = new Story();
+            _story.Load(saveData);
+            _storyEnd = false;
         }
 
         private List<Mission> _accomplishMissions = new List<Mission>();

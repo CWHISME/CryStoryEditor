@@ -70,7 +70,7 @@ namespace CryStory.Editor
                 if (Event.current.button == 0)
                 {
                     _currentNode = null;
-                    _window._editMission = null;
+                    _window.EditMission = null;
                 }
             }
         }
@@ -196,12 +196,13 @@ namespace CryStory.Editor
             for (int i = 0; i < typeList.Length; i++)
             {
                 Type nodeType = typeList[i];
+                if (nodeType.Name.StartsWith("_")) continue;
                 CategoryAttribute[] category = nodeType.GetCustomAttributes(typeof(CategoryAttribute), true) as CategoryAttribute[];
                 string cat = category.Length > 0 ? category[0].Category + "/" : "";
                 menu.AddItem(new GUIContent(prefix + cat + nodeType.Name), false, () =>
                {
                    //Debug.Log("Add Node: " + name);
-                   CreateNode(nodeType, _window._editMission, CalcVirtualPosition(_mousePosition));
+                   CreateNode(nodeType, _window.EditMission, CalcVirtualPosition(_mousePosition));
                });
             }
         }

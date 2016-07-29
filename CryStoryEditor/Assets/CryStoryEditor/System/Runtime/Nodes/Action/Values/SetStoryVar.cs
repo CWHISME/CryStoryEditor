@@ -20,7 +20,7 @@ namespace CryStory.Runtime
 
         protected override EnumResult OnStart()
         {
-            GetMission._valueContainer[ValueName].OperationValue(Functor, Value);
+            GetStory._valueContainer[ValueName].OperationValue(Functor, Value);
             return EnumResult.Success;
         }
 

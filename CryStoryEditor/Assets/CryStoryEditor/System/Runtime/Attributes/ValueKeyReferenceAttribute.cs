@@ -29,7 +29,7 @@ namespace CryStory.Runtime
                 mission._valueContainer.TryGetValue(key, out value);
             else if (_scope == ValueScope.Story)
             {
-                Story story = mission.GetContentNode() as Story;
+                Story story = mission.GetContent() as Story;
                 if (story != null) story._valueContainer.TryGetValue(key, out value);
             }
 

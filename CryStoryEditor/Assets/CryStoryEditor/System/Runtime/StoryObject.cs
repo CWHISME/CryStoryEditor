@@ -12,6 +12,7 @@ namespace CryStory.Runtime
     public class StoryObject : ScriptableObject
     {
         private Story _story;
+        public event System.Action OnStoryReload;
 
         public Story _Story
         {
@@ -21,13 +22,34 @@ namespace CryStory.Runtime
                     Load();
                 return _story;
             }
+            set
+            {
+                _story = value;
+                if (OnStoryReload != null)
+                    OnStoryReload.Invoke();
+                if (_editMission != null)
+                    _editMission = _story.GetNodeByID(_editMission._id) as Mission;
+            }
+        }
+
+        private Mission _editMission;
+        public Mission EditMission
+        {
+            get
+            {
+                return _editMission;
+            }
+            set
+            {
+                _editMission = value;
+            }
         }
 
         public Vector2 StoryCenter { get { return _story.graphCenter; } set { _story.graphCenter = value; } }
 
         public string _description = "This Story have not description.";
 
-        public byte[] _SaveData;
+        public byte[] _SaveData = new byte[] { };
 
 #if UNITY_EDITOR
 
@@ -199,6 +221,8 @@ namespace CryStory.Runtime
                     _haveNullData = true;
                     continue;
                 }
+                //Update Mission Insure Data
+                //mo._mission = _Story.GetNode(mo._mission._name) as Mission;
                 //Update Name For insure
                 _missionSaveList[i]._name = mo.name;
 

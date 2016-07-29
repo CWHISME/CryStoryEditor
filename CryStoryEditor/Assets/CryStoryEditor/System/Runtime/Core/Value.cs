@@ -94,7 +94,7 @@ namespace CryStory.Runtime
             {
                 if (_value == null) return "";
                 if (_varType == VarType.STRING) return ((string)_value);
-                return "";
+                return _value.ToString();
             }
             set
             {

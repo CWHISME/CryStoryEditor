@@ -32,14 +32,14 @@ namespace CryStory.Runtime
         /// <summary>
         /// 校验及保存ID
         /// </summary>
-        public override void Serialize(System.IO.BinaryWriter w)
+        public void SaveThisNode(System.IO.BinaryWriter w)
         {
             SaveID(w);
 
             OnSaved(w);
         }
 
-        public override void Deserialize(BinaryReader r)
+        public void LoadThisNode(BinaryReader r)
         {
             LoadID(r);
 
@@ -51,7 +51,7 @@ namespace CryStory.Runtime
             List<int> notUsedID = new List<int>();
             for (int i = 0; i < _idList.Count; i++)
             {
-                if (GetNodeByID(_idList[i]) == null)
+                if (GetNextNodeByID(_idList[i]) == null)
                     notUsedID.Add(_idList[i]);
             }
 

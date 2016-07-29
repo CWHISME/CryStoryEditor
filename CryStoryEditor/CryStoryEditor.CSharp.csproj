@@ -71,6 +71,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\ExtensionMethod.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\ISerialize.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\IUpdatable.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissingNode.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissionDescription\MissionDescription.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissionDescription\MissionDescriptionSimpleRPG.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissionDescription\MissionDescriptionTest.cs" />
@@ -97,12 +98,15 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\SetStoryVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Condition\CheckMissionVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Condition\CheckStoryVar.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\MissingNode.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Condition\KeyDown.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Condition\KeyUp.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryManager.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryObject.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryRunner.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\ReflectionHelper.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\Singleton.cs" />
+    <Compile Include="Assets\Examples\SaveAndLoad\Scripts\UISaveAndLoad.cs" />
+    <Compile Include="Assets\Examples\SaveAndLoad\Scripts\UIShowCount.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_CN.txt" />

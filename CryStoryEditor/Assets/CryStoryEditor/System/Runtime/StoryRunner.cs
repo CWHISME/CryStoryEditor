@@ -13,7 +13,9 @@ namespace CryStory.Runtime
 
         public StoryObject _runStory;
 
+
         private StoryManager _storyManager;
+        public StoryManager StoryManager { get { return _storyManager; } }
         void Start()
         {
             _storyManager = new StoryManager(_runStory._Story);
@@ -24,5 +26,10 @@ namespace CryStory.Runtime
             _storyManager.Tick();
         }
 
+        public void LoadStory(byte[] saveData)
+        {
+            StoryManager.LoadStory(saveData);
+            _runStory._Story = StoryManager.Story;
+        }
     }
 }

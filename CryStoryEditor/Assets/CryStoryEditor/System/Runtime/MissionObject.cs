@@ -20,7 +20,7 @@ namespace CryStory.Runtime
 
         public void Save()
         {
-            _SaveData = _mission.Save();
+            _SaveData = _mission.SaveThisNode();
 
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(this);
@@ -30,7 +30,7 @@ namespace CryStory.Runtime
         public void Load()
         {
             _mission = new Mission();
-            _mission.Load(_SaveData);
+            _mission.LoadThisNode(_SaveData);
         }
 
         public void AddNextMissionName(string name, bool singleNode)

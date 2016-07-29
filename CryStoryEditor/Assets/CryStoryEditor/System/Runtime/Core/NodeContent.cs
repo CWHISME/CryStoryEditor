@@ -56,6 +56,22 @@ namespace CryStory.Runtime
         }
 
         /// <summary>
+        /// 若为容器，获取该容器中指定ID节点
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public NodeModifier GetNodeByID(int id)
+        {
+            for (int i = 0; i < _contenNodeList.Count; i++)
+            {
+                if (_contenNodeList[i]._id == id) return _contenNodeList[i];
+                NodeModifier node = _contenNodeList[i].GetNextNodeByID(id);
+                if (node != null) return node;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// 将一组节点添加至容器
         /// </summary>
         /// <param name="nodes"></param>
@@ -220,9 +236,9 @@ namespace CryStory.Runtime
                 NodeModifier node = ReflectionHelper.CreateInstance<NodeModifier>(fullName);
                 if (node == null)
                 {
-                    //node = ReflectionHelper.CreateInstance<NodeModifier>("CryStory.Runtime.MissingNode");
+                    node = ReflectionHelper.CreateInstance<NodeModifier>("CryStory.Runtime.MissingNode");
                     //It's mission
-                    return;
+                    //return;
                 }
                 node.Deserialize(r);
                 NodeModifier.SetContent(node, this);
@@ -237,7 +253,7 @@ namespace CryStory.Runtime
                 {
                     for (int j = 0; j < _contenNodeList.Count; j++)
                     {
-                        NodeModifier node = _contenNodeList[j].GetNodeByID(r.ReadInt32());
+                        NodeModifier node = _contenNodeList[j].GetNextNodeByID(r.ReadInt32());
                         if (node != null)
                         {
                             runningNode.Add(node);

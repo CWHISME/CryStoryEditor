@@ -7,7 +7,7 @@
 namespace CryStory.Runtime
 {
     [Help("代表一个节点已经丢失了！")]
-    public class MissingNode : Action
+    public class _MissingNode : Action
     {
         public override string ToDescription()
         {

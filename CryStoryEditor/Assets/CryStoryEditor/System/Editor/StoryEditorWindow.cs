@@ -28,18 +28,18 @@ namespace CryStory.Editor
 
         public StoryObject _storyObject;
         public Story _Story { get { return _storyObject._Story; } }
-        public Mission _editMission;
+        public Mission EditMission { get { return _storyObject.EditMission; } set { _storyObject.EditMission = value; } }
         public Vector2 CurrentContentCenter
         {
             get
             {
-                return _editMission == null ? _Story.graphCenter : _editMission.graphCenter;
+                return EditMission == null ? _Story.graphCenter : EditMission.graphCenter;
             }
             set
             {
-                if (_editMission == null)
+                if (EditMission == null)
                     _Story.graphCenter = value;
-                else _editMission.graphCenter = value;
+                else EditMission.graphCenter = value;
             }
         }
 
@@ -66,6 +66,7 @@ namespace CryStory.Editor
         void Update()
         {
             Repaint();
+            StoryWindow = this;
             //Debug.Log("dd");
         }
 
@@ -272,17 +273,17 @@ namespace CryStory.Editor
             EditorGUI.DrawTextureTransparent(_contentRect, ResourcesManager.GetInstance.texBackground);
 
             //更新ValueManager中MissionConstainer，避免Mission页面无法找到Mission
-            ValueManagerWindow.missionContainer = _editMission;
+            ValueManagerWindow.missionContainer = EditMission;
 
-            if (_editMission == null)
+            if (EditMission == null)
             {
                 if (Application.isPlaying) StoryEditorRuntime.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
                 else StoryEditor.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
             }
             else
             {
-                if (Application.isPlaying) MissionEditorRuntime.GetInstance.OnGUI(this, _editMission.Nodes);
-                else MissionEditor.GetInstance.OnGUI(this, _editMission.Nodes);
+                if (Application.isPlaying) MissionEditorRuntime.GetInstance.OnGUI(this, EditMission.Nodes);
+                else MissionEditor.GetInstance.OnGUI(this, EditMission.Nodes);
             }
 
 
@@ -329,14 +330,14 @@ namespace CryStory.Editor
             GUIStyle style = ResourcesManager.GetInstance.skin.GetStyle("Title");
             float btnW = 0;
 
-            if (_editMission != null)
+            if (EditMission != null)
             {
                 btnW = 35;
                 if (GUI.Button(new Rect(2, 3, btnW + 2, _titleHeight - 3), "<-", ResourcesManager.GetInstance.skin.button))
-                    _editMission = null;
+                    EditMission = null;
             }
 
-            EditorGUI.LabelField(new Rect(btnW, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + (_editMission == null ? _storyObject.name : _storyObject.name + " -> " + _editMission._name) : "")), style);
+            EditorGUI.LabelField(new Rect(btnW, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + (EditMission == null ? _storyObject.name : _storyObject.name + " -> " + EditMission._name) : "")), style);
 
             GUIStyle buttonStyle = new GUIStyle(ResourcesManager.GetInstance.skin.button);
             if (GUI.Button(new Rect(_contentRect.width - 270, 3, 80, _titleHeight - 3), "Values", buttonStyle))
@@ -350,7 +351,7 @@ namespace CryStory.Editor
             buttonStyle.normal.textColor = new Color32(255, 64, 180, 255);
             if (GUI.Button(new Rect(_contentRect.width - 180, 3, 80, _titleHeight - 3), "Reload", buttonStyle))
             {
-                _editMission = null;
+                EditMission = null;
                 _storyObject.Load();
             }
             buttonStyle.normal.textColor = new Color32(0, 255, 0, 255);
