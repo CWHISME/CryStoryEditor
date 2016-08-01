@@ -709,6 +709,9 @@ namespace CryStory.Editor
             {
                 NodeModifier.SetContent(node, targetNode.Content);
             }
+
+            DragModifier d = node.GetContent() as DragModifier;
+            node.SetID(d.GenerateID());
         }
     }
 }

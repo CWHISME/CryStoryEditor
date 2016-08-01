@@ -36,6 +36,11 @@ namespace CryStory.Runtime
         protected NodeModifier[] _tempNodeList = null;
 
         /// <summary>
+        /// 当Content中的节点加载完毕
+        /// </summary>
+        public event System.Action<NodeContent> OnNodeLoaded;
+
+        /// <summary>
         /// 将节点添加至该容器。注意：不会更改节点本身容器数据！
         /// 使用节点SetContent代替
         /// </summary>
@@ -45,10 +50,10 @@ namespace CryStory.Runtime
         {
             if (_contenNodeList.Contains(node) || node == null) return false;
             //不允许已运行节点的子节点添加
-            for (int i = 0; i < _contenNodeList.Count; i++)
-            {
-                if (_contenNodeList[i].IsChild(node)) return false;
-            }
+            //for (int i = 0; i < _contenNodeList.Count; i++)
+            //{
+            //    if (_contenNodeList[i].IsChild(node)) return false;
+            //}
             _contenNodeList.Add(node);
             OnAddedContentNode(node);
             //node.SetContent(this);
@@ -116,11 +121,13 @@ namespace CryStory.Runtime
             //UnityEngine.Profiler.BeginSample("Sample Node Tick: " + _name);
             for (int i = 0; i < _contenNodeList.Count; i++)
             {
+                if (i >= _contenNodeList.Count) break;
                 EnumResult result = _contenNodeList[i].Tick(this);
 
                 //UnityEngine.Profiler.BeginSample("Sample Failed: " + _name);
                 if (result != EnumResult.Running)
                 {
+                    if (i >= _contenNodeList.Count) break;
                     NodeModifier node = _contenNodeList[i];
 
                     //UnityEngine.Profiler.BeginSample("Sample Check: " + _name);
@@ -203,8 +210,8 @@ namespace CryStory.Runtime
         {
             base.OnSaved(w);
 
-            bool running = _tempNodeList != null;
-            if (running) running = _tempNodeList.Length > 0;
+            bool running = _running;//_tempNodeList != null;
+            //if (running) running = _tempNodeList.Length > 0;
 
             w.Write(running);
             if (running)
@@ -259,6 +266,7 @@ namespace CryStory.Runtime
                     //It's mission
                     //return;
                 }
+                node.SetContent(this);
                 node.Deserialize(r);
                 NodeModifier.SetContent(node, this);
             }
@@ -296,6 +304,9 @@ namespace CryStory.Runtime
                     AddContentNode(runningNode[i]);
                 }
             }
+
+            if (OnNodeLoaded != null)
+                OnNodeLoaded.Invoke(this);
         }
 
         //private void SaveNode(BinaryWriter w,NodeModifier node)

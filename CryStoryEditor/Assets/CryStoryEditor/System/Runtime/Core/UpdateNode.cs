@@ -12,8 +12,8 @@ namespace CryStory.Runtime
     abstract public class UpdateNode : NodeModifier
     {
 
+        protected bool _running = false;
         private bool _isInit = false;
-        private bool _running = false;
 
         public override EnumResult Tick(NodeContent content)
         {

@@ -89,7 +89,10 @@ namespace CryStory.Editor
         {
             Rect labelRect = new Rect(rect);
             labelRect.position = new Vector2(labelRect.x + (labelRect.width / 2 - 30), labelRect.y + labelRect.height);
-            EditorGUI.LabelField(labelRect, "<color=#7CFC00>Running...</color>", ResourcesManager.GetInstance.GetFontStyle((int)(13 * Tools.Zoom)));
+            GUIStyle s = ResourcesManager.GetInstance.GetFontStyle((int)(13 * Tools.Zoom));
+            s.fontStyle = FontStyle.Bold;
+            EditorGUI.LabelField(labelRect, "<color=#7CFC00>Running...</color>", s);
+            s.fontStyle=FontStyle.Normal;
         }
     }
 }

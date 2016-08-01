@@ -79,9 +79,9 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\MissionDescription\MissionDescriptionTest.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeBase.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeContent.cs" />
-    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Decorator.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Action.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Condition.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Decorator.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Event.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Mission.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Core\NodeCore\Story.cs" />
@@ -96,6 +96,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\ValueFunctor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\ValueScope.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\MissionObject.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Empty.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\AddMissionVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\SetMissionVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\SetStoryVar.cs" />
@@ -117,10 +118,8 @@
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_EN.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\ActionScriptTemplate.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\ConditionScriptTemplate.txt" />
-    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\EventScriptTemplate.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\DecoratorScriptTemplate.txt" />
+    <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\EventScriptTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

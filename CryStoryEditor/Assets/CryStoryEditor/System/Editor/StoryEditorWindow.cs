@@ -60,7 +60,16 @@ namespace CryStory.Editor
 
         public const float _zoomMin = 0.4f;
         public const float _zoomMax = 2f;
-        public float Zoom { get { return _storyObject._zoom; } set { _storyObject._zoom = value; } }
+        public float Zoom
+        {
+            get
+            {
+                if (_storyObject)
+                    return _storyObject._zoom;
+                return 1;
+            }
+            set { if (_storyObject) _storyObject._zoom = value; }
+        }
 
         void OnEnable()
         {

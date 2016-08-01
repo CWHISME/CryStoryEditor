@@ -18,6 +18,8 @@ namespace CryStory.Editor
         {
             base.InternalOnGUI();
             CheckReturnStoryEditor();
+
+            DrawHelp(_currentNode);
             //ShowRightClickMenu();
         }
 
@@ -57,6 +59,7 @@ namespace CryStory.Editor
             DrawRunModeLable(node, nodeRect);
 
             if (coreNode) DrawRunningNodeLabel(nodeRect);
+            else DrawDescription(nodeRect, (node as StoryNode).ToDescription());
             //if (node.Parent != null)
             //    DrawNodeRect(node.Parent);
 

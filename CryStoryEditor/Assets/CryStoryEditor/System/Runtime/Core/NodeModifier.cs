@@ -258,7 +258,8 @@ namespace CryStory.Runtime
             {
                 NodeModifier node = _nextNodeList[i];
                 if (node == null) continue;
-                if (IsParent(node)) continue;
+                //if (IsParent(node)) continue;
+                if (node.Parent != this) continue;
                 if (CompareNodeID(node, id))
                     return node;
 
@@ -355,9 +356,16 @@ namespace CryStory.Runtime
                 NodeModifier node;
                 if (isSingleNode)
                 {
-                    node = GetTopParent().GetNextNodeByID(id);//LayerToParent(layer);
+                    node = GetContent().GetNodeByID(id);// GetTopParent().GetNextNodeByID(id);//LayerToParent(layer);
                     if (node != null)
                         _nextNodeList.Add(node);
+                    else
+                        GetContent().OnNodeLoaded += (con) =>
+                    {
+                        NodeModifier child = con.GetNodeByID(id);
+                        if (child != null)
+                            _nextNodeList.Add(child);
+                    };
                 }
                 else {
                     string fullName = r.ReadString();
