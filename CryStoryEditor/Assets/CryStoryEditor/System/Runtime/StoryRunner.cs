@@ -16,7 +16,7 @@ namespace CryStory.Runtime
 
         private StoryManager _storyManager;
         public StoryManager StoryManager { get { return _storyManager; } }
-        void Start()
+        void Awake()
         {
             _storyManager = new StoryManager(_runStory._Story);
         }
@@ -30,6 +30,11 @@ namespace CryStory.Runtime
         {
             StoryManager.LoadStory(saveData);
             _runStory._Story = StoryManager.Story;
+        }
+
+        public void OnApplicationQuit()
+        {
+            _runStory.Load();
         }
     }
 }

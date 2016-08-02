@@ -41,6 +41,9 @@ namespace CryStory.Editor
                 info.SetValue(o, o_o);
             }
 
+            if (_window._storyObject._debugMode)
+                base.DrawLeftArribute(o);
+
             base.DrawLeftArribute(o_o);
         }
 

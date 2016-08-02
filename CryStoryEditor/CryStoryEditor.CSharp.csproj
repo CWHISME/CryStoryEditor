@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.4p6</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -64,6 +62,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CryStoryEditor\Examples\SaveAndLoad\Scripts\UISaveAndLoad.cs" />
+    <Compile Include="Assets\CryStoryEditor\Examples\SaveAndLoad\Scripts\UIShowCount.cs" />
+    <Compile Include="Assets\CryStoryEditor\Examples\SimpleRPG\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\CryStoryEditor\Examples\SimpleRPG\Scripts\UIShowMissionTarget.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Attributes\CategoryAttribute.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Attributes\HelpAttribute.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Attributes\ValueFuncAttribute.cs" />
@@ -97,6 +99,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Enum\ValueScope.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\MissionObject.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Empty.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\SimpleRPG\AddDescriptionIndex.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\AddMissionVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\SetMissionVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\SetStoryVar.cs" />
@@ -105,13 +108,14 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Condition\KeyDown.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Condition\KeyUp.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Decorator\Killer.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Event\OnEnterTrigger.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryManager.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryObject.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\StoryRunner.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\ReflectionHelper.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Tools\Singleton.cs" />
-    <Compile Include="Assets\Examples\SaveAndLoad\Scripts\UISaveAndLoad.cs" />
-    <Compile Include="Assets\Examples\SaveAndLoad\Scripts\UIShowCount.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\TriggerSystem\TriggerManager.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\TriggerSystem\TriggerObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_CN.txt" />

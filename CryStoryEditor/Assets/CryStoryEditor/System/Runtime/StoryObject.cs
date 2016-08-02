@@ -64,6 +64,7 @@ namespace CryStory.Runtime
 
         public float _zoom = 1f;
 
+        public bool _debugMode = false;
 #endif
         /// <summary>
         /// 直接添加一个新的任务

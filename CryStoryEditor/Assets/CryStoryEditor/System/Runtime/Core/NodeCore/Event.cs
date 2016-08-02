@@ -4,6 +4,8 @@
 *Func:
 **********************************************************/
 
+using System.IO;
+
 namespace CryStory.Runtime
 {
 
@@ -37,6 +39,12 @@ namespace CryStory.Runtime
         protected void TriggerEvent()
         {
             _trigger = true;
+        }
+
+        protected override void OnGameLoad(BinaryReader r)
+        {
+            base.OnGameLoad(r);
+            RegistEvent();
         }
     }
 }

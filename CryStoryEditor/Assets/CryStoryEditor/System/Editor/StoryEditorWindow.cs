@@ -232,11 +232,18 @@ namespace CryStory.Editor
             //_leftScrollPosition = GUI.BeginScrollView(new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height - _window._topHeight), _leftScrollPosition, new Rect(0, _window._topHeight, _window._leftWidth - 30, _window._windowRect.height - _window._topHeight), false, true, ResourcesManager.GetInstance.skin.horizontalScrollbar, ResourcesManager.GetInstance.skin.verticalScrollbar);
         }
 
+        private Vector2 _storySettingScroll;
         private void SettingPage()
         {
             //EditorGUI.LabelField(new Rect(_windowRect.center.x - 38, _windowRect.center.y - 50, 500, 20), "Story Description:");
             //_storyObject._description = EditorGUI.TextArea(new Rect(_windowRect.center.x - 38, _windowRect.center.y, 500, 200), _storyObject._description);
             GUILayout.Space(_topHeight + 10);
+
+            EditorGUILayout.BeginHorizontal();
+
+            //Story Setting
+            _storySettingScroll = GUILayout.BeginScrollView(_storySettingScroll, false, true);
+            EditorGUILayout.BeginVertical();
             GUILayout.Label("Mission Description Template:");
             Type[] types = ReflectionHelper.GetTypeSubclass(typeof(MissionDescription));
             string[] str = Array.ConvertAll<Type, string>(types, (i) => i.Name);
@@ -247,6 +254,16 @@ namespace CryStory.Editor
             GUILayout.Label("Story Description:");
             GUILayout.Space(10);
             _storyObject._description = GUILayout.TextArea(_storyObject._description, GUILayout.MaxHeight(100));
+            EditorGUILayout.EndVertical();
+            GUILayout.EndScrollView();
+
+            GUILayout.Space(20);
+            //Editor Setting
+            EditorGUILayout.BeginVertical();
+            _storyObject._debugMode = EditorGUILayout.Toggle("DebugMode: ", _storyObject._debugMode);
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.EndHorizontal();
         }
 
         private Vector2 helpScrolPos;

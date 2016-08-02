@@ -17,10 +17,24 @@ namespace CryStory.Runtime
         public int _missionTargetIndex = 0;
         public string[] MissionTargetList = new string[] { "First description" };
 
+        public event System.Action<MissionDescriptionSimpleRPG> OnDescriptionChange;
+
         public void AddTargetIndex()
         {
             if (_missionTargetIndex < MissionTargetList.Length - 1)
                 _missionTargetIndex++;
+
+            if (OnDescriptionChange != null)
+                OnDescriptionChange.Invoke(this);
+        }
+
+        public void AddTargetIndex(int count)
+        {
+            if (_missionTargetIndex < MissionTargetList.Length - count)
+                _missionTargetIndex += count;
+
+            if (OnDescriptionChange != null)
+                OnDescriptionChange.Invoke(this);
         }
 
         public override void Serialize(BinaryWriter w)

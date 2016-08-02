@@ -147,17 +147,9 @@ namespace CryStory.Editor
                     if (Event.current.type == EventType.MouseDrag && Event.current.button == 0 && _mouseIsDown)
                     {
                         if (_currentNode == null) return;
-                        //Debug.Log(Event.current.button);
                         Vector2 offset = Event.current.mousePosition - _mouseDownPos;
 
                         _currentNode._position = _mouseDownCenter + offset;
-
-                        //Vector2 contentPos = Node2Content(newPos);
-                        //if (contentPos.x < _contentRect.x)
-                        //{
-                        //    _currentMission._position = Content2Node(new Vector2(_contentRect.x, contentPos.y));
-                        //}
-                        //else _currentMission._position = newPos;
                     }
                 }
             }
@@ -169,7 +161,7 @@ namespace CryStory.Editor
             Rect background = new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height);
             GUI.Box(background, "", ResourcesManager.GetInstance.StyleBackground);
 
-            _leftScrollPosition = GUI.BeginScrollView(new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height - _window._topHeight), _leftScrollPosition, new Rect(0, _window._topHeight, _window._leftWidth - 30, _window._windowRect.height - _window._topHeight), false, true, ResourcesManager.GetInstance.skin.horizontalScrollbar, ResourcesManager.GetInstance.skin.verticalScrollbar);
+            _leftScrollPosition = GUI.BeginScrollView(new Rect(0, _window._topHeight, _window._leftWidth, _window._windowRect.height - _window._topHeight), _leftScrollPosition, new Rect(0, _window._topHeight, _window._leftWidth - 30, /*_window._windowRect.height - */_window._topHeight + _heightLeft), false, true, ResourcesManager.GetInstance.skin.horizontalScrollbar, ResourcesManager.GetInstance.skin.verticalScrollbar);
 
             _heightLeft = _window._topHeight + 5;
 
@@ -283,9 +275,6 @@ namespace CryStory.Editor
 
                 if (Event.current.type == EventType.MouseDrag)
                 {
-                    //_window.Repaint();
-                    //                    Debug.Log("Window Center:" + _window._story._mission.graphCenter + "  mousePos:" +
-                    //Event.current.mousePosition);
                     Vector2 offset = Event.current.mousePosition - _mouseDownPos;
                     _window.CurrentContentCenter = _mouseDownCenter - offset / _window.Zoom;
                 }
@@ -295,17 +284,6 @@ namespace CryStory.Editor
 
         protected void DrawDebugBazierLine(NodeModifier node)
         {
-            //NodeModifier node0 = node.Parent;
-            //if (node0 != null)
-            //{
-            //    Rect nodeRect1 = Tools.GetNodeRect(CalcRealPosition(node0._position));
-            //    Vector2 pos1 = new Vector2(nodeRect1.max.x, nodeRect1.max.y - Tools._nodeHalfHeight);
-            //    Vector2 pos2 = CalcRealPosition(new Vector2(node._position.x, node._position.y + Tools._nodeHalfHeight));
-
-            //    Tools.DrawBazier(pos1, pos2, Color.blue, Color.cyan, 0.1f, 10f);
-
-            //    //DrawDebugBazierLine(node.Parent);
-            //}
             NodeModifier[] nextNodes = node.NextNodes;
             for (int j = 0; j < nextNodes.Length; j++)
             {
@@ -505,12 +483,12 @@ namespace CryStory.Editor
             #region Attribute
 
             System.Type type = o.GetType();
-            System.Reflection.FieldInfo[] fileds = type.GetFields();
+            System.Reflection.FieldInfo[] fileds = _window._storyObject._debugMode ? type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) : type.GetFields();
 
             for (int i = 0; i < fileds.Length; i++)
             {
                 System.Reflection.FieldInfo filed = fileds[i];
-                if (filed.Name.StartsWith("_")) continue;
+                if (filed.Name.StartsWith("_") && !_window._storyObject._debugMode) continue;
 
                 LeftHeightSpace(5);
 
@@ -630,6 +608,17 @@ namespace CryStory.Editor
         {
             switch (filed.FieldType.ToString())
             {
+                case "UnityEngine.Vector3":
+                    filed.SetValue(o, EditorGUI.Vector3Field(rect, "", (Vector3)filed.GetValue(o)));
+                    rect = GetGUILeftScrollAreaRect(60, rect.width, rect.height, true);
+                    Transform t = null;
+                    t = EditorGUI.ObjectField(rect, t, typeof(Transform), true) as Transform;
+                    if (t)
+                        filed.SetValue(o, t.position);
+                    break;
+                case "UnityEngine.Vector2":
+                    filed.SetValue(o, EditorGUI.Vector2Field(rect, "", (Vector2)filed.GetValue(o)));
+                    break;
                 case "System.Single":
                     filed.SetValue(o, EditorGUI.FloatField(rect, (float)filed.GetValue(o)));
                     break;
