@@ -6,7 +6,7 @@
 
 在CryStoryEditor 采用了类似于“有向图”的结构(简单画一下吧)：
 
-[图](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_map.jpg)
+![图](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_map.jpg)
 
 节点与节点之间，具有方向。
 当一个节点执行完毕后，将会根据节点的运行结果及运行模式，选择下一个执行步骤。
@@ -15,11 +15,11 @@
 
 通过菜单“StoryEditor->Open Story Editor”，可以打开主页面，在主页面中，若当前没有选择任何“Story”，则默认显示如下：
 
-[主页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_1.jpg)
+![主页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_1.jpg)
 
 在此，可以选择创建一个新的Story，或者手动选择项目中已存在的Story文件。当当前选中文件属于Story时，编辑器将会进入正式的编辑页面，如图：
 
-[编辑主页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_2.jpg)
+![编辑主页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_2.jpg)
 
 在这个正式的编辑页面中，顶部有五个按钮。分别是“Main Page”、“Repair”、“Setting”、“Help”、“About”。
 *Main Page：即默认主页，也是Story Editor主要功能所在。
@@ -30,15 +30,15 @@
 
 在主页中，右键可以新建Mission，双击新建的Mission节点，可以进入Mission节点页面：
 
-[Mission编辑页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_3.jpg)
+![Mission编辑页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_3.jpg)
 
 在Mission编辑页面的空白处双击，可以回到上一页，即Story页面。
 
-[Repair页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_Repair_4.jpg)
+![Repair页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_Repair_4.jpg)
 
-[Setting页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_Setting_5.jpg)
+![Setting页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_Setting_5.jpg)
 
-[Help页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_Help_6.jpg)
+![Help页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_Help_6.jpg)
 
 
 <color=#00FF00>①帮助</color>：
@@ -82,10 +82,10 @@
 
    关于节点顶上的图标：
 
-      绿色的<font color=#00FF00>✔</font>：代表直到该节点运行成功，才会进入下一个节点。若失败，则重复运行。
-      红色的<font color=red>✘</font>：代表如果该节点运行失败，则直接结束后面的所有节点。
-      黄色的<font color=#FFFF00>←</font>：表示如果该节点运行失败，则返回上一个节点。
-      蓝色的<font color=#00BFFF>→</font>：表示无论节点运行结果如何，都将继续运行下一个节点。
+      绿色的 ✔：代表直到该节点运行成功，才会进入下一个节点。若失败，则重复运行。
+      红色的 ✘：代表如果该节点运行失败，则直接结束后面的所有节点。
+      黄色的 ←：表示如果该节点运行失败，则返回上一个节点。
+      蓝色的 →：表示无论节点运行结果如何，都将继续运行下一个节点。
      （注：通过左边的面板，可以修改该运行模式）
 
 <color=red>③注意</color>：
