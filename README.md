@@ -34,6 +34,18 @@
 
 在Mission编辑页面的空白处双击，可以回到上一页，即Story页面。
 
+另外，选中相应的Story或Mission文件，然后点击菜单的“StoryEditor->Open Value Manager”可以打开变量管理器，在变量管理器中，可以选择增删变量。
+
+![变量管理器](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_7.jpg)
+
+当变量管理中存在变量时，使用节点“SetStory(Mission)Var”节点即可在Mission中进行使用。
+所有存在的变量(取决于变量作用范围)都可以使用下拉列表进行选择。
+如图：
+
+![使用变量](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DValueManager_8.png)
+
+其它页面：
+
 ![Repair页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_Repair_4.jpg)
 
 ![Setting页面](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DCryStoryEditor_Setting_5.jpg)
