@@ -42,7 +42,7 @@
 所有存在的变量(取决于变量作用范围)都可以使用下拉列表进行选择。
 如图：
 
-![使用变量](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DValueManager_8.png)
+![使用变量](http://7xp0w0.com1.z0.glb.clouddn.com/%5BCryStoryEditor%5DSE_ValueManager_8.jpg)
 
 其它页面：
 
