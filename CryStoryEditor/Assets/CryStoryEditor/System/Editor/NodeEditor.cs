@@ -149,7 +149,7 @@ namespace CryStory.Editor
                         if (_currentNode == null) return;
                         Vector2 offset = Event.current.mousePosition - _mouseDownPos;
 
-                        _currentNode._position = _mouseDownCenter + offset;
+                        _currentNode._position = _mouseDownCenter + offset / _window.Zoom;
                     }
                 }
             }
