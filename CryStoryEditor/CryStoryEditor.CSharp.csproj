@@ -103,6 +103,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\AddMissionVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\SetMissionVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Values\SetStoryVar.cs" />
+    <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Action\Wait.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Condition\CheckMissionVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Condition\CheckStoryVar.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Runtime\Nodes\Condition\KeyDown.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Runtime\TriggerSystem\TriggerObject.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\CryStoryEditor\Examples\Readme.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_CN.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_EN.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\ActionScriptTemplate.txt" />

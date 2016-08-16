@@ -118,19 +118,16 @@ namespace CryStory.Runtime
         {
             if (_contenNodeList.Count == 0) return EnumResult.Success;
             //Run
-            //UnityEngine.Profiler.BeginSample("Sample Node Tick: " + _name);
             for (int i = 0; i < _contenNodeList.Count; i++)
             {
                 if (i >= _contenNodeList.Count) break;
                 EnumResult result = _contenNodeList[i].Tick(this);
 
-                //UnityEngine.Profiler.BeginSample("Sample Failed: " + _name);
                 if (result != EnumResult.Running)
                 {
                     if (i >= _contenNodeList.Count) break;
                     NodeModifier node = _contenNodeList[i];
 
-                    //UnityEngine.Profiler.BeginSample("Sample Check: " + _name);
                     if (result == EnumResult.Failed)
                         switch (node.RunMode)
                         {
@@ -144,21 +141,19 @@ namespace CryStory.Runtime
                                 _toRemoveNode.Add(node);
                                 continue;
                         }
-                    //UnityEngine.Profiler.EndSample();
-
-                    //UnityEngine.Profiler.EndSample();
 
                     _toRemoveNode.Add(node);
 
                     //单独处理Decorator节点运行
                     //仅运行非单节点
-                    if (node is Decorator)
-                    {
-                        NodeModifier child = System.Array.Find<NodeModifier>(node.NextNodes, (n) => n.Parent == node);
-                        if (child != null)
-                            _toAddNode.Add(child);
-                    }
-                    else node.GetNextNodes(_toAddNode);
+                    //if (node is Decorator)
+                    //{
+                    //    NodeModifier child = System.Array.Find<NodeModifier>(node.NextNodes, (n) => n.Parent == node);
+                    //    if (child != null)
+                    //        _toAddNode.Add(child);
+                    //}
+                    //else
+                    node.GetNextNodes(_toAddNode);
                 }
             }
             //UnityEngine.Profiler.EndSample();

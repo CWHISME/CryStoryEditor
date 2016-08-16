@@ -66,7 +66,7 @@ namespace CryStory.Runtime
         /// 获取子节点列表
         /// </summary>
         /// <param name="nodes"></param>
-        public void GetNextNodes(List<NodeModifier> nodes)
+        public virtual void GetNextNodes(List<NodeModifier> nodes)
         {
             nodes.AddRange(_nextNodeList);
         }

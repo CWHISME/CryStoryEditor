@@ -117,6 +117,7 @@
     <Compile Include="Assets\CryStoryEditor\System\Editor\Version.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\CryStoryEditor\Examples\Readme.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_CN.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Help\Help_EN.txt" />
     <None Include="Assets\CryStoryEditor\System\Editor\Resources\Template\ActionScriptTemplate.txt" />

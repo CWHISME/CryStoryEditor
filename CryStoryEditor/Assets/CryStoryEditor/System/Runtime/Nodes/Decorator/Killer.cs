@@ -4,6 +4,7 @@
 *Func:
 **********************************************************/
 
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CryStory.Runtime
@@ -48,6 +49,13 @@ namespace CryStory.Runtime
                 if (nodes[i].Parent != node) continue;
                 RemoveChild(content, nodes[i]);
             }
+        }
+
+        public override void GetNextNodes(List<NodeModifier> nodes)
+        {
+            NodeModifier node = _nextNodeList.Find(n => n.Parent == this);
+            if (node != null)
+                nodes.Add(node);
         }
 
         public override Color ColorLine
