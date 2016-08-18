@@ -81,15 +81,6 @@ namespace CryStory.Editor
         /// </summary>
         public void OnDoubleClickMission()
         {
-            //if (IsDoubleClick() && Tools.IsValidMouseAABB(_currentNodeRect))
-            //{
-            //    //Debug.Log(_totalFrame + "    " + _nextFrame);
-            //    //if (_totalFrame < _nextFrame)
-            //    if (Event.current.button == 0)
-            //        _window._editMission = _currentNode as Mission;
-            //    //_nextFrame = _totalFrame + 60;
-            //    //Debug.Log(_totalFrame + "    " + _nextFrame);
-            //}
             if (Tools.MouseDoubleClick && Tools.IsValidMouseAABB(_currentNodeRect))
             {
                 if (Event.current.button == 0)
@@ -119,7 +110,6 @@ namespace CryStory.Editor
 
         private void ShowCreateMissionMenu()
         {
-            //Debug.Log(Event.current.mousePosition + "     Rect:" + _contentRect);
             Vector2 mousePos = Event.current.mousePosition;
             if (mousePos.x < _contentRect.x) return;
             if (mousePos.y < _contentRect.y) return;

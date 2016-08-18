@@ -411,7 +411,7 @@ namespace CryStory.Editor
             center.x = (int)(center.x);
             center.y = (int)(center.y);
 
-            return pos;// + modifier.graphCenter - center;
+            return pos;
         }
 
     }
