@@ -297,6 +297,11 @@ namespace CryStory.Editor
             EditorGUI.LabelField(new Rect(_windowRect.center.x - 33, _windowRect.center.y - 50, 500, 20), "By CWHISME");
             EditorGUI.LabelField(new Rect(_windowRect.center.x - 55, _windowRect.center.y - 20, 500, 20), "Email: cwhisme@qq.com");
             EditorGUI.LabelField(new Rect(_windowRect.center.x - 20, _windowRect.center.y, 500, 20), Version.FullVersion);
+
+            //Web Github and Blog
+            EditorGUI.LabelField(new Rect(_windowRect.center.x - 80, _windowRect.center.y + 30, 500, 20), "It's a Open Source project.\n    For more information:", ResourcesManager.GetInstance.GetFontStyle(14, Color.green));
+            EditorGUI.SelectableLabel(new Rect(_windowRect.center.x - 60, _windowRect.center.y + 80, 300, 20), "http://www.cwhisme.com");
+            EditorGUI.SelectableLabel(new Rect(_windowRect.center.x - 110, _windowRect.center.y + 100, 300, 20), "https://github.com/CWHISME/CryStoryEditor");
         }
 
         private void MainPage()
@@ -371,7 +376,7 @@ namespace CryStory.Editor
             EditorGUI.LabelField(new Rect(btnW, 0, _windowRect.xMax, _titleHeight), new GUIContent(" Story Editor" + (_storyObject ? "->" + (EditMission == null ? _storyObject.name : _storyObject.name + " -> " + EditMission._name) : "")), style);
 
             GUIStyle buttonStyle = new GUIStyle(ResourcesManager.GetInstance.skin.button);
-            if (GUI.Button(new Rect(_contentRect.width - 270, 3, 80, _titleHeight - 3), "Values", buttonStyle))
+            if (GUI.Button(new Rect(_contentRect.width - 90, 3, 80, _titleHeight - 3), "Values", buttonStyle))
             {
                 ValueManagerWindow.Open();
             }
@@ -386,7 +391,7 @@ namespace CryStory.Editor
                 _storyObject.Load();
             }
             buttonStyle.normal.textColor = new Color32(0, 255, 0, 255);
-            if (GUI.Button(new Rect(_contentRect.width - 90, 3, 80, _titleHeight - 3), "Save Story", buttonStyle))
+            if (GUI.Button(new Rect(_contentRect.width - 270, 3, 80, _titleHeight - 3), "Save Story", buttonStyle))
                 _storyObject.Save();
 
             //EditorGUILayout.EndHorizontal();
