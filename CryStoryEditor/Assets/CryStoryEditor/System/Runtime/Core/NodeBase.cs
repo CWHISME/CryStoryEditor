@@ -13,6 +13,8 @@ namespace CryStory.Runtime
     {
         public virtual EnumResult Tick(NodeContent content) { return EnumResult.Success; }
 
+        public virtual void ForceStop() { }
+
         //For Editor
         public UnityEngine.Vector2 _position;
         public string _name;

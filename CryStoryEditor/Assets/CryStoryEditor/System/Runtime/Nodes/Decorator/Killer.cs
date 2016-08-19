@@ -42,7 +42,9 @@ namespace CryStory.Runtime
 
         protected void RemoveChild(NodeContent content, NodeModifier node)
         {
-            content.RemoveContenNode(node);
+            if (content.RemoveContenNode(node))
+                node.ForceStop();
+
             NodeModifier[] nodes = node.NextNodes;
             for (int i = 0; i < nodes.Length; i++)
             {

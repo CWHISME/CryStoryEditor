@@ -12,13 +12,15 @@ namespace CryStory.Runtime
 {
     public class TriggerManager : Singleton<TriggerManager>
     {
-        public void CreateShpereTrigger(Vector3 pos, float radius, System.Func<GameObject, bool> checkTrigger, System.Action callBack)
+        public TriggerObject CreateShpereTrigger(Vector3 pos, float radius, System.Func<GameObject, bool> checkTrigger, System.Action callBack)
         {
             GameObject o = new GameObject("Trigger");
             o.transform.SetParent(Root.transform);
             o.transform.position = pos;
             TriggerObject trigger = o.AddComponent<TriggerObject>();
             trigger.SetParams(radius, checkTrigger, callBack);
+
+            return trigger;
         }
 
 

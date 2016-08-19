@@ -13,18 +13,25 @@ namespace CryStory.Runtime
     {
 
         public Vector3 Position;
-        public float Radius;
+        public float Radius = 0.5f;
 
         public string TargetTag = "Player";
 
+        private TriggerObject _triggerObject;
+
         protected override void RegistEvent()
         {
-            TriggerManager.GetInstance.CreateShpereTrigger(Position, Radius, Check, TriggerEvent);
+            _triggerObject = TriggerManager.GetInstance.CreateShpereTrigger(Position, Radius, Check, TriggerEvent);
         }
 
         protected override void UnRegistEvent()
         {
 
+        }
+
+        public override void ForceStop()
+        {
+            GameObject.Destroy(_triggerObject.gameObject);
         }
 
         private bool Check(GameObject other)
