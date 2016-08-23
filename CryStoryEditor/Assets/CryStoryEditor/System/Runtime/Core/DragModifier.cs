@@ -91,6 +91,6 @@ namespace CryStory.Runtime
 #endif
 
         //===For Editor=============
-        public Vector2 graphCenter;
+        public Vector2 _graphCenter;
     }
 }

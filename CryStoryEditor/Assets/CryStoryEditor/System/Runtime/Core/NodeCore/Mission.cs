@@ -13,10 +13,11 @@ namespace CryStory.Runtime
     public class Mission : DragModifier
     {
 
+        [SerializeField]
         /// <summary>
         /// 存储任务详情
         /// </summary>
-        public MissionDescription _missionDescription;
+        public MissionDescription MissionDescription;
 
 
         /// <summary>
@@ -93,8 +94,8 @@ namespace CryStory.Runtime
         {
             base.OnSaved(w);
 
-            w.Write(_missionDescription.GetType().FullName);
-            _missionDescription.Serialize(w);
+            w.Write(MissionDescription.GetType().FullName);
+            MissionDescription.Serialize(w);
         }
 
         protected override void OnLoaded(BinaryReader r)
@@ -102,8 +103,8 @@ namespace CryStory.Runtime
             base.OnLoaded(r);
 
             string name = r.ReadString();
-            _missionDescription = ReflectionHelper.CreateInstance<MissionDescription>(name);
-            _missionDescription.Deserialize(r);
+            MissionDescription = ReflectionHelper.CreateInstance<MissionDescription>(name);
+            MissionDescription.Deserialize(r);
         }
 
         public void OnAbort()

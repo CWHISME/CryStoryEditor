@@ -24,6 +24,7 @@ namespace CryStory.Editor
         protected Vector2 _mouseDownPos = Vector2.zero;
         protected bool _mouseIsDown = false;
         protected Vector2 _mouseDownCenter = Vector2.zero;
+        protected bool _couldMultiSelect = false;
 
         protected NodeModifier _currentNode;
         protected Rect _currentNodeRect;
@@ -46,9 +47,24 @@ namespace CryStory.Editor
             QuilkKey();
             //LeftTopInfo
             ShowGraphCenterInfo();
-
+            //MultiChoice
+            MultiChoice();
 
             InternalOnGUI();
+        }
+
+        private void MultiChoice()
+        {
+            if (!_couldMultiSelect) return;
+
+            if (Event.current != null)
+            {
+                Vector2 pos = Event.current.mousePosition;
+
+                Vector3 pos1 = new Vector3(_mouseDownPos.x + (pos.x - _mouseDownPos.x), _mouseDownPos.y);
+                Vector3 pos2 = new Vector3(_mouseDownPos.x, _mouseDownPos.y + (pos.y - _mouseDownPos.y));
+                Handles.DrawLines(new Vector3[] { _mouseDownPos, pos1, _mouseDownPos, pos2, pos, pos1, pos, pos2 });
+            }
         }
 
         private void QuilkKey()
@@ -130,18 +146,24 @@ namespace CryStory.Editor
                 {
                     if (!Tools.MouseIsInContent()) return;
 
-                    if (Event.current.type == EventType.MouseDown && Tools.IsValidMouseAABB(nodeRect))
+                    if (Event.current.type == EventType.MouseDown)
                     {
-                        _mouseIsDown = true;
+                        if (Tools.IsValidMouseAABB(nodeRect))
+                        {
+                            _mouseDownCenter = node._position;
+                            _currentNode = node;
+                            _currentNodeRect = nodeRect;
+                            _mouseIsDown = true;
+                        }
+                        else if (!_mouseIsDown) _couldMultiSelect = true;
+
                         _mouseDownPos = Event.current.mousePosition;
-                        _mouseDownCenter = node._position;
-                        _currentNode = node;
-                        _currentNodeRect = nodeRect;
                     }
 
                     if (Event.current.type == EventType.MouseUp)
                     {
                         _mouseIsDown = false;
+                        _couldMultiSelect = false;
                     }
 
                     if (Event.current.type == EventType.MouseDrag && Event.current.button == 0 && _mouseIsDown)
@@ -669,7 +691,12 @@ namespace CryStory.Editor
                         filed.SetValue(o, EditorGUI.EnumPopup(rect, (System.Enum)filed.GetValue(o)));
                     }
                     else
-                        EditorGUI.LabelField(rect, "Not Deal Object.");
+                    {
+                        Attribute a = Attribute.GetCustomAttribute(filed, typeof(SerializeField));
+                        if (a == null)
+                            EditorGUI.LabelField(rect, "Not Deal Object.");
+                        else DrawLeftArribute(filed.GetValue(o));
+                    }
                     break;
             }
         }

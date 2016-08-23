@@ -11,7 +11,7 @@ namespace CryStory.Runtime
     public class StoryManager
     {
         private Story _story;
-        public Story Story { get { return _story; } }
+        public Story CurrentStory { get { return _story; } }
 
         public StoryManager(Story story)
         {

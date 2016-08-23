@@ -33,8 +33,8 @@ namespace CryStory.Runtime
             Mission mission = node as Mission;
             if (mission != null)
             {
-                if (mission._missionDescription == null || mission._missionDescription.GetType().FullName != _missionDescriptionType)
-                    mission._missionDescription = ReflectionHelper.CreateInstance<MissionDescription>(_missionDescriptionType);
+                if (mission.MissionDescription == null || mission.MissionDescription.GetType().FullName != _missionDescriptionType)
+                    mission.MissionDescription = ReflectionHelper.CreateInstance<MissionDescription>(_missionDescriptionType);
             }
         }
 

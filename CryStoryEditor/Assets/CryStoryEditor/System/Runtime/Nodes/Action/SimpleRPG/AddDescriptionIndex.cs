@@ -14,7 +14,7 @@ namespace CryStory.Runtime
 
         protected override EnumResult OnStart()
         {
-            MissionDescriptionSimpleRPG des = GetMission._missionDescription as MissionDescriptionSimpleRPG;
+            MissionDescriptionSimpleRPG des = GetMission.MissionDescription as MissionDescriptionSimpleRPG;
             if (des != null)
             {
                 des.AddTargetIndex(AddCount);

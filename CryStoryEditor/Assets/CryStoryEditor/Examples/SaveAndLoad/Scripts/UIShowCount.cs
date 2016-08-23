@@ -17,7 +17,7 @@ namespace CryStory.Examples
 
         public void Update()
         {
-            _text.text = "Space Button Down:  " + _story.StoryManager.Story._valueContainer["ButtonDownCount"].StringValue;
+            _text.text = "Space Button Down:  " + _story.StoryManager.CurrentStory._valueContainer["ButtonDownCount"].StringValue;
         }
     }
 }

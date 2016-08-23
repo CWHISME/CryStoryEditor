@@ -21,7 +21,7 @@ namespace CryStory.Example
             _storyRunner.StoryManager.RefreshMissionList();
             if (_storyRunner.StoryManager.RunningMissions.Count > 0)
             {
-                MissionDescriptionSimpleRPG des = (_storyRunner.StoryManager.RunningMissions[0]._missionDescription as MissionDescriptionSimpleRPG);
+                MissionDescriptionSimpleRPG des = (_storyRunner.StoryManager.RunningMissions[0].MissionDescription as MissionDescriptionSimpleRPG);
                 des.OnDescriptionChange += RefreshDescription;
                 RefreshDescription(des);
             }

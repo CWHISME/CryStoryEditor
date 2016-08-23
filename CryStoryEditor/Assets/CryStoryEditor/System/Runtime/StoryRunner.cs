@@ -29,7 +29,7 @@ namespace CryStory.Runtime
         public void LoadStory(byte[] saveData)
         {
             StoryManager.LoadStory(saveData);
-            _runStory._Story = StoryManager.Story;
+            _runStory._Story = StoryManager.CurrentStory;
         }
 
         public void OnApplicationQuit()

@@ -29,23 +29,23 @@ namespace CryStory.Editor
             }
         }
 
-        protected override void DrawLeftArribute(object o)
-        {
-            EditorGUI.LabelField(GetGUILeftScrollAreaRect(0, 150, 18), "Mission Description:");
-            LeftHeightSpace(10);
-            System.Reflection.FieldInfo info = o.GetType().GetField("_missionDescription");
-            object o_o = info.GetValue(o);
-            if (o_o == null)
-            {
-                o_o = ReflectionHelper.CreateInstance(_window._Story._missionDescriptionType);
-                info.SetValue(o, o_o);
-            }
+        //protected override void DrawLeftArribute(object o)
+        //{
+        //    EditorGUI.LabelField(GetGUILeftScrollAreaRect(0, 150, 18), "Mission Description:");
+        //    LeftHeightSpace(10);
+        //    System.Reflection.FieldInfo info = o.GetType().GetField("_missionDescription");
+        //    object o_o = info.GetValue(o);
+        //    if (o_o == null)
+        //    {
+        //        o_o = ReflectionHelper.CreateInstance(_window._Story._missionDescriptionType);
+        //        info.SetValue(o, o_o);
+        //    }
 
-            if (_window._storyObject._debugMode)
-                base.DrawLeftArribute(o);
+        //    if (_window._storyObject._debugMode)
+        //        base.DrawLeftArribute(o);
 
-            base.DrawLeftArribute(o_o);
-        }
+        //    base.DrawLeftArribute(o_o);
+        //}
 
         /// <summary>
         /// 右键点击时显示的东西

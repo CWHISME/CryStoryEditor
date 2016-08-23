@@ -45,7 +45,7 @@ namespace CryStory.Runtime
             }
         }
 
-        public Vector2 StoryCenter { get { return _story.graphCenter; } set { _story.graphCenter = value; } }
+        public Vector2 StoryCenter { get { return _story._graphCenter; } set { _story._graphCenter = value; } }
 
         public string _description = "This Story have not description.";
 

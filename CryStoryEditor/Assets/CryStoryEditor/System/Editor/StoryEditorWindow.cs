@@ -38,13 +38,13 @@ namespace CryStory.Editor
         {
             get
             {
-                return EditMission == null ? _Story.graphCenter : EditMission.graphCenter;
+                return EditMission == null ? _Story._graphCenter : EditMission._graphCenter;
             }
             set
             {
                 if (EditMission == null)
-                    _Story.graphCenter = value;
-                else EditMission.graphCenter = value;
+                    _Story._graphCenter = value;
+                else EditMission._graphCenter = value;
             }
         }
 

@@ -42,7 +42,7 @@ namespace CryStory.Editor
             GUILayout.Space(5);
             EditorGUILayout.LabelField("Value Manager", ResourcesManager.GetInstance.GetFontStyle(22));
             GUILayout.Space(10);
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal(GUILayout.Width(640));
             //Story Value Manager
 
             StoryValue();
@@ -75,7 +75,7 @@ namespace CryStory.Editor
             StoryObject story = Selection.activeObject as StoryObject;
             if (story == null)
             {
-                EditorGUILayout.LabelField("Not select story!");
+                EditorGUILayout.LabelField("Not select story!", GUILayout.Width(300));
                 return;
             }
             if (story._Story != null)
@@ -84,7 +84,7 @@ namespace CryStory.Editor
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("<color=#FF00FF>" + story.name + "</color>", ResourcesManager.GetInstance.GetFontStyle(18));
-                //GUILayout.Space(10);
+
                 if (GUILayout.Button("<color=#00FF00>Add Value</color>", ResourcesManager.GetInstance.skin.button, GUILayout.Height(25)))
                     ValueAdder.Open(story._Story);
                 EditorGUILayout.EndHorizontal();
@@ -115,7 +115,7 @@ namespace CryStory.Editor
 
             if (container == null)
             {
-                EditorGUILayout.LabelField("Not select Mission!");
+                EditorGUILayout.LabelField("Not select Mission!", GUILayout.Width(300));
                 return;
             }
 

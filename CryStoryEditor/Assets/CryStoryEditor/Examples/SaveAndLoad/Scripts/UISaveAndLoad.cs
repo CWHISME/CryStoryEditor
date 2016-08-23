@@ -22,7 +22,7 @@ namespace CryStory.Examples
 
         public void Save()
         {
-            _saveData = _runner.StoryManager.Story.Save();
+            _saveData = _runner.StoryManager.CurrentStory.Save();
         }
 
         public void Load()

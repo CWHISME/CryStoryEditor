@@ -98,6 +98,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CryStoryEditor\System\Editor\AdvanceStringArrayEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\CreateScriptHelper.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\MainPageEditor.cs" />
     <Compile Include="Assets\CryStoryEditor\System\Editor\MissionEditor.cs" />
