@@ -44,7 +44,7 @@ namespace CryStory.Editor
 
         private static void CreateScript(string path, string parent)
         {
-            TextAsset txt = Resources.Load<TextAsset>("Template/" + parent + "ScriptTemplate");
+            TextAsset txt = Resources.Load<TextAsset>("CryStory/Template/" + parent + "ScriptTemplate");
             if (!txt)
             {
                 EditorUtility.DisplayDialog("Error", "Read Templete File Faild!", "OK");

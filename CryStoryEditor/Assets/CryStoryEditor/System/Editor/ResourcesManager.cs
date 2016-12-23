@@ -59,24 +59,24 @@ namespace CryStory.Editor
         public ResourcesManager()
         {
             if (texInputSlot == null)
-                texInputSlot = Resources.Load("Image/Slot/input_slot") as Texture2D;
+                texInputSlot = Resources.Load("CryStory/Image/Slot/input_slot") as Texture2D;
             if (texInputSlotActive == null)
-                texInputSlotActive = Resources.Load("Image/Slot/input_slot_active") as Texture2D;
+                texInputSlotActive = Resources.Load("CryStory/Image/Slot/input_slot_active") as Texture2D;
             if (texOutputSlot == null)
-                texOutputSlot = Resources.Load("Image/Slot/output_slot") as Texture2D;
+                texOutputSlot = Resources.Load("CryStory/Image/Slot/output_slot") as Texture2D;
             if (texOutputSlotActive == null)
-                texOutputSlotActive = Resources.Load("Image/Slot/output_slot_active") as Texture2D;
+                texOutputSlotActive = Resources.Load("CryStory/Image/Slot/output_slot_active") as Texture2D;
             if (texGrid == null)
-                texGrid = Resources.Load("Image/grid") as Texture2D;
+                texGrid = Resources.Load("CryStory/Image/grid") as Texture2D;
             if (texWhiteBorder == null)
-                texWhiteBorder = Resources.Load("WhiteBorder") as Texture2D;
+                texWhiteBorder = Resources.Load("CryStory/WhiteBorder") as Texture2D;
             if (texBackground == null)
-                texBackground = Resources.Load("Background") as Texture2D;
-            if (skin == null) skin = Resources.Load<GUISkin>("Skin");
+                texBackground = Resources.Load("CryStory/Background") as Texture2D;
+            if (skin == null) skin = Resources.Load<GUISkin>("CryStory/Skin");
 
 
-            if (helpCN == null) helpCN = Resources.Load<TextAsset>("Help/Help_CN");
-            if (helpEN == null) helpEN = Resources.Load<TextAsset>("Help/Help_EN");
+            if (helpCN == null) helpCN = Resources.Load<TextAsset>("CryStory/Help/Help_CN");
+            if (helpEN == null) helpEN = Resources.Load<TextAsset>("CryStory/Help/Help_EN");
         }
 
     }
