@@ -349,12 +349,18 @@ namespace CryStory.Runtime
             return _story.Save();
         }
 
+        public void Load()
+        {
+            _story = new Story();
+            _story.Load(_SaveData);
+        }
+#endif
+
         public void Load(byte[] data)
         {
             _story = new Story();
             _story.Load(data);
         }
-#endif
     }
 
 #if UNITY_EDITOR
