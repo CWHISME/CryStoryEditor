@@ -55,7 +55,15 @@ namespace CryStory.Editor
 
             DrawRunModeLable(node, nodeRect);
 
-            DrawDescription(nodeRect, (node as StoryNode).ToDescription());
+            try
+            {
+                DrawDescription(nodeRect, (node as StoryNode).ToDescription());
+            }
+            catch (Exception)
+            {
+                //Debug.Log("Draw Node [" + node._name + "] Description Error.");
+                return nodeRect;
+            }
 
             return nodeRect;
         }

@@ -157,7 +157,7 @@ namespace CryStory.Editor
             {
                 NodeModifier.Delete(_currentHover);
                 MissionData data = _window._storyObject.GetMissionSaveDataByName(_currentHover._name);
-                data._missionObject._mission = null;
+                data.MissionObject._mission = null;
                 if (_currentNode == _currentHover) _currentNode = null;
                 _currentHover = null;
             });

@@ -82,16 +82,17 @@ namespace CryStory.Runtime
         {
             //if (_missionSaveList == null) _missionSaveList = new List<MissionData>();
             mo.Load();
-            if (_missionSaveList.Find((m) => m._name == mo._mission._name) != null) return false;
-            _missionSaveList.Add(new MissionData() { _name = mo._mission._name, _missionObject = mo });
+            if (_missionSaveList.Find((m) => m.Name == mo._mission._name) != null) return false;
+            _missionSaveList.Add(new MissionData(mo));
             return true;
         }
 
         public bool DeleteMissionData(MissionData mo)
         {
             if (!_missionSaveList.Contains(mo)) return false;
-            string path = GetFullMissionPath(mo._name);
-            UnityEditor.AssetDatabase.DeleteAsset(path);
+            //string path = GetFullMissionPath(mo._name);
+            //UnityEditor.AssetDatabase.DeleteAsset(path);
+            mo.Delete();
             _missionSaveList.Remove(mo);
             return true;
         }
@@ -103,7 +104,7 @@ namespace CryStory.Runtime
             List<MissionData> toRemove = new List<MissionData>();
             for (int i = 0; i < _missionSaveList.Count; i++)
             {
-                if (_missionSaveList[i]._missionObject == null)
+                if (_missionSaveList[i].MissionObject == null)
                     toRemove.Add(_missionSaveList[i]);
             }
 
@@ -118,7 +119,7 @@ namespace CryStory.Runtime
 
         public MissionData GetMissionSaveDataByName(string missionName)
         {
-            return _missionSaveList.Find((m) => m._name == missionName);
+            return _missionSaveList.Find((m) => m.Name == missionName);
         }
 
         public MissionData[] GetMissionSaveDataByMission(NodeBase[] missions)
@@ -132,6 +133,7 @@ namespace CryStory.Runtime
             }
             return datas.ToArray();
         }
+
         #region Editor Method
         public const string MissionDirectoryExtName = "Missions";
         public string GetFullMissionDirectoryPath()
@@ -146,21 +148,23 @@ namespace CryStory.Runtime
             return GetFullMissionDirectoryPath() + missionName + ".asset";
         }
 
+        /// <summary>
+        /// 对Mission进行重命名
+        /// 该方法同时修改MissionObject，即实际文件的名字
+        /// 保证Mission的名字与Mision文件的名字同步一致
+        /// </summary>
+        /// <param name="missionName"></param>
+        /// <param name="newName"></param>
+        /// <returns></returns>
         public bool RenameMission(string missionName, string newName)
         {
-            string oldPath = GetFullMissionPath(missionName);//UnityEditor.FileUtil.GetProjectRelativePath(GetFullMissionPath(missionName));
-            //string newPath = GetFullMissionPath(newName);//UnityEditor.FileUtil.GetProjectRelativePath(GetFullMissionPath(newName));
+            //string oldPath = GetFullMissionPath(missionName);
 
-            string msg = UnityEditor.AssetDatabase.RenameAsset(oldPath, newName);
-            if (string.IsNullOrEmpty(msg))
+            MissionData data = _missionSaveList.Find((m) => m.Name == missionName);
+            if (null != data)
             {
-                MissionData data = _missionSaveList.Find((m) => m._name == missionName);
-                if (data != null)
-                    data._name = newName;
-                return true;
+                return data.Rename(newName);
             }
-
-            UnityEditor.EditorUtility.DisplayDialog("错误！", "Modify Name Failed! Msg:" + msg, "OK");
             return false;
         }
 
@@ -168,12 +172,13 @@ namespace CryStory.Runtime
         {
             for (int i = 0; i < _missionSaveList.Count; i++)
             {
-                UnityEditor.EditorUtility.DisplayProgressBar("Repair Mission Data .....", "Current Repair Mission: [" + _missionSaveList[i]._name + "]", (i + 1) / _missionSaveList.Count);
-                MissionObject o = UnityEditor.AssetDatabase.LoadAssetAtPath<MissionObject>(GetFullMissionPath(_missionSaveList[i]._name));
-                if (o)
-                {
-                    _missionSaveList[i]._missionObject = o;
-                }
+                UnityEditor.EditorUtility.DisplayProgressBar("Repair Mission Data .....", "Current Repair Mission: [" + _missionSaveList[i].Name + "]", (i + 1) / _missionSaveList.Count);
+                //MissionObject o = UnityEditor.AssetDatabase.LoadAssetAtPath<MissionObject>(GetFullMissionPath(_missionSaveList[i]._name));
+                //if (o)
+                //{
+                //    _missionSaveList[i].MissionObject = o;
+                //}
+                _missionSaveList[i].ReloadObject();
             }
 
             UnityEditor.EditorUtility.ClearProgressBar();
@@ -183,8 +188,9 @@ namespace CryStory.Runtime
         {
             for (int i = 0; i < _missionSaveList.Count; i++)
             {
-                if (_missionSaveList[i]._missionObject == null) continue;
-                _missionSaveList[i]._name = _missionSaveList[i]._missionObject.name;
+                if (_missionSaveList[i].MissionObject == null) continue;
+                _missionSaveList[i].RefreshExtraData();
+                //_missionSaveList[i].Name = _missionSaveList[i].MissionObject.name;
             }
         }
 
@@ -212,17 +218,17 @@ namespace CryStory.Runtime
             NodeModifier[] Nodes = _Story.Nodes;
             for (int i = 0; i < Nodes.Length; i++)
             {
-                MissionData data = _missionSaveList.Find((n) => n._name == Nodes[i]._name);
+                MissionData data = _missionSaveList.Find((n) => n.Name == Nodes[i]._name);
                 if (data != null)
-                    if (data._missionObject != null)
-                        data._missionObject._mission = Nodes[i] as Mission;
+                    if (data.MissionObject != null)
+                        data.MissionObject._mission = Nodes[i] as Mission;
             }
 
             List<MissionData> toDelete = new List<MissionData>();
 
             for (int i = 0; i < _missionSaveList.Count; i++)
             {
-                MissionObject mo = _missionSaveList[i]._missionObject;
+                MissionObject mo = _missionSaveList[i].MissionObject;
                 if (mo == null)
                 {
                     _haveNullData = true;
@@ -231,8 +237,7 @@ namespace CryStory.Runtime
                 //Update Mission Insure Data
                 //mo._mission = _Story.GetNode(mo._mission._name) as Mission;
                 //Update Name For insure
-                _missionSaveList[i]._name = mo.name;
-
+                //_missionSaveList[i].Name = mo.name;
                 //mo._mission = System.Array.Find<NodeModifier>(Nodes, (n) => n._name == mo.name) as Mission;
                 //如果标志Mission已经为空，则代表删除
                 if (mo._mission == null)
@@ -240,6 +245,9 @@ namespace CryStory.Runtime
                     toDelete.Add(_missionSaveList[i]);
                     continue;
                 }
+
+                _missionSaveList[i].RefreshExtraData();
+
 
                 //UnityEditor.EditorUtility.SetDirty(mo);
                 NodeModifier[] nextMissions = mo._mission.NextNodes;
@@ -303,36 +311,36 @@ namespace CryStory.Runtime
             for (int i = 0; i < _missionSaveList.Count; i++)
             {
                 MissionData data = _missionSaveList[i];
-                if (!data._missionObject)
+                if (!data.MissionObject)
                 {
-                    Debug.Log("Mission Not Found: " + data._name);
+                    Debug.Log("Mission Not Found: " + data.Name);
                     _haveNullData = true;
                     continue;
                 }
 
-                data._missionObject.Load();
-                data._missionObject._mission._name = data._name;
+                data.MissionObject.Load();
+                data.MissionObject._mission._name = data.Name;
 
-                NodeModifier.SetContent(data._missionObject._mission, _story);
+                NodeModifier.SetContent(data.MissionObject._mission, _story);
             }
 
             //设置已连接的节点
             for (int i = 0; i < _missionSaveList.Count; i++)
             {
                 MissionData data = _missionSaveList[i];
-                if (!data._missionObject) continue;
-                if (data._missionObject._nextMissionNodeList.Count > 0)
+                if (!data.MissionObject) continue;
+                if (data.MissionObject._nextMissionNodeList.Count > 0)
                 {
-                    foreach (var item in data._missionObject._nextMissionNodeList)
+                    foreach (var item in data.MissionObject._nextMissionNodeList)
                     {
                         MissionData next = GetMissionSaveDataByName(item.Name);
                         if (next == null) continue;
-                        if (next._missionObject == null) continue;
+                        if (next.MissionObject == null) continue;
                         if (item.IsSingleNode)
                         {
-                            data._missionObject._mission.AddNextNode(next._missionObject._mission);
+                            data.MissionObject._mission.AddNextNode(next.MissionObject._mission);
                         }
-                        else Mission.SetParent(next._missionObject._mission, data._missionObject._mission);
+                        else Mission.SetParent(next.MissionObject._mission, data.MissionObject._mission);
                     }
                 }
             }
@@ -367,16 +375,66 @@ namespace CryStory.Runtime
     [System.Serializable]
     public class MissionData
     {
-        public string _name;
-        public MissionObject _missionObject;
+        private string _name;
+        private int _instanceID;
+        private MissionObject _missionObject;
+        public string Name { get { return _name; } }
+        public MissionObject MissionObject
+        {
+            get
+            {
+                if (!_missionObject) ReloadObject();
+                return _missionObject;
+            }
+            set { _missionObject = value; }
+        }
+
+        public MissionData(MissionObject obj)
+        {
+            _missionObject = obj;
+            RefreshExtraData();
+        }
 
         public void AddNextMissionObject(MissionData[] os)
         {
             for (int i = 0; i < os.Length; i++)
             {
-                _missionObject.AddNextMissionName(os[i]._name, os[i]._missionObject._mission.Parent != _missionObject._mission);
+                MissionObject.AddNextMissionName(os[i]._name, os[i].MissionObject._mission.Parent != MissionObject._mission);
             }
         }
+
+        public void RefreshExtraData()
+        {
+            _name = MissionObject._mission._name;
+            _instanceID = MissionObject.GetInstanceID();
+        }
+
+        public void Delete()
+        {
+            UnityEditor.AssetDatabase.DeleteAsset(FIlePath);
+        }
+
+        public bool Rename(string newName)
+        {
+            //重命名成功
+            string msg = UnityEditor.AssetDatabase.RenameAsset(FIlePath, newName);
+            if (string.IsNullOrEmpty(msg))
+            {
+                _name = newName;
+                MissionObject._mission._name = newName;
+                return true;
+            }
+
+            UnityEditor.EditorUtility.DisplayDialog("错误！", "Modify Name Failed! Msg:" + msg, "OK");
+            return false;
+        }
+
+        public void ReloadObject()
+        {
+            _missionObject = UnityEditor.AssetDatabase.LoadAssetAtPath<MissionObject>(FIlePath);
+        }
+
+        private string FIlePath { get { return UnityEditor.AssetDatabase.GetAssetPath(_instanceID); } }
 
         //public void RemoveNextMissionObject(string o)
         //{
@@ -386,7 +444,7 @@ namespace CryStory.Runtime
 
         public void ClearNextMissionObject()
         {
-            _missionObject._nextMissionNodeList.Clear();
+            MissionObject._nextMissionNodeList.Clear();
         }
     }
 

@@ -246,6 +246,9 @@ namespace CryStory.Runtime
 
         protected override void OnLoaded(BinaryReader r)
         {
+            //清空当前容器节点，避免被重复添加
+            _contenNodeList.Clear();
+
             base.OnLoaded(r);
             bool running = r.ReadBoolean();
 

@@ -75,7 +75,8 @@ namespace CryStory.Runtime
                 string key = r.ReadString();
                 Value v = new Value(0);
                 v.Deserialize(r);
-                AddValue(key, v);
+                _valueContainer[key] = v;
+                //AddValue(key, v);
             }
         }
 

@@ -144,8 +144,8 @@ namespace CryStory.Editor
                 MissionData data = datas[i];
 
                 GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Mission:  <color=#F9F900>" + data._name + "</color>", style);
-                if (data._missionObject == null || data._missionObject.name != data._name)
+                EditorGUILayout.LabelField("Mission:  <color=#F9F900>" + data.Name + "</color>", style);
+                if (data.MissionObject == null || data.MissionObject.name != data.Name)
                 {
                     EditorGUILayout.LabelField("<color=red>✘</color>", style);
                 }

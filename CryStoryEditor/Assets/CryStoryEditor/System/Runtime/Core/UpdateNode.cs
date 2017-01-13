@@ -27,7 +27,8 @@ namespace CryStory.Runtime
             {
                 result = OnUpdate();
             }
-            else {
+            else
+            {
                 _running = true;
                 result = OnStart();
                 if (result == EnumResult.Success)
@@ -40,6 +41,7 @@ namespace CryStory.Runtime
             {
                 OnEnd();
                 _isInit = false;
+                _running = false;
                 return result;
             }
 
