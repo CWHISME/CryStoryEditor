@@ -27,7 +27,7 @@ namespace CryStory.Editor
                 _instance.Focus();
                 return;
             }
-            _instance = EditorWindow.CreateInstance<ValueManagerWindow>();
+            _instance = EditorWindow.GetWindow<ValueManagerWindow>();
             _instance.titleContent = new GUIContent("Value Manager");
             float h = 600;// Screen.height * 0.8f;
             float w = 650;//Screen.width * 0.95f;
@@ -47,7 +47,7 @@ namespace CryStory.Editor
 
             StoryValue();
 
-            ShowSeperator();
+            //ShowSeperator();
 
             //Mission Value Manager
             MissionValue();
@@ -59,16 +59,18 @@ namespace CryStory.Editor
             Repaint();
         }
 
-        private void ShowSeperator()
-        {
-            GUILayout.BeginVertical();
-            int count = (int)(position.height / 17);
-            for (int i = 0; i < count; i++)
-            {
-                GUILayout.Label("☆★");
-            }
-            GUILayout.EndVertical();
-        }
+        //private void ShowSeperator()
+        //{
+        //    GUILayout.BeginVertical();
+        //    int count = (int)(position.height / 20);
+        //    //Debug.Log(count);
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        //GUILayout.Label("★");
+        //        EditorGUILayout.LabelField("★");
+        //    }
+        //    GUILayout.EndVertical();
+        //}
 
         private void StoryValue()
         {
@@ -80,7 +82,7 @@ namespace CryStory.Editor
             }
             if (story._Story != null)
             {
-                EditorGUILayout.BeginVertical(GUILayout.Width(300));
+                EditorGUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(300));
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("<color=#FF00FF>" + story.name + "</color>", ResourcesManager.GetInstance.GetFontStyle(18));
@@ -119,7 +121,7 @@ namespace CryStory.Editor
                 return;
             }
 
-            EditorGUILayout.BeginVertical(GUILayout.Width(300));
+            EditorGUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(300));
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("<color=#FF00FF>" + container._name + "</color>", ResourcesManager.GetInstance.GetFontStyle(18));

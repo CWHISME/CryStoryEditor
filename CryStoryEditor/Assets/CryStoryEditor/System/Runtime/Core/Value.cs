@@ -183,14 +183,11 @@ namespace CryStory.Runtime
             switch (ValueType)
             {
                 case VarType.INT:
-                    Compare(Convert.ToInt32(v), compare);
-                    break;
+                    return Compare(Convert.ToInt32(v), compare);
                 case VarType.FLOAT:
-                    Compare(Convert.ToSingle(v), compare);
-                    break;
+                    return Compare(Convert.ToSingle(v), compare);
                 case VarType.BOOL:
-                    Compare(Convert.ToBoolean(v), compare);
-                    break;
+                    return Compare(Convert.ToBoolean(v), compare);
                 case VarType.STRING:
                     return StringValue == v;
             }
