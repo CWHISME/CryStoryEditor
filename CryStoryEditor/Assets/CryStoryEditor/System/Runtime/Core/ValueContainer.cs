@@ -80,16 +80,18 @@ namespace CryStory.Runtime
             }
         }
 
-#if UNITY_EDITOR
-        public virtual void SaveInEditor(BinaryWriter w)
+        /// <summary>
+        /// 主要用于Story编辑器以及运行时初始化读取，因为Mission都是单独保存在另外一个文件中的——现在我已经后悔了
+        /// </summary>
+        /// <param name="w"></param>
+        public virtual void SaveOnlyThisNode(BinaryWriter w)
         {
             SaveValue(w);
         }
 
-        public virtual void LoadInEditor(BinaryReader r)
+        public virtual void LoadOnlyThisNode(BinaryReader r)
         {
             LoadValue(r);
         }
-#endif
     }
 }

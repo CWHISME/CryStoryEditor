@@ -12,6 +12,7 @@ namespace CryStory.Runtime
     public class OnEnterTrigger : Event
     {
 
+        [Vector3Helper(VectorSyceMode.Position)]
         public Vector3 Position;
         public float Radius = 0.5f;
 

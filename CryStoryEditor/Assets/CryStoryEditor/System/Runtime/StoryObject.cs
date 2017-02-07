@@ -32,6 +32,13 @@ namespace CryStory.Runtime
             }
         }
 
+        public Story CreateNewStoryFromData()
+        {
+            _story = new Story();
+            Load();
+            return _story;
+        }
+
         private Mission _editMission;
         public Mission EditMission
         {
@@ -53,10 +60,11 @@ namespace CryStory.Runtime
 
         public float _saveVersion = Story.SaveVersion;
 
-#if UNITY_EDITOR
 
         [SerializeField]
         private List<MissionData> _missionSaveList = new List<MissionData>();
+
+#if UNITY_EDITOR
 
         public MissionData[] MisisonDatas { get { return _missionSaveList.ToArray(); } }
 
@@ -75,6 +83,11 @@ namespace CryStory.Runtime
             Mission mission = new Mission();
             _story.AddContentNode(mission);
             return mission;
+        }
+
+        public MissionData GetMissionSaveDataByName(string missionName)
+        {
+            return _missionSaveList.Find((m) => m.Name == missionName);
         }
 
 #if UNITY_EDITOR
@@ -116,11 +129,6 @@ namespace CryStory.Runtime
             Load();
         }
 
-
-        public MissionData GetMissionSaveDataByName(string missionName)
-        {
-            return _missionSaveList.Find((m) => m.Name == missionName);
-        }
 
         public MissionData[] GetMissionSaveDataByMission(NodeBase[] missions)
         {
@@ -206,7 +214,7 @@ namespace CryStory.Runtime
 
                     w.Write(JsonUtility.ToJson(_story));
 
-                    _story.SaveInEditor(w);
+                    _story.SaveOnlyThisNode(w);
                 }
                 _SaveData = ms.ToArray();
             }
@@ -300,7 +308,7 @@ namespace CryStory.Runtime
 
                         string storyData = r.ReadString();
                         _story = JsonUtility.FromJson<Story>(storyData);
-                        _story.LoadInEditor(r);
+                        _story.LoadOnlyThisNode(r);
                     }
                 }
 
@@ -350,6 +358,12 @@ namespace CryStory.Runtime
                 UnityEditor.EditorUtility.DisplayDialog("Attention!", "You have some Mission File Lost! ", "OK");
             }
         }
+
+        //public void Load(byte[] data)
+        //{
+        //    _story = new Story();
+        //    _story.Load(data);
+        //}
         #endregion
 #else
         public byte[] Save()
@@ -357,33 +371,92 @@ namespace CryStory.Runtime
             return _story.Save();
         }
 
-        public void Load()
-        {
-            _story = new Story();
-            _story.Load(_SaveData);
-        }
-#endif
-
         public void Load(byte[] data)
         {
             _story = new Story();
             _story.Load(data);
         }
+
+         public void Load()
+        {
+            if (_SaveData.Length > 0)
+                using (MemoryStream ms = new MemoryStream(_SaveData))
+                {
+                    using (BinaryReader r = new BinaryReader(ms))
+                    {
+                        float ver = r.ReadSingle();
+                        if (ver != Story.SaveVersion)
+                        {
+                            Debug.LogError("Error:Archive data version not same! Curent: " + Story.SaveVersion + " Data: " + ver);
+                        }
+
+                        string storyData = r.ReadString();
+                        _story = JsonUtility.FromJson<Story>(storyData);
+                        _story.LoadOnlyThisNode(r);
+                    }
+                }
+
+            if (_story == null)
+                _story = new Story();
+
+            for (int i = 0; i < _missionSaveList.Count; i++)
+            {
+                MissionData data = _missionSaveList[i];
+                if (!data.MissionObject)
+                {
+                    Debug.Log("Mission Not Found: " + data.Name);
+                    continue;
+                }
+
+                data.MissionObject.Load();
+                data.MissionObject._mission._name = data.Name;
+
+                NodeModifier.SetContent(data.MissionObject._mission, _story);
+            }
+
+            //设置已连接的节点
+            for (int i = 0; i < _missionSaveList.Count; i++)
+            {
+                MissionData data = _missionSaveList[i];
+                if (!data.MissionObject) continue;
+                if (data.MissionObject._nextMissionNodeList.Count > 0)
+                {
+                    foreach (var item in data.MissionObject._nextMissionNodeList)
+                    {
+                        MissionData next = GetMissionSaveDataByName(item.Name);
+                        if (next == null) continue;
+                        if (next.MissionObject == null) continue;
+                        if (item.IsSingleNode)
+                        {
+                            data.MissionObject._mission.AddNextNode(next.MissionObject._mission);
+                        }
+                        else Mission.SetParent(next.MissionObject._mission, data.MissionObject._mission);
+                    }
+                }
+            }
+        }
+#endif
     }
 
-#if UNITY_EDITOR
     [System.Serializable]
     public class MissionData
     {
+        [SerializeField]
         private string _name;
+#if UNITY_EDITOR
+        [SerializeField]
         private int _instanceID;
+#endif
+        [SerializeField]
         private MissionObject _missionObject;
         public string Name { get { return _name; } }
         public MissionObject MissionObject
         {
             get
             {
+#if UNITY_EDITOR
                 if (!_missionObject) ReloadObject();
+#endif
                 return _missionObject;
             }
             set { _missionObject = value; }
@@ -392,7 +465,9 @@ namespace CryStory.Runtime
         public MissionData(MissionObject obj)
         {
             _missionObject = obj;
+#if UNITY_EDITOR
             RefreshExtraData();
+#endif
         }
 
         public void AddNextMissionObject(MissionData[] os)
@@ -406,18 +481,21 @@ namespace CryStory.Runtime
         public void RefreshExtraData()
         {
             _name = MissionObject._mission._name;
+#if UNITY_EDITOR
             _instanceID = MissionObject.GetInstanceID();
+#endif
         }
 
+#if UNITY_EDITOR
         public void Delete()
         {
-            UnityEditor.AssetDatabase.DeleteAsset(FIlePath);
+            UnityEditor.AssetDatabase.DeleteAsset(FilePath);
         }
 
         public bool Rename(string newName)
         {
             //重命名成功
-            string msg = UnityEditor.AssetDatabase.RenameAsset(FIlePath, newName);
+            string msg = UnityEditor.AssetDatabase.RenameAsset(FilePath, newName);
             if (string.IsNullOrEmpty(msg))
             {
                 _name = newName;
@@ -431,22 +509,15 @@ namespace CryStory.Runtime
 
         public void ReloadObject()
         {
-            _missionObject = UnityEditor.AssetDatabase.LoadAssetAtPath<MissionObject>(FIlePath);
+            _missionObject = UnityEditor.AssetDatabase.LoadAssetAtPath<MissionObject>(FilePath);
         }
 
-        private string FIlePath { get { return UnityEditor.AssetDatabase.GetAssetPath(_instanceID); } }
-
-        //public void RemoveNextMissionObject(string o)
-        //{
-        //    _missionObject._nextMissionNodeLIst.RemoveAll();
-        //    _missionObject._nextMissionNodeLIst.Remove(o);
-        //}
+        private string FilePath { get { return UnityEditor.AssetDatabase.GetAssetPath(_instanceID); } }
+#endif
 
         public void ClearNextMissionObject()
         {
             MissionObject._nextMissionNodeList.Clear();
         }
     }
-
-#endif
 }

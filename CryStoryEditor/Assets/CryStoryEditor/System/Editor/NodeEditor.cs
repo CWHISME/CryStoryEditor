@@ -632,11 +632,26 @@ namespace CryStory.Editor
             {
                 case "UnityEngine.Vector3":
                     filed.SetValue(o, EditorGUI.Vector3Field(rect, "", (Vector3)filed.GetValue(o)));
-                    rect = GetGUILeftScrollAreaRect(60, rect.width, rect.height, true);
-                    Transform t = null;
-                    t = EditorGUI.ObjectField(rect, t, typeof(Transform), true) as Transform;
-                    if (t)
-                        filed.SetValue(o, t.position);
+                    //检查是否需要帮助（拖动一个Object，同步其位置或旋转）
+                    Vector3Helper helper = Attribute.GetCustomAttribute(filed, typeof(Vector3Helper)) as Vector3Helper;
+                    if (helper != null)
+                    {
+                        rect = GetGUILeftScrollAreaRect(60, rect.width, rect.height, true);
+                        Transform t = null;
+                        t = EditorGUI.ObjectField(rect, t, typeof(Transform), true) as Transform;
+                        if (t)
+                        {
+                            switch (helper.Mode)
+                            {
+                                case VectorSyceMode.Position:
+                                    filed.SetValue(o, t.position);
+                                    break;
+                                case VectorSyceMode.EulerAngle:
+                                    filed.SetValue(o, t.eulerAngles);
+                                    break;
+                            }
+                        }
+                    }
                     break;
                 case "UnityEngine.Vector2":
                     filed.SetValue(o, EditorGUI.Vector2Field(rect, "", (Vector2)filed.GetValue(o)));

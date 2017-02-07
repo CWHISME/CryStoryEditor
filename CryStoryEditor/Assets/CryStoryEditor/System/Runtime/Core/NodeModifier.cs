@@ -20,7 +20,7 @@ namespace CryStory.Runtime
         /// <summary>
         /// 运行节点的模式
         /// </summary>
-        public EnumRunMode RunMode = EnumRunMode.UntilSuccess;
+        public EnumRunMode RunMode = EnumRunMode.StopNodeList;
 
         /// <summary>
         /// 父节点引用

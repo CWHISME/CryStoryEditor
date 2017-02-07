@@ -22,11 +22,11 @@ namespace CryStory.Editor
                 StoryWindow.Show();
                 return;
             }
-            StoryWindow = EditorWindow.CreateInstance<StoryEditorWindow>();
+            StoryWindow = EditorWindow.GetWindow<StoryEditorWindow>();
             StoryWindow.titleContent = new GUIContent("Story Editor");
-            float h = Screen.height * 0.7f;
-            float w = Screen.width * 0.7f;
-            StoryWindow.position = new Rect(Screen.width - w, Screen.height - h, w, h);
+            //float h = Screen.height * 0.7f;
+            //float w = Screen.width * 0.7f;
+            //StoryWindow.position = new Rect(Screen.width - w, Screen.height - h, w, h);
 
             StoryWindow.Show();
         }
@@ -304,8 +304,20 @@ namespace CryStory.Editor
             EditorGUI.SelectableLabel(new Rect(_windowRect.center.x - 110, _windowRect.center.y + 100, 300, 20), "https://github.com/CWHISME/CryStoryEditor");
         }
 
+        private bool _runningStory = false;
+
         private void MainPage()
         {
+            //判断是否是刚从运行状态下推出
+            //若是，那么重新加载Story
+            if (!Application.isPlaying && _runningStory)
+            {
+                _runningStory = false;
+                EditMission = null;
+                _storyObject.CreateNewStoryFromData();
+                return;
+            }
+
             EditorGUI.DrawTextureTransparent(_contentRect, ResourcesManager.GetInstance.texBackground);
 
             //更新ValueManager中MissionConstainer，避免Mission页面无法找到Mission
@@ -313,12 +325,20 @@ namespace CryStory.Editor
 
             if (EditMission == null)
             {
-                if (Application.isPlaying) StoryEditorRuntime.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
+                if (Application.isPlaying)
+                {
+                    StoryEditorRuntime.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
+                    _runningStory = true;
+                }
                 else StoryEditor.GetInstance.OnGUI(this, _storyObject._Story.Nodes);
             }
             else
             {
-                if (Application.isPlaying) MissionEditorRuntime.GetInstance.OnGUI(this, EditMission.Nodes);
+                if (Application.isPlaying)
+                {
+                    MissionEditorRuntime.GetInstance.OnGUI(this, EditMission.Nodes);
+                    _runningStory = true;
+                }
                 else MissionEditor.GetInstance.OnGUI(this, EditMission.Nodes);
             }
 
@@ -392,7 +412,10 @@ namespace CryStory.Editor
             }
             buttonStyle.normal.textColor = new Color32(0, 255, 0, 255);
             if (GUI.Button(new Rect(_contentRect.width - 270, 3, 80, _titleHeight - 3), "Save Story", buttonStyle))
+            {
                 _storyObject.Save();
+                UnityEditor.EditorUtility.SetDirty(_storyObject);
+            }
 
             //EditorGUILayout.EndHorizontal();
         }

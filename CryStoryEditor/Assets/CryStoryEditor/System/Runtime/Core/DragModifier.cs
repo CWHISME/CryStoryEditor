@@ -76,19 +76,17 @@ namespace CryStory.Runtime
             }
         }
 
-#if UNITY_EDITOR
-        public override void SaveInEditor(BinaryWriter w)
+        public override void SaveOnlyThisNode(BinaryWriter w)
         {
-            base.SaveInEditor(w);
+            base.SaveOnlyThisNode(w);
             SaveID(w);
         }
 
-        public override void LoadInEditor(BinaryReader r)
+        public override void LoadOnlyThisNode(BinaryReader r)
         {
-            base.LoadInEditor(r);
+            base.LoadOnlyThisNode(r);
             LoadID(r);
         }
-#endif
 
         //===For Editor=============
         public Vector2 _graphCenter;

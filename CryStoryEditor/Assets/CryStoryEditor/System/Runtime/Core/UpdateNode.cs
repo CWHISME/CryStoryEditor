@@ -11,7 +11,6 @@ namespace CryStory.Runtime
 
     abstract public class UpdateNode : NodeModifier
     {
-
         protected bool _running = false;
         private bool _isInit = false;
 
@@ -39,13 +38,18 @@ namespace CryStory.Runtime
 
             if (result != EnumResult.Running)
             {
-                OnEnd();
-                _isInit = false;
-                _running = false;
+                StopRunning();
                 return result;
             }
 
             return EnumResult.Running;
+        }
+
+        public void StopRunning()
+        {
+            OnEnd();
+            _isInit = false;
+            _running = false;
         }
 
         /// <summary>
