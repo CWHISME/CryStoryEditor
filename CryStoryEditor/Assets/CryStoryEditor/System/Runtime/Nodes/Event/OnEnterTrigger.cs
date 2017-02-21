@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace CryStory.Runtime
 {
+    [Category("System")]
     public class OnEnterTrigger : Event
     {
 

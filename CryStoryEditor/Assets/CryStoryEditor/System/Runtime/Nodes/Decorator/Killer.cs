@@ -11,6 +11,7 @@ namespace CryStory.Runtime
 {
 
     [Help("该节点将会移除运行中的所有单子节点(即红色连线连接者)。白色连线不受影响。")]
+    [Category("System")]
     public class Killer : Decorator
     {
         public KillMode Mode = KillMode.Node;
